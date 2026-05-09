@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Qorix – Product Portfolio Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+/* ── Qorix Brand Tokens ───────────────────────────────────────────── */
+:root{
+  --qx-navy:       #0E2841;
+  --qx-blue:       #3C00FF;
+  --qx-blue-mid:   #156082;
+  --qx-sky:        #0F9ED5;
+  --qx-cyan:       #00FFFF;
+  --qx-lime:       #D7FF3C;
+  --qx-orange:     #E97132;
+  --qx-green-dark: #196B24;
+  --qx-green:      #4EA72E;
+  --qx-purple:     #A02B93;
+  --qx-gray-light: #E8E8E8;
+
+  /* semantic */
+  --color-on-track: #22c55e;
+  --color-at-risk:  #f59e0b;
+  --color-delayed:  #ef4444;
+  --color-closed:   #6b7280;
+
+  /* surface */
+  --bg:       #F4F6FA;
+  --sidebar:  var(--qx-navy);
+  --card:     #FFFFFF;
+  --border:   #E2E8F0;
+  --text:     #1e293b;
+  --muted:    #64748b;
+  --heading:  #0E2841;
+
+  --sidebar-w: 240px;
+  --topbar-h:  64px;
+  --radius:    10px;
+  --shadow:    0 1px 4px rgba(14,40,65,.08),0 4px 16px rgba(14,40,65,.06);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;font-size:14px}
+
+/* ── Sidebar ─────────────────────────────────────────────────────── */
+.sidebar{
+  width:var(--sidebar-w);min-width:var(--sidebar-w);
+  background:var(--sidebar);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:50;
+  overflow-y:auto;
+}
+.sidebar-logo{
+  padding:20px 20px 16px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;gap:10px;
+}
+.logo-mark{
+  width:36px;height:36px;border-radius:8px;
+  background:linear-gradient(135deg,var(--qx-blue),var(--qx-sky));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#fff;font-size:15px;letter-spacing:-1px;
+  flex-shrink:0;
+}
+.logo-text{font-weight:700;color:#fff;font-size:16px;letter-spacing:.3px}
+.logo-sub{font-size:10px;color:rgba(255,255,255,.45);font-weight:400;margin-top:1px}
+
+.nav-section{padding:16px 12px 4px;font-size:10px;font-weight:600;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 14px;margin:1px 8px;border-radius:7px;
+  color:rgba(255,255,255,.65);cursor:pointer;font-size:13px;font-weight:500;
+  transition:background .15s,color .15s;
+  border:none;background:none;width:calc(100% - 16px);text-align:left;
+}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-item.active{background:linear-gradient(90deg,rgba(60,0,255,.35),rgba(15,158,213,.2));color:#fff;border-left:3px solid var(--qx-cyan)}
+.nav-item .nav-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.nav-item .nav-badge{margin-left:auto;background:var(--qx-orange);color:#fff;border-radius:9px;padding:1px 7px;font-size:10px;font-weight:700}
+
+/* ── Main ────────────────────────────────────────────────────────── */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* ── Topbar ──────────────────────────────────────────────────────── */
+.topbar{
+  height:var(--topbar-h);background:#fff;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 28px;gap:16px;
+  position:sticky;top:0;z-index:40;
+}
+.topbar-title{font-weight:700;font-size:18px;color:var(--heading);flex:1}
+.topbar-title span{color:var(--qx-blue)}
+
+.filter-bar{display:flex;align-items:center;gap:10px}
+.filter-select{
+  border:1px solid var(--border);border-radius:7px;padding:6px 12px;
+  font-size:13px;color:var(--text);background:#fff;cursor:pointer;outline:none;
+}
+.filter-select:focus{border-color:var(--qx-blue)}
+.btn{
+  padding:7px 16px;border-radius:7px;font-size:13px;font-weight:600;
+  cursor:pointer;border:none;transition:opacity .15s;
+}
+.btn-primary{background:var(--qx-blue);color:#fff}
+.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text)}
+.btn:hover{opacity:.85}
+.btn-sm{padding:5px 12px;font-size:12px}
+
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--qx-blue),var(--qx-sky));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0}
+
+/* ── Page sections ───────────────────────────────────────────────── */
+.section{display:none;padding:28px;flex-direction:column;gap:24px}
+.section.active{display:flex}
+
+/* ── KPI row ─────────────────────────────────────────────────────── */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.kpi-card{
+  background:var(--card);border-radius:var(--radius);padding:20px;
+  box-shadow:var(--shadow);border:1px solid var(--border);
+  display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden;
+}
+.kpi-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.kpi-card.k1::before{background:var(--qx-blue)}
+.kpi-card.k2::before{background:var(--color-on-track)}
+.kpi-card.k3::before{background:var(--qx-sky)}
+.kpi-card.k4::before{background:var(--color-delayed)}
+.kpi-card.k5::before{background:var(--qx-orange)}
+.kpi-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.kpi-value{font-size:32px;font-weight:800;color:var(--heading);line-height:1}
+.kpi-sub{font-size:12px;color:var(--muted)}
+.kpi-icon{position:absolute;top:16px;right:16px;font-size:22px;opacity:.15}
+
+/* ── Section header ──────────────────────────────────────────────── */
+.section-hdr{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.section-hdr h2{font-size:17px;font-weight:700;color:var(--heading)}
+.section-hdr .hdr-actions{display:flex;gap:8px;align-items:center}
+
+/* ── Product cards ───────────────────────────────────────────────── */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.product-card{
+  background:var(--card);border-radius:var(--radius);
+  box-shadow:var(--shadow);border:1px solid var(--border);
+  overflow:hidden;transition:transform .15s,box-shadow .15s;cursor:pointer;
+}
+.product-card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(14,40,65,.12)}
+.product-card-top{
+  padding:18px 20px 14px;
+  border-bottom:1px solid var(--border);
+  display:flex;flex-direction:column;gap:8px;
+}
+.product-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.product-name{font-weight:700;font-size:15px;color:var(--heading)}
+.product-phase{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;padding:2px 8px;border-radius:20px}
+.phase-discovery{background:#ede9fe;color:#6d28d9}
+.phase-development{background:#dbeafe;color:#1d4ed8}
+.phase-launch{background:#fef3c7;color:#92400e}
+.phase-scale{background:#dcfce7;color:#15803d}
+
+.status-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.status-badge::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.badge-on-track{background:#dcfce7;color:#15803d}.badge-on-track::before{background:#22c55e}
+.badge-at-risk{background:#fef9c3;color:#854d0e}.badge-at-risk::before{background:#eab308}
+.badge-delayed{background:#fee2e2;color:#991b1b}.badge-delayed::before{background:#ef4444}
+
+.progress-row{display:flex;align-items:center;gap:10px}
+.progress-bar-wrap{flex:1;height:6px;background:var(--border);border-radius:4px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--qx-blue),var(--qx-sky));transition:width .6s ease}
+.progress-pct{font-size:12px;font-weight:700;color:var(--heading);white-space:nowrap}
+
+.product-card-mid{padding:14px 20px;display:flex;gap:12px;border-bottom:1px solid var(--border)}
+.metric-pill{flex:1;text-align:center;padding:8px 4px;background:var(--bg);border-radius:7px}
+.metric-pill .mp-val{font-size:13px;font-weight:700;color:var(--heading)}
+.metric-pill .mp-label{font-size:10px;color:var(--muted);margin-top:2px}
+
+.product-card-bottom{padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
+.pm-info{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.updated-info{font-size:11px;color:var(--muted)}
+
+/* ── Flag chip ───────────────────────────────────────────────────── */
+.flag-chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px;background:#fee2e2;color:#991b1b}
+
+/* ── Tables ──────────────────────────────────────────────────────── */
+.table-wrap{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead{background:var(--bg)}
+th{text-align:left;padding:11px 16px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(60,0,255,.02)}
+
+/* ── Risk score ──────────────────────────────────────────────────── */
+.risk-score{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;font-weight:700;font-size:12px;color:#fff}
+.rs-low{background:#22c55e}.rs-medium{background:#f59e0b}.rs-high{background:#ef4444}.rs-critical{background:#7f1d1d}
+
+.sev-low{color:#15803d;background:#dcfce7;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.sev-medium{color:#92400e;background:#fef3c7;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.sev-high{color:#991b1b;background:#fee2e2;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+
+.status-open{color:#991b1b;font-weight:600}
+.status-inprog{color:#92400e;font-weight:600}
+.status-closed{color:#15803d;font-weight:600}
+
+/* ── Roadmap ─────────────────────────────────────────────────────── */
+.roadmap-product{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:0}
+.roadmap-product-hdr{padding:14px 20px;background:linear-gradient(90deg,var(--qx-navy),var(--qx-blue-mid));display:flex;align-items:center;gap:12px}
+.roadmap-product-hdr .rph-name{font-weight:700;color:#fff;font-size:14px}
+.roadmap-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid var(--border)}
+.roadmap-col{padding:16px 18px;border-right:1px solid var(--border)}
+.roadmap-col:last-child{border-right:none}
+.roadmap-col-hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.col-now{color:var(--qx-blue)}.col-next{color:var(--qx-orange)}.col-later{color:var(--muted)}
+.roadmap-item{padding:8px 10px;border-radius:7px;border:1px solid var(--border);margin-bottom:8px;font-size:12px}
+.roadmap-item .ri-title{font-weight:600;color:var(--heading);margin-bottom:3px}
+.roadmap-item .ri-meta{font-size:11px;color:var(--muted)}
+.ri-milestone{border-left:3px solid var(--qx-blue)}
+.ri-dep{border-left:3px solid var(--qx-orange)}
+.ri-init{border-left:3px solid var(--qx-sky)}
+
+/* ── Heatmap ─────────────────────────────────────────────────────── */
+.heatmap-cell{text-align:center;font-weight:600;font-size:12px;border-radius:5px;padding:4px 2px}
+.h0{background:#f1f5f9;color:var(--muted)}
+.h1{background:#dbeafe;color:#1d4ed8}
+.h2{background:#bfdbfe;color:#1e40af}
+.h3{background:#93c5fd;color:#1e3a8a}
+.h4{background:#fca5a5;color:#991b1b}
+
+/* ── Compliance ──────────────────────────────────────────────────── */
+.compliance-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.compliance-item:last-child{border-bottom:none}
+.ci-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ci-pass{background:#dcfce7}.ci-warn{background:#fef3c7}.ci-fail{background:#fee2e2}
+.ci-info{flex:1}
+.ci-name{font-weight:600;font-size:13px}
+.ci-desc{font-size:11px;color:var(--muted);margin-top:1px}
+.ci-status{font-size:11px;font-weight:600;white-space:nowrap}
+.ci-pass-txt{color:#15803d}.ci-warn-txt{color:#92400e}.ci-fail-txt{color:#991b1b}
+
+/* ── Timeline ────────────────────────────────────────────────────── */
+.timeline{display:flex;flex-direction:column;gap:0}
+.timeline-item{display:flex;gap:14px;padding:12px 0}
+.tl-line{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--qx-blue);border:2px solid #fff;box-shadow:0 0 0 2px var(--qx-blue);flex-shrink:0;margin-top:3px}
+.tl-connector{flex:1;width:2px;background:var(--border);margin:4px 0}
+.tl-content{flex:1;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.timeline-item:last-child .tl-content{border-bottom:none}
+.tl-time{font-size:11px;color:var(--muted)}
+.tl-msg{font-size:13px;font-weight:500;color:var(--text);margin-top:2px}
+.tl-product{font-size:11px;color:var(--qx-blue);font-weight:600;margin-top:3px}
+
+/* ── Alert cards ─────────────────────────────────────────────────── */
+.alert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.alert-card{border-radius:var(--radius);padding:16px;display:flex;gap:12px;align-items:flex-start;border-left:4px solid}
+.alert-danger{background:#fff5f5;border-color:#ef4444}
+.alert-warning{background:#fffbeb;border-color:#f59e0b}
+.alert-info{background:#eff6ff;border-color:var(--qx-blue)}
+.alert-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.alert-body .alert-title{font-weight:700;font-size:13px}
+.alert-body .alert-desc{font-size:12px;color:var(--muted);margin-top:3px}
+.alert-body .alert-product{font-size:11px;font-weight:600;margin-top:5px;color:var(--qx-blue)}
+
+/* ── Financial bars ──────────────────────────────────────────────── */
+.fin-bar-wrap{height:8px;background:var(--border);border-radius:4px;overflow:hidden;position:relative;margin-top:4px}
+.fin-bar-budget{height:100%;background:var(--qx-gray-light);border-radius:4px;position:absolute;top:0;left:0}
+.fin-bar-actual{height:100%;border-radius:4px;position:absolute;top:0;left:0}
+.fin-ok{background:linear-gradient(90deg,var(--qx-blue),var(--qx-sky))}
+.fin-over{background:linear-gradient(90deg,#ef4444,#f87171)}
+
+/* ── Dependency pills ────────────────────────────────────────────── */
+.dep-internal{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600}
+.dep-external{background:#fdf4ff;color:#7e22ce;border:1px solid #e9d5ff;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600}
+.dep-blocker{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600}
+
+/* ── Modal ───────────────────────────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(14,40,65,.55);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:780px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(14,40,65,.25)}
+.modal-hdr{padding:22px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2}
+.modal-hdr h3{font-weight:700;font-size:17px;color:var(--heading)}
+.modal-close{border:none;background:none;font-size:20px;cursor:pointer;color:var(--muted);width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--bg)}
+.modal-body{padding:24px 28px;display:flex;flex-direction:column;gap:20px}
+.modal-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:10px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.detail-field label{font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px}
+.detail-field input,.detail-field select,.detail-field textarea{width:100%;border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-size:13px;font-family:inherit;outline:none;color:var(--text)}
+.detail-field input:focus,.detail-field select:focus,.detail-field textarea:focus{border-color:var(--qx-blue);box-shadow:0 0 0 3px rgba(60,0,255,.08)}
+.detail-field textarea{height:70px;resize:vertical}
+
+/* ── Export button ───────────────────────────────────────────────── */
+.btn-export{background:var(--qx-lime);color:var(--qx-navy);font-weight:700;border:none;padding:7px 16px;border-radius:7px;font-size:13px;cursor:pointer}
+.btn-export:hover{opacity:.85}
+
+/* ── Scrollbar ───────────────────────────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr)}
+  .sidebar{transform:translateX(-100%);transition:transform .2s}
+  .sidebar.open{transform:none}
+  .main{margin-left:0}
+}
+
+/* ── Editable field highlight ────────────────────────────────────── */
+[contenteditable="true"]{outline:none;border-bottom:1px dashed var(--qx-blue);cursor:text;padding:1px 3px;border-radius:3px}
+[contenteditable="true"]:focus{background:rgba(60,0,255,.04)}
+
+/* ── Mini chart canvas ───────────────────────────────────────────── */
+.chart-container{position:relative;height:220px}
+.chart-container-sm{position:relative;height:160px}
+
+/* ── Tabs ────────────────────────────────────────────────────────── */
+.tab-bar{display:flex;gap:4px;border-bottom:2px solid var(--border);margin-bottom:16px}
+.tab-btn{padding:8px 16px;border:none;background:none;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;border-radius:4px 4px 0 0;transition:color .15s}
+.tab-btn.active{color:var(--qx-blue);border-bottom-color:var(--qx-blue)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+/* ── Top accent gradient ─────────────────────────────────────────── */
+.section-accent-bar{height:4px;background:linear-gradient(90deg,var(--qx-blue),var(--qx-sky),var(--qx-cyan));border-radius:2px;margin-bottom:4px}
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">Q</div>
+    <div>
+      <div class="logo-text">Qorix</div>
+      <div class="logo-sub">Portfolio Dashboard</div>
+    </div>
+  </div>
+
+  <div class="nav-section">Overview</div>
+  <button class="nav-item active" onclick="navigate('overview',this)">
+    <span class="nav-icon">⬛</span> Dashboard
+  </button>
+  <button class="nav-item" onclick="navigate('products',this)">
+    <span class="nav-icon">📦</span> Products
+  </button>
+
+  <div class="nav-section">Planning</div>
+  <button class="nav-item" onclick="navigate('roadmap',this)">
+    <span class="nav-icon">🗺️</span> Roadmap
+  </button>
+  <button class="nav-item" onclick="navigate('team',this)">
+    <span class="nav-icon">👥</span> Team Allocation
+  </button>
+  <button class="nav-item" onclick="navigate('financial',this)">
+    <span class="nav-icon">💰</span> Financial
+  </button>
+
+  <div class="nav-section">Governance</div>
+  <button class="nav-item" onclick="navigate('risks',this)">
+    <span class="nav-icon">⚠️</span> Risk Management
+    <span class="nav-badge" id="risk-badge">8</span>
+  </button>
+  <button class="nav-item" onclick="navigate('compliance',this)">
+    <span class="nav-icon">🛡️</span> Compliance
+  </button>
+  <button class="nav-item" onclick="navigate('dependencies',this)">
+    <span class="nav-icon">🔗</span> Dependencies
+  </button>
+
+  <div class="nav-section">Intelligence</div>
+  <button class="nav-item" onclick="navigate('insights',this)">
+    <span class="nav-icon">💡</span> Insights &amp; Alerts
+    <span class="nav-badge" id="alert-badge">5</span>
+  </button>
+  <button class="nav-item" onclick="navigate('activity',this)">
+    <span class="nav-icon">📋</span> Activity Log
+  </button>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════════════ MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title">Product Portfolio <span>Dashboard</span></div>
+    <div class="filter-bar">
+      <select class="filter-select" id="global-product-filter" onchange="applyFilters()">
+        <option value="all">All Products</option>
+        <option value="nexus">Nexus Platform</option>
+        <option value="pulse">Pulse Mobile</option>
+        <option value="datasphere">DataSphere</option>
+        <option value="coreapi">CoreAPI Gateway</option>
+        <option value="ehub">EnterpriseHub</option>
+      </select>
+      <select class="filter-select" id="global-status-filter" onchange="applyFilters()">
+        <option value="all">All Statuses</option>
+        <option value="on-track">On Track</option>
+        <option value="at-risk">At Risk</option>
+        <option value="delayed">Delayed</option>
+      </select>
+      <button class="btn-export" onclick="exportReport()">⬇ Export</button>
+      <div class="avatar">SD</div>
+    </div>
+  </div>
+
+  <!-- ═══════ SECTION: OVERVIEW ═══════ -->
+  <section class="section active" id="sec-overview">
+    <div class="section-accent-bar"></div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card k1">
+        <div class="kpi-icon">📦</div>
+        <div class="kpi-label">Total Products</div>
+        <div class="kpi-value">5</div>
+        <div class="kpi-sub">Across all portfolios</div>
+      </div>
+      <div class="kpi-card k2">
+        <div class="kpi-icon">🚀</div>
+        <div class="kpi-label">Active Projects</div>
+        <div class="kpi-value">18</div>
+        <div class="kpi-sub">4 launching this quarter</div>
+      </div>
+      <div class="kpi-card k3">
+        <div class="kpi-icon">👥</div>
+        <div class="kpi-label">Team Members</div>
+        <div class="kpi-value">67</div>
+        <div class="kpi-sub">3 shared resources</div>
+      </div>
+      <div class="kpi-card k4">
+        <div class="kpi-icon">⚠️</div>
+        <div class="kpi-label">Open Risks</div>
+        <div class="kpi-value">8</div>
+        <div class="kpi-sub">3 high severity</div>
+      </div>
+      <div class="kpi-card k5">
+        <div class="kpi-icon">📅</div>
+        <div class="kpi-label">Deadlines (30d)</div>
+        <div class="kpi-value">6</div>
+        <div class="kpi-sub">2 at risk of slipping</div>
+      </div>
+    </div>
+
+    <!-- Quick product summary -->
+    <div class="section-hdr">
+      <h2>Portfolio Health</h2>
+      <div class="hdr-actions">
+        <button class="btn btn-outline btn-sm" onclick="navigate('products', document.querySelector('[onclick*=products]'))">View All Products →</button>
+      </div>
+    </div>
+
+    <div class="product-grid" id="overview-cards"></div>
+
+    <!-- Charts row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px">
+      <div class="table-wrap" style="padding:18px">
+        <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">Status Distribution</div>
+        <div class="chart-container-sm"><canvas id="statusChart"></canvas></div>
+      </div>
+      <div class="table-wrap" style="padding:18px">
+        <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">Budget Utilisation</div>
+        <div class="chart-container-sm"><canvas id="budgetChart"></canvas></div>
+      </div>
+      <div class="table-wrap" style="padding:18px">
+        <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">Team FTE Distribution</div>
+        <div class="chart-container-sm"><canvas id="fteChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: PRODUCTS ═══════ -->
+  <section class="section" id="sec-products">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr">
+      <h2>Product Overview</h2>
+      <div class="hdr-actions">
+        <button class="btn btn-primary btn-sm" onclick="openNewProductModal()">+ Add Product</button>
+      </div>
+    </div>
+    <div class="product-grid" id="products-grid"></div>
+  </section>
+
+  <!-- ═══════ SECTION: ROADMAP ═══════ -->
+  <section class="section" id="sec-roadmap">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr">
+      <h2>Product Roadmap — Now · Next · Later</h2>
+      <div class="hdr-actions">
+        <select class="filter-select" id="roadmap-filter" onchange="renderRoadmap()">
+          <option value="all">All Products</option>
+          <option value="nexus">Nexus Platform</option>
+          <option value="pulse">Pulse Mobile</option>
+          <option value="datasphere">DataSphere</option>
+          <option value="coreapi">CoreAPI Gateway</option>
+          <option value="ehub">EnterpriseHub</option>
+        </select>
+      </div>
+    </div>
+    <div id="roadmap-container" style="display:flex;flex-direction:column;gap:16px"></div>
+  </section>
+
+  <!-- ═══════ SECTION: TEAM ═══════ -->
+  <section class="section" id="sec-team">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr">
+      <h2>Team Allocation</h2>
+      <div class="hdr-actions">
+        <select class="filter-select" id="team-view-toggle" onchange="renderTeam()">
+          <option value="table">Table View</option>
+          <option value="heatmap">Heatmap View</option>
+        </select>
+      </div>
+    </div>
+    <div id="team-container"></div>
+  </section>
+
+  <!-- ═══════ SECTION: FINANCIAL ═══════ -->
+  <section class="section" id="sec-financial">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr">
+      <h2>Financial &amp; Effort Overview</h2>
+      <div class="hdr-actions">
+        <button class="btn-export btn-sm" onclick="exportReport()">⬇ Export</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table id="financial-table">
+        <thead>
+          <tr>
+            <th>Product</th><th>Budget ($K)</th><th>Actual ($K)</th><th>Forecast ($K)</th>
+            <th>Variance</th><th>FTE Cost ($K)</th><th>Utilisation</th>
+          </tr>
+        </thead>
+        <tbody id="financial-tbody"></tbody>
+      </table>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px">
+      <div class="table-wrap" style="padding:18px">
+        <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">Budget vs Actual ($K)</div>
+        <div class="chart-container"><canvas id="financialBarChart"></canvas></div>
+      </div>
+      <div class="table-wrap" style="padding:18px">
+        <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">Forecast Trend</div>
+        <div class="chart-container"><canvas id="forecastLineChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: RISKS ═══════ -->
+  <section class="section" id="sec-risks">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr">
+      <h2>Risk Management</h2>
+      <div class="hdr-actions">
+        <select class="filter-select" id="risk-sev-filter" onchange="renderRisks()">
+          <option value="all">All Severities</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+        <select class="filter-select" id="risk-status-filter" onchange="renderRisks()">
+          <option value="all">All Statuses</option>
+          <option value="Open">Open</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Score</th><th>Product</th><th>Risk</th><th>Severity</th>
+            <th>Impact</th><th>Owner</th><th>Mitigation</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="risks-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: COMPLIANCE ═══════ -->
+  <section class="section" id="sec-compliance">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr">
+      <h2>Compliance &amp; Governance</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px" id="compliance-grid"></div>
+    <div class="section-hdr" style="margin-top:8px">
+      <h2>Non-Compliance Flags</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Product</th><th>Area</th><th>Issue</th><th>Required Action</th><th>Deadline</th><th>Status</th></tr></thead>
+        <tbody id="compliance-flags-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: DEPENDENCIES ═══════ -->
+  <section class="section" id="sec-dependencies">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr"><h2>Dependencies &amp; Blockers</h2></div>
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchDepTab('internal',this)">Internal Dependencies</button>
+      <button class="tab-btn" onclick="switchDepTab('external',this)">External Dependencies</button>
+      <button class="tab-btn" onclick="switchDepTab('blockers',this)">🔴 Blockers</button>
+    </div>
+    <div class="tab-pane active" id="dep-internal">
+      <div class="table-wrap">
+        <table><thead><tr><th>Product</th><th>Depends On</th><th>Team</th><th>Description</th><th>Status</th></tr></thead>
+        <tbody id="dep-internal-tbody"></tbody></table>
+      </div>
+    </div>
+    <div class="tab-pane" id="dep-external">
+      <div class="table-wrap">
+        <table><thead><tr><th>Product</th><th>Vendor / API</th><th>Type</th><th>Description</th><th>Status</th></tr></thead>
+        <tbody id="dep-external-tbody"></tbody></table>
+      </div>
+    </div>
+    <div class="tab-pane" id="dep-blockers">
+      <div class="table-wrap">
+        <table><thead><tr><th>Product</th><th>Blocker</th><th>Owner</th><th>ETA</th><th>Impact</th></tr></thead>
+        <tbody id="dep-blockers-tbody"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: INSIGHTS ═══════ -->
+  <section class="section" id="sec-insights">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr"><h2>Insights &amp; Auto-Generated Alerts</h2></div>
+    <div class="alert-grid" id="alerts-grid"></div>
+    <div class="section-hdr" style="margin-top:8px"><h2>Missing Data Flags</h2></div>
+    <div class="alert-grid" id="flags-grid"></div>
+  </section>
+
+  <!-- ═══════ SECTION: ACTIVITY ═══════ -->
+  <section class="section" id="sec-activity">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr">
+      <h2>Activity Timeline</h2>
+      <div class="hdr-actions">
+        <select class="filter-select" id="activity-filter" onchange="renderActivity()">
+          <option value="all">All Products</option>
+          <option value="nexus">Nexus Platform</option>
+          <option value="pulse">Pulse Mobile</option>
+          <option value="datasphere">DataSphere</option>
+          <option value="coreapi">CoreAPI Gateway</option>
+          <option value="ehub">EnterpriseHub</option>
+        </select>
+      </div>
+    </div>
+    <div class="table-wrap" style="padding:24px 28px">
+      <div class="timeline" id="timeline-container"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ PRODUCT DETAIL MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-hdr">
+      <h3 id="modal-title">Product Detail</h3>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-primary btn-sm" onclick="saveModal()">Save Changes</button>
+        <button class="modal-close" onclick="closeModalDirect()">✕</button>
+      </div>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   DATA
+════════════════════════════════════════════════════════════ */
+const PRODUCTS = [
+  {
+    id:'nexus', name:'Nexus Platform', pm:'Aisha Rahman',
+    status:'on-track', phase:'Development', completion:72,
+    revenue:'$2.4M', users:'14,200', adoption:'68%',
+    updated:'2026-05-07', color:'#3C00FF',
+    desc:'Core B2B SaaS platform powering enterprise workflows.',
+    fte:18, budget:850, actual:610, forecast:830, fteCost:320
+  },
+  {
+    id:'pulse', name:'Pulse Mobile', pm:'Jordan Lee',
+    status:'at-risk', phase:'Launch', completion:88,
+    revenue:'$820K', users:'52,000', adoption:'41%',
+    updated:'2026-05-08', color:'#E97132',
+    desc:'Consumer-facing mobile app for real-time engagement.',
+    fte:14, budget:420, actual:398, forecast:445, fteCost:210
+  },
+  {
+    id:'datasphere', name:'DataSphere Analytics', pm:'Priya Nair',
+    status:'on-track', phase:'Scale', completion:91,
+    revenue:'$3.1M', users:'8,700', adoption:'83%',
+    updated:'2026-05-06', color:'#0F9ED5',
+    desc:'Advanced analytics suite for enterprise data intelligence.',
+    fte:22, budget:1100, actual:890, forecast:1050, fteCost:440
+  },
+  {
+    id:'coreapi', name:'CoreAPI Gateway', pm:'Marcus Webb',
+    status:'delayed', phase:'Development', completion:44,
+    revenue:'$510K', users:'3,200', adoption:'29%',
+    updated:'2026-05-05', color:'#ef4444',
+    desc:'Unified API gateway and developer ecosystem platform.',
+    fte:9, budget:310, actual:195, forecast:360, fteCost:135
+  },
+  {
+    id:'ehub', name:'EnterpriseHub', pm:'Sofia Chen',
+    status:'at-risk', phase:'Discovery', completion:21,
+    revenue:'—', users:'—', adoption:'—',
+    updated:'2026-05-04', color:'#A02B93',
+    desc:'Next-gen enterprise portal for integrated service delivery.',
+    fte:4, budget:180, actual:42, forecast:210, fteCost:60
+  }
+];
+
+const ROADMAP = {
+  nexus:[
+    {col:'now',type:'milestone',title:'v3.2 Feature Release',desc:'Auth redesign + SSO',dep:'Platform Team'},
+    {col:'now',type:'init',title:'Performance Hardening',desc:'p95 latency < 200ms'},
+    {col:'next',type:'init',title:'Multi-tenant Billing Engine',desc:'Stripe integration'},
+    {col:'next',type:'dep',title:'Compliance Audit Prep',desc:'Depends: Legal Team'},
+    {col:'later',type:'milestone',title:'v4.0 Architecture Shift',desc:'Microservices migration'},
+    {col:'later',type:'init',title:'AI Feature Layer',desc:'LLM-assisted workflows'}
+  ],
+  pulse:[
+    {col:'now',type:'milestone',title:'iOS App Store Launch',desc:'Target: May 20 2026'},
+    {col:'now',type:'init',title:'Push Notification Infra',desc:'FCM + APNs wired'},
+    {col:'next',type:'init',title:'Android Feature Parity',desc:'Q3 2026'},
+    {col:'next',type:'dep',title:'Payment Gateway',desc:'Depends: Stripe API'},
+    {col:'later',type:'milestone',title:'100K MAU Target',desc:'Growth campaign Q4'},
+    {col:'later',type:'init',title:'Offline Mode',desc:'PWA support'}
+  ],
+  datasphere:[
+    {col:'now',type:'init',title:'Real-time Dashboard v2',desc:'WebSocket streaming'},
+    {col:'now',type:'milestone',title:'SOC 2 Certification',desc:'Audit in progress'},
+    {col:'next',type:'init',title:'ML Anomaly Detection',desc:'Python model integration'},
+    {col:'next',type:'dep',title:'Data Warehouse Migration',desc:'Depends: Infra Team'},
+    {col:'later',type:'milestone',title:'$5M ARR Milestone',desc:'Expansion into APAC'},
+    {col:'later',type:'init',title:'Natural Language Query',desc:'LLM on top of dataset'}
+  ],
+  coreapi:[
+    {col:'now',type:'milestone',title:'API v2 Design Freeze',desc:'⚠ Delayed 3 weeks'},
+    {col:'now',type:'init',title:'Rate Limiting Engine',desc:'Redis-based throttle'},
+    {col:'next',type:'init',title:'Developer Portal',desc:'Docs + sandbox env'},
+    {col:'next',type:'dep',title:'Security Review',desc:'Depends: SecOps Team'},
+    {col:'later',type:'milestone',title:'Partner Ecosystem Launch',desc:'10 integrations target'},
+    {col:'later',type:'init',title:'Monetisation Layer',desc:'Usage-based billing'}
+  ],
+  ehub:[
+    {col:'now',type:'init',title:'Discovery Workshops',desc:'Stakeholder interviews'},
+    {col:'now',type:'milestone',title:'PRD Sign-off',desc:'⚠ Ownership undefined'},
+    {col:'next',type:'init',title:'Architecture Proposal',desc:'Pending PM assignment'},
+    {col:'next',type:'dep',title:'Legacy System Audit',desc:'Depends: IT Ops'},
+    {col:'later',type:'milestone',title:'Prototype Demo',desc:'Q1 2027'},
+    {col:'later',type:'init',title:'Pilot Rollout',desc:'3 enterprise clients'}
+  ]
+};
+
+const TEAM = [
+  {product:'Nexus Platform',  pm:1, eng:10, design:2, qa:3, ops:2, total:18},
+  {product:'Pulse Mobile',    pm:1, eng:7,  design:3, qa:2, ops:1, total:14},
+  {product:'DataSphere',      pm:2, eng:12, design:2, qa:4, ops:2, total:22},
+  {product:'CoreAPI Gateway', pm:1, eng:5,  design:1, qa:1, ops:1, total:9},
+  {product:'EnterpriseHub',   pm:1, eng:2,  design:1, qa:0, ops:0, total:4}
+];
+
+const RISKS = [
+  {id:'r1',product:'pulse',  pname:'Pulse Mobile',    title:'App Store Rejection',       sev:'High',   impact:'Delivery',  owner:'Jordan Lee',  mitigation:'Pre-review checklist, TestFlight beta deployed',  status:'In Progress', score:8},
+  {id:'r2',product:'coreapi',pname:'CoreAPI Gateway', title:'Design Freeze Delay',       sev:'High',   impact:'Delivery',  owner:'Marcus Webb', mitigation:'Escalated to CTO; sprint re-planned',             status:'Open',        score:9},
+  {id:'r3',product:'nexus',  pname:'Nexus Platform',  title:'SSO Integration Bug',       sev:'Medium', impact:'Technical', owner:'Aisha Rahman',mitigation:'Hot-fix branch open, ETA May 12',                 status:'In Progress', score:5},
+  {id:'r4',product:'datasphere',pname:'DataSphere',   title:'SOC 2 Audit Gap',           sev:'High',   impact:'Financial', owner:'Priya Nair',  mitigation:'3rd-party auditor engaged, gap remediation plan',  status:'Open',        score:9},
+  {id:'r5',product:'ehub',   pname:'EnterpriseHub',   title:'Undefined Product Ownership',sev:'Medium',impact:'Delivery',  owner:'—',           mitigation:'⚠ No mitigation plan defined',                    status:'Open',        score:6},
+  {id:'r6',product:'coreapi',pname:'CoreAPI Gateway', title:'Vendor API Deprecation',    sev:'Medium', impact:'Technical', owner:'Marcus Webb', mitigation:'Evaluate alternative providers by May 30',         status:'Open',        score:6},
+  {id:'r7',product:'pulse',  pname:'Pulse Mobile',    title:'Budget Overrun Risk',        sev:'Medium', impact:'Financial', owner:'Jordan Lee',  mitigation:'Scope reduction under review',                    status:'In Progress', score:5},
+  {id:'r8',product:'nexus',  pname:'Nexus Platform',  title:'Performance Regression',    sev:'Low',    impact:'Technical', owner:'Aisha Rahman',mitigation:'Load testing scheduled for May 15',               status:'Closed',      score:2}
+];
+
+const COMPLIANCE = [
+  {product:'Nexus Platform', items:[
+    {name:'GDPR Data Processing',area:'Data',status:'pass',desc:'DPA signed, data map complete',deadline:'—'},
+    {name:'SOC 2 Type II',area:'Security',status:'warn',desc:'Renewal due Jun 2026',deadline:'2026-06-30'},
+    {name:'ISO 27001 Audit',area:'Security',status:'pass',desc:'Certified 2025',deadline:'2027-01-01'},
+    {name:'Pen Test',area:'Security',status:'pass',desc:'Completed Q1 2026',deadline:'—'}
+  ]},
+  {product:'Pulse Mobile', items:[
+    {name:'GDPR Consent Flow',area:'Data',status:'warn',desc:'Consent UI under review',deadline:'2026-05-31'},
+    {name:'App Privacy Labels',area:'Compliance',status:'fail',desc:'⚠ Missing nutrition labels on App Store',deadline:'2026-05-20'},
+    {name:'CCPA Compliance',area:'Data',status:'pass',desc:'Privacy policy updated',deadline:'—'},
+    {name:'Security Scan',area:'Security',status:'warn',desc:'2 medium CVEs open',deadline:'2026-05-25'}
+  ]},
+  {product:'DataSphere', items:[
+    {name:'SOC 2 Audit',area:'Security',status:'warn',desc:'In progress — gap identified',deadline:'2026-06-15'},
+    {name:'GDPR Article 30',area:'Data',status:'pass',desc:'Record of processing updated',deadline:'—'},
+    {name:'Data Retention Policy',area:'Data',status:'pass',desc:'Automated purge active',deadline:'—'},
+    {name:'Pen Test',area:'Security',status:'pass',desc:'Q4 2025 — clean',deadline:'—'}
+  ]},
+  {product:'CoreAPI Gateway', items:[
+    {name:'API Security Review',area:'Security',status:'fail',desc:'⚠ SecOps review not scheduled',deadline:'2026-06-01'},
+    {name:'OWASP Top 10 Check',area:'Security',status:'warn',desc:'2 issues flagged',deadline:'2026-05-30'},
+    {name:'GDPR Data Transit',area:'Data',status:'pass',desc:'TLS 1.3 enforced',deadline:'—'},
+    {name:'Dependency Audit',area:'Technical',status:'warn',desc:'14 outdated packages',deadline:'2026-05-31'}
+  ]},
+  {product:'EnterpriseHub', items:[
+    {name:'GDPR Assessment',area:'Data',status:'fail',desc:'⚠ Not started — product in Discovery',deadline:'2026-07-01'},
+    {name:'Security Baseline',area:'Security',status:'fail',desc:'⚠ No security plan defined',deadline:'2026-07-01'},
+    {name:'Audit Readiness',area:'Compliance',status:'fail',desc:'⚠ N/A — too early',deadline:'TBD'},
+    {name:'Data Architecture Review',area:'Data',status:'warn',desc:'Pending architecture sign-off',deadline:'2026-06-30'}
+  ]}
+];
+
+const COMPLIANCE_FLAGS = [
+  {product:'Pulse Mobile',   area:'Compliance','issue':'Missing App Store Privacy Labels','action':'Submit updated metadata','deadline':'2026-05-20','status':'Open'},
+  {product:'CoreAPI Gateway',area:'Security',  'issue':'API Security Review Not Scheduled','action':'Book SecOps session','deadline':'2026-06-01','status':'Open'},
+  {product:'EnterpriseHub',  area:'Data',      'issue':'GDPR Assessment Not Started','action':'Appoint DPO & begin DPIA','deadline':'2026-07-01','status':'Open'},
+  {product:'EnterpriseHub',  area:'Security',  'issue':'No Security Plan Defined','action':'Create security baseline doc','deadline':'2026-07-01','status':'Open'},
+  {product:'DataSphere',     area:'Security',  'issue':'SOC 2 Gap Identified','action':'Remediate control gaps with auditor','deadline':'2026-06-15','status':'In Progress'}
+];
+
+const DEPS_INTERNAL = [
+  {product:'Nexus Platform',  depends:'Platform Team',  team:'Infra',       desc:'Shared auth service dependency',   status:'Active'},
+  {product:'Nexus Platform',  depends:'Legal Team',      team:'Legal',       desc:'Compliance review for v3.2',        status:'Pending'},
+  {product:'DataSphere',      depends:'Infra Team',      team:'Infra',       desc:'Data warehouse migration support',  status:'Active'},
+  {product:'CoreAPI Gateway', depends:'SecOps Team',     team:'Security',    desc:'Security review sign-off needed',   status:'Blocked'},
+  {product:'EnterpriseHub',   depends:'IT Ops',          team:'Operations',  desc:'Legacy system audit access',        status:'Pending'},
+  {product:'Pulse Mobile',    depends:'Design System',   team:'Design',      desc:'Shared component library v2',       status:'Active'}
+];
+
+const DEPS_EXTERNAL = [
+  {product:'Pulse Mobile',    vendor:'Stripe API',       type:'Payments',    desc:'Payment gateway integration',       status:'Active'},
+  {product:'Nexus Platform',  vendor:'Okta SSO',         type:'Auth',        desc:'Enterprise SSO provider',           status:'Active'},
+  {product:'DataSphere',      vendor:'Snowflake',        type:'Data',        desc:'Data warehouse cloud provider',     status:'Active'},
+  {product:'CoreAPI Gateway', vendor:'Legacy Vendor API',type:'Integration', desc:'⚠ Deprecation notice received Q1 2026',status:'At Risk'},
+  {product:'EnterpriseHub',   vendor:'TBD',              type:'Platform',    desc:'⚠ Vendor not yet selected',         status:'Undefined'}
+];
+
+const BLOCKERS = [
+  {product:'CoreAPI Gateway', blocker:'API Design Freeze Overdue',        owner:'Marcus Webb', eta:'2026-05-15', impact:'Delays v2 launch by 3 weeks'},
+  {product:'Pulse Mobile',    blocker:'App Store Privacy Labels Missing',  owner:'Jordan Lee',  eta:'2026-05-20', impact:'Blocks public launch'},
+  {product:'EnterpriseHub',   blocker:'Product Owner Not Assigned',        owner:'—',           eta:'TBD',        impact:'All work blocked'},
+  {product:'DataSphere',      blocker:'SOC 2 Gap — 3 controls open',       owner:'Priya Nair',  eta:'2026-06-15', impact:'Enterprise deal at risk'}
+];
+
+const ACTIVITY = [
+  {ts:'2026-05-08 14:32',product:'pulse',   pname:'Pulse Mobile',    type:'risk',     msg:'Risk "App Store Rejection" updated to In Progress by Jordan Lee'},
+  {ts:'2026-05-08 11:15',product:'nexus',   pname:'Nexus Platform',  type:'roadmap',  msg:'Milestone "v3.2 Feature Release" moved to Now column'},
+  {ts:'2026-05-07 16:45',product:'coreapi', pname:'CoreAPI Gateway', type:'risk',     msg:'New High risk added: "Design Freeze Delay" — score 9'},
+  {ts:'2026-05-07 10:00',product:'datasphere',pname:'DataSphere',    type:'team',     msg:'2 Engineers allocated from shared pool (FTE: 22 → 24)'},
+  {ts:'2026-05-06 15:20',product:'ehub',    pname:'EnterpriseHub',   type:'flag',     msg:'⚠ Undefined ownership flagged — PM role vacant'},
+  {ts:'2026-05-06 09:10',product:'nexus',   pname:'Nexus Platform',  type:'roadmap',  msg:'Initiative "AI Feature Layer" added to Later column'},
+  {ts:'2026-05-05 17:00',product:'coreapi', pname:'CoreAPI Gateway', type:'risk',     msg:'Risk "Vendor API Deprecation" opened — Medium severity'},
+  {ts:'2026-05-05 13:30',product:'datasphere',pname:'DataSphere',    type:'compliance',msg:'SOC 2 audit gap identified — remediation plan submitted'},
+  {ts:'2026-05-04 11:00',product:'pulse',   pname:'Pulse Mobile',    type:'financial',msg:'Budget forecast revised upward: $420K → $445K'},
+  {ts:'2026-05-03 09:45',product:'nexus',   pname:'Nexus Platform',  type:'team',     msg:'Designer moved from Pulse Mobile to Nexus (shared resource)'},
+  {ts:'2026-05-02 16:00',product:'ehub',    pname:'EnterpriseHub',   type:'roadmap',  msg:'Discovery phase started — 4 stakeholder interviews scheduled'},
+  {ts:'2026-05-01 10:20',product:'datasphere',pname:'DataSphere',    type:'milestone',msg:'DataSphere reached 91% completion — Scale phase confirmed'}
+];
+
+const ALERTS = [
+  {type:'danger', icon:'🚨', title:'CoreAPI Gateway Critically Delayed', desc:'Design freeze overdue by 3 weeks. Sprint re-planning needed.', product:'CoreAPI Gateway'},
+  {type:'danger', icon:'⚠️', title:'EnterpriseHub — No Product Owner', desc:'Product ownership undefined. All roadmap and delivery work is blocked.', product:'EnterpriseHub'},
+  {type:'warning',icon:'💸', title:'Pulse Mobile Budget Overrun Risk', desc:'Actual spend $398K vs $420K budget with forecast at $445K. Variance: +$25K.', product:'Pulse Mobile'},
+  {type:'danger', icon:'🛡️', title:'DataSphere SOC 2 Audit Gap', desc:'3 controls failing. Enterprise deal at risk if not resolved by Jun 15.', product:'DataSphere'},
+  {type:'warning',icon:'📅', title:'Pulse Mobile Launch Deadline at Risk', desc:'App Store privacy labels missing — must be resolved before May 20 launch.', product:'Pulse Mobile'},
+  {type:'info',   icon:'👥', title:'DataSphere Resource Heavy', desc:'22 FTEs allocated. Consider rebalancing with EnterpriseHub (4 FTEs, early stage).', product:'DataSphere'}
+];
+
+const FLAGS = [
+  {type:'danger', icon:'🚩', title:'Missing Roadmap Data', desc:'EnterpriseHub Next/Later roadmap items have no owners or dates assigned.', product:'EnterpriseHub'},
+  {type:'danger', icon:'🚩', title:'No Risk Mitigation Plan', desc:'EnterpriseHub risk "Undefined Ownership" has no mitigation strategy documented.', product:'EnterpriseHub'},
+  {type:'warning',icon:'🚩', title:'Missing Revenue Metrics', desc:'EnterpriseHub has no revenue or user metrics — product is in Discovery.', product:'EnterpriseHub'},
+  {type:'warning',icon:'🚩', title:'Compliance Gaps — 4 Open Flags', desc:'Pulse Mobile, CoreAPI, and EnterpriseHub have unresolved compliance items.', product:'Multiple'}
+];
+
+/* ════════════════════════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════════════════════════ */
+function navigate(sec, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + sec).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
+/* ════════════════════════════════════════════════════════════
+   FILTERS
+════════════════════════════════════════════════════════════ */
+function applyFilters() {
+  const pf = document.getElementById('global-product-filter').value;
+  const sf = document.getElementById('global-status-filter').value;
+  document.querySelectorAll('.product-card[data-id]').forEach(card => {
+    const matchP = pf === 'all' || card.dataset.id === pf;
+    const matchS = sf === 'all' || card.dataset.status === sf;
+    card.style.display = matchP && matchS ? '' : 'none';
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   STATUS HELPERS
+════════════════════════════════════════════════════════════ */
+function statusBadge(s) {
+  const map = {'on-track':['badge-on-track','On Track'],'at-risk':['badge-at-risk','At Risk'],'delayed':['badge-delayed','Delayed']};
+  const [cls,label] = map[s] || ['','Unknown'];
+  return `<span class="status-badge ${cls}">${label}</span>`;
+}
+function phaseBadge(p) {
+  const map = {Discovery:'phase-discovery',Development:'phase-development',Launch:'phase-launch',Scale:'phase-scale'};
+  return `<span class="product-phase ${map[p]||''}">${p}</span>`;
+}
+function sevBadge(s){return `<span class="sev-${s.toLowerCase()}">${s}</span>`}
+function riskScoreBadge(n){
+  const cls = n>=8?'rs-critical':n>=6?'rs-high':n>=4?'rs-medium':'rs-low';
+  return `<span class="risk-score ${cls}">${n}</span>`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: PRODUCT CARDS
+════════════════════════════════════════════════════════════ */
+function buildCard(p) {
+  const flags = [];
+  if(p.revenue==='—') flags.push('No Revenue Data');
+  const flagHtml = flags.map(f=>`<span class="flag-chip">⚠ ${f}</span>`).join('');
+  return `
+  <div class="product-card" data-id="${p.id}" data-status="${p.status}" onclick="openProductModal('${p.id}')">
+    <div class="product-card-top">
+      <div class="product-card-header">
+        <div>
+          <div class="product-name">${p.name}</div>
+          <div style="margin-top:5px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+            ${statusBadge(p.status)} ${phaseBadge(p.phase)} ${flagHtml}
+          </div>
+        </div>
+        <div style="width:8px;height:8px;border-radius:50%;background:${p.color};margin-top:4px;flex-shrink:0"></div>
+      </div>
+      <div class="progress-row" style="margin-top:10px">
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${p.completion}%;background:linear-gradient(90deg,${p.color},${p.color}99)"></div></div>
+        <div class="progress-pct">${p.completion}%</div>
+      </div>
+    </div>
+    <div class="product-card-mid">
+      <div class="metric-pill"><div class="mp-val">${p.revenue}</div><div class="mp-label">Revenue</div></div>
+      <div class="metric-pill"><div class="mp-val">${p.users}</div><div class="mp-label">Users</div></div>
+      <div class="metric-pill"><div class="mp-val">${p.adoption}</div><div class="mp-label">Adoption</div></div>
+    </div>
+    <div class="product-card-bottom">
+      <div class="pm-info"><div class="avatar" style="width:26px;height:26px;font-size:10px">${p.pm.split(' ').map(w=>w[0]).join('')}</div>${p.pm}</div>
+      <div class="updated-info">Updated ${p.updated}</div>
+    </div>
+  </div>`;
+}
+
+function renderCards(containerId) {
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML = PRODUCTS.map(buildCard).join('');
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: ROADMAP
+════════════════════════════════════════════════════════════ */
+function renderRoadmap() {
+  const pf = document.getElementById('roadmap-filter').value;
+  const container = document.getElementById('roadmap-container');
+  const products = pf === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.id === pf);
+  container.innerHTML = products.map(p => {
+    const items = ROADMAP[p.id] || [];
+    const now   = items.filter(i=>i.col==='now');
+    const next  = items.filter(i=>i.col==='next');
+    const later = items.filter(i=>i.col==='later');
+    const colHtml = (arr, label, cls) => `
+      <div class="roadmap-col">
+        <div class="roadmap-col-hdr ${cls}">${label==='now'?'🟦':label==='next'?'🟧':'⬜'} ${label==='now'?'Now (0–3 mo)':label==='next'?'Next (3–6 mo)':'Later (6+ mo)'}</div>
+        ${arr.map(it=>`
+          <div class="roadmap-item ri-${it.type}">
+            <div class="ri-title">${it.title}</div>
+            <div class="ri-meta">${it.desc}${it.dep?` · Dep: ${it.dep}`:''}</div>
+          </div>`).join('') || '<div style="font-size:12px;color:var(--muted);padding:8px 0">No items</div>'}
+      </div>`;
+    return `
+    <div class="roadmap-product">
+      <div class="roadmap-product-hdr">
+        <div class="rph-name">${p.name}</div>
+        ${statusBadge(p.status)}
+        ${phaseBadge(p.phase)}
+      </div>
+      <div class="roadmap-cols">
+        ${colHtml(now,'now','col-now')}
+        ${colHtml(next,'next','col-next')}
+        ${colHtml(later,'later','col-later')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: TEAM
+════════════════════════════════════════════════════════════ */
+function renderTeam() {
+  const view = document.getElementById('team-view-toggle').value;
+  const container = document.getElementById('team-container');
+  if(view === 'table') {
+    container.innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Product</th><th>PM</th><th>Engineers</th><th>Designers</th><th>QA</th><th>Ops</th><th>Total FTEs</th><th>Allocation</th></tr></thead>
+        <tbody>${TEAM.map(t => {
+          const over = t.total >= 20;
+          return `<tr>
+            <td><strong>${t.product}</strong></td>
+            <td>${t.pm}</td>
+            <td>${t.eng}</td>
+            <td>${t.design}</td>
+            <td>${t.qa}</td>
+            <td>${t.ops}</td>
+            <td><strong style="color:${over?'#ef4444':'var(--heading)'}">${t.total} ${over?'⚠':''}FTE</strong></td>
+            <td><div class="fin-bar-wrap" style="width:120px"><div class="fin-bar-actual ${t.total>=20?'fin-over':'fin-ok'}" style="width:${Math.min(t.total/25*100,100)}%"></div></div></td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>`;
+  } else {
+    const roles = ['PM','Engineers','Designers','QA','Ops'];
+    const roleKeys = ['pm','eng','design','qa','ops'];
+    const heatClass = v => v===0?'h0':v<=2?'h1':v<=5?'h2':v<=9?'h3':'h4';
+    container.innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Product</th>${roles.map(r=>`<th>${r}</th>`).join('')}<th>Total</th></tr></thead>
+        <tbody>${TEAM.map(t=>`<tr>
+          <td><strong>${t.product}</strong></td>
+          ${roleKeys.map(k=>`<td><div class="heatmap-cell ${heatClass(t[k])}">${t[k]}</div></td>`).join('')}
+          <td><strong>${t.total}</strong></td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:10px;align-items:center;font-size:12px;color:var(--muted)">
+      <span>Heatmap key:</span>
+      <span class="heatmap-cell h0" style="padding:3px 10px">0</span>
+      <span class="heatmap-cell h1" style="padding:3px 10px">1–2</span>
+      <span class="heatmap-cell h2" style="padding:3px 10px">3–5</span>
+      <span class="heatmap-cell h3" style="padding:3px 10px">6–9</span>
+      <span class="heatmap-cell h4" style="padding:3px 10px">10+</span>
+    </div>`;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: FINANCIAL
+════════════════════════════════════════════════════════════ */
+function renderFinancial() {
+  const tbody = document.getElementById('financial-tbody');
+  tbody.innerHTML = PRODUCTS.map(p => {
+    const variance = p.forecast - p.budget;
+    const pct = Math.round(p.actual/p.budget*100);
+    const overBudget = p.forecast > p.budget;
+    return `<tr>
+      <td><strong>${p.name}</strong></td>
+      <td>$${p.budget}K</td>
+      <td>$${p.actual}K</td>
+      <td>$${p.forecast}K</td>
+      <td style="color:${overBudget?'#ef4444':'#22c55e'};font-weight:600">${overBudget?'+':''}$${variance}K ${overBudget?'⚠':''}</td>
+      <td>$${p.fteCost}K</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="fin-bar-wrap" style="width:80px;height:8px;flex-shrink:0">
+            <div class="fin-bar-actual ${pct>100?'fin-over':'fin-ok'}" style="width:${Math.min(pct,100)}%"></div>
+          </div>
+          <span style="font-size:12px;font-weight:600;color:${pct>95?'#ef4444':pct>80?'#f59e0b':'#22c55e'}">${pct}%</span>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: RISKS
+════════════════════════════════════════════════════════════ */
+function renderRisks() {
+  const sf = document.getElementById('risk-sev-filter').value;
+  const stf = document.getElementById('risk-status-filter').value;
+  const filtered = RISKS.filter(r =>
+    (sf==='all'||r.sev===sf) && (stf==='all'||r.status===stf)
+  );
+  const tbody = document.getElementById('risks-tbody');
+  tbody.innerHTML = filtered.map(r => {
+    const stCls = r.status==='Open'?'status-open':r.status==='In Progress'?'status-inprog':'status-closed';
+    return `<tr>
+      <td>${riskScoreBadge(r.score)}</td>
+      <td><strong>${r.pname}</strong></td>
+      <td>${r.title}</td>
+      <td>${sevBadge(r.sev)}</td>
+      <td>${r.impact}</td>
+      <td>${r.owner}</td>
+      <td style="max-width:220px;font-size:12px">${r.mitigation}</td>
+      <td class="${stCls}">${r.status}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('risk-badge').textContent = RISKS.filter(r=>r.status!=='Closed').length;
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: COMPLIANCE
+════════════════════════════════════════════════════════════ */
+function renderCompliance() {
+  const grid = document.getElementById('compliance-grid');
+  grid.innerHTML = COMPLIANCE.map(c => `
+    <div class="table-wrap" style="padding:18px">
+      <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">${c.product}</div>
+      ${c.items.map(it=>{
+        const iconMap={pass:'✅',warn:'⚠️',fail:'❌'};
+        const ciCls={pass:'ci-pass',warn:'ci-warn',fail:'ci-fail'};
+        const txtCls={pass:'ci-pass-txt',warn:'ci-warn-txt',fail:'ci-fail-txt'};
+        const labels={pass:'Compliant',warn:'Action Needed',fail:'Non-Compliant'};
+        return `<div class="compliance-item">
+          <div class="ci-icon ${ciCls[it.status]}">${iconMap[it.status]}</div>
+          <div class="ci-info">
+            <div class="ci-name">${it.name}</div>
+            <div class="ci-desc">${it.desc}${it.deadline&&it.deadline!=='—'?` · Due: ${it.deadline}`:''}</div>
+          </div>
+          <div class="ci-status ${txtCls[it.status]}">${labels[it.status]}</div>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+
+  const tbody = document.getElementById('compliance-flags-tbody');
+  tbody.innerHTML = COMPLIANCE_FLAGS.map(f=>`<tr>
+    <td><strong>${f.product}</strong></td>
+    <td>${f.area}</td>
+    <td style="color:#ef4444;font-weight:500">⚠ ${f.issue}</td>
+    <td style="font-size:12px">${f.action}</td>
+    <td>${f.deadline}</td>
+    <td class="${f.status==='Open'?'status-open':'status-inprog'}">${f.status}</td>
+  </tr>`).join('');
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: DEPENDENCIES
+════════════════════════════════════════════════════════════ */
+function renderDependencies() {
+  document.getElementById('dep-internal-tbody').innerHTML = DEPS_INTERNAL.map(d=>`<tr>
+    <td><strong>${d.product}</strong></td>
+    <td><span class="dep-internal">${d.depends}</span></td>
+    <td>${d.team}</td>
+    <td style="font-size:12px">${d.desc}</td>
+    <td style="color:${d.status==='Blocked'?'#ef4444':d.status==='Pending'?'#f59e0b':'#22c55e'};font-weight:600">${d.status}</td>
+  </tr>`).join('');
+
+  document.getElementById('dep-external-tbody').innerHTML = DEPS_EXTERNAL.map(d=>`<tr>
+    <td><strong>${d.product}</strong></td>
+    <td><span class="dep-external">${d.vendor}</span></td>
+    <td>${d.type}</td>
+    <td style="font-size:12px">${d.desc}</td>
+    <td style="color:${d.status==='At Risk'||d.status==='Undefined'?'#ef4444':'#22c55e'};font-weight:600">${d.status}</td>
+  </tr>`).join('');
+
+  document.getElementById('dep-blockers-tbody').innerHTML = BLOCKERS.map(b=>`<tr>
+    <td><strong>${b.product}</strong></td>
+    <td><span class="dep-blocker">🔴 ${b.blocker}</span></td>
+    <td>${b.owner}</td>
+    <td>${b.eta}</td>
+    <td style="font-size:12px;color:#ef4444">${b.impact}</td>
+  </tr>`).join('');
+}
+
+function switchDepTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('dep-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: INSIGHTS
+════════════════════════════════════════════════════════════ */
+function renderInsights() {
+  const alertsGrid = document.getElementById('alerts-grid');
+  alertsGrid.innerHTML = ALERTS.map(a=>`
+    <div class="alert-card alert-${a.type}">
+      <div class="alert-icon">${a.icon}</div>
+      <div class="alert-body">
+        <div class="alert-title">${a.title}</div>
+        <div class="alert-desc">${a.desc}</div>
+        <div class="alert-product">${a.product}</div>
+      </div>
+    </div>`).join('');
+
+  const flagsGrid = document.getElementById('flags-grid');
+  flagsGrid.innerHTML = FLAGS.map(f=>`
+    <div class="alert-card alert-${f.type}">
+      <div class="alert-icon">${f.icon}</div>
+      <div class="alert-body">
+        <div class="alert-title">${f.title}</div>
+        <div class="alert-desc">${f.desc}</div>
+        <div class="alert-product">${f.product}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('alert-badge').textContent = ALERTS.filter(a=>a.type==='danger').length + FLAGS.filter(f=>f.type==='danger').length;
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: ACTIVITY
+════════════════════════════════════════════════════════════ */
+function renderActivity() {
+  const pf = document.getElementById('activity-filter').value;
+  const filtered = pf === 'all' ? ACTIVITY : ACTIVITY.filter(a => a.product === pf);
+  const typeIcon = {risk:'⚠️',roadmap:'🗺️',team:'👥',flag:'🚩',financial:'💰',compliance:'🛡️',milestone:'🏁'};
+  const container = document.getElementById('timeline-container');
+  container.innerHTML = filtered.map((a,i)=>`
+    <div class="timeline-item">
+      <div class="tl-line">
+        <div class="tl-dot" style="background:${a.type==='risk'?'#ef4444':a.type==='flag'?'#f59e0b':'var(--qx-blue)'}"></div>
+        ${i<filtered.length-1?'<div class="tl-connector"></div>':''}
+      </div>
+      <div class="tl-content">
+        <div class="tl-time">${typeIcon[a.type]||'📌'} ${a.ts}</div>
+        <div class="tl-msg">${a.msg}</div>
+        <div class="tl-product">${a.pname}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ════════════════════════════════════════════════════════════
+   MODAL
+════════════════════════════════════════════════════════════ */
+function openProductModal(id) {
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('modal-title').textContent = p.name;
+  document.getElementById('modal-body').innerHTML = `
+    <div>
+      <div class="modal-section-title">Product Details</div>
+      <div class="detail-grid">
+        <div class="detail-field"><label>Product Name</label><input value="${p.name}" onchange="updateProduct('${p.id}','name',this.value)"/></div>
+        <div class="detail-field"><label>Product Manager</label><input value="${p.pm}" onchange="updateProduct('${p.id}','pm',this.value)"/></div>
+        <div class="detail-field"><label>Status</label>
+          <select onchange="updateProduct('${p.id}','status',this.value)">
+            <option ${p.status==='on-track'?'selected':''} value="on-track">On Track</option>
+            <option ${p.status==='at-risk'?'selected':''} value="at-risk">At Risk</option>
+            <option ${p.status==='delayed'?'selected':''} value="delayed">Delayed</option>
+          </select>
+        </div>
+        <div class="detail-field"><label>Phase</label>
+          <select onchange="updateProduct('${p.id}','phase',this.value)">
+            <option ${p.phase==='Discovery'?'selected':''}>Discovery</option>
+            <option ${p.phase==='Development'?'selected':''}>Development</option>
+            <option ${p.phase==='Launch'?'selected':''}>Launch</option>
+            <option ${p.phase==='Scale'?'selected':''}>Scale</option>
+          </select>
+        </div>
+        <div class="detail-field"><label>Completion %</label><input type="number" min="0" max="100" value="${p.completion}" onchange="updateProduct('${p.id}','completion',+this.value)"/></div>
+        <div class="detail-field"><label>Last Updated</label><input type="date" value="${p.updated}" onchange="updateProduct('${p.id}','updated',this.value)"/></div>
+        <div class="detail-field"><label>Revenue</label><input value="${p.revenue}" onchange="updateProduct('${p.id}','revenue',this.value)"/></div>
+        <div class="detail-field"><label>Users</label><input value="${p.users}" onchange="updateProduct('${p.id}','users',this.value)"/></div>
+        <div class="detail-field"><label>Adoption</label><input value="${p.adoption}" onchange="updateProduct('${p.id}','adoption',this.value)"/></div>
+        <div class="detail-field"><label>Budget ($K)</label><input type="number" value="${p.budget}" onchange="updateProduct('${p.id}','budget',+this.value)"/></div>
+        <div class="detail-field"><label>Actual Spend ($K)</label><input type="number" value="${p.actual}" onchange="updateProduct('${p.id}','actual',+this.value)"/></div>
+        <div class="detail-field"><label>Forecast ($K)</label><input type="number" value="${p.forecast}" onchange="updateProduct('${p.id}','forecast',+this.value)"/></div>
+      </div>
+    </div>
+    <div>
+      <div class="modal-section-title">Description</div>
+      <div class="detail-field"><textarea onchange="updateProduct('${p.id}','desc',this.value)">${p.desc}</textarea></div>
+    </div>
+    <div>
+      <div class="modal-section-title">Risks (${RISKS.filter(r=>r.product===id).length} total)</div>
+      ${RISKS.filter(r=>r.product===id).map(r=>`
+        <div style="padding:10px;border:1px solid var(--border);border-radius:7px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px">
+          ${riskScoreBadge(r.score)}
+          <div><div style="font-weight:600;font-size:13px">${r.title}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">${r.sev} severity · ${r.impact} · ${r.status}</div></div>
+        </div>`).join('') || '<div style="font-size:13px;color:var(--muted)">No risks logged</div>'}
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function openNewProductModal(){
+  document.getElementById('modal-title').textContent = 'Add New Product';
+  document.getElementById('modal-body').innerHTML = `
+    <div>
+      <div class="modal-section-title">New Product</div>
+      <div class="detail-grid">
+        <div class="detail-field"><label>Product Name</label><input placeholder="e.g. Product Alpha" id="np-name"/></div>
+        <div class="detail-field"><label>Product Manager</label><input placeholder="Full name" id="np-pm"/></div>
+        <div class="detail-field"><label>Status</label><select id="np-status"><option>on-track</option><option>at-risk</option><option>delayed</option></select></div>
+        <div class="detail-field"><label>Phase</label><select id="np-phase"><option>Discovery</option><option>Development</option><option>Launch</option><option>Scale</option></select></div>
+        <div class="detail-field"><label>Budget ($K)</label><input type="number" id="np-budget" placeholder="0"/></div>
+        <div class="detail-field"><label>FTEs</label><input type="number" id="np-fte" placeholder="0"/></div>
+      </div>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function updateProduct(id, field, value) {
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(p) p[field] = value;
+}
+
+function saveModal() {
+  renderCards('products-grid');
+  renderCards('overview-cards');
+  renderFinancial();
+  renderCharts();
+  closeModalDirect();
+}
+
+function closeModal(e) {
+  if(e.target === document.getElementById('modal-overlay')) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+/* ════════════════════════════════════════════════════════════
+   CHARTS
+════════════════════════════════════════════════════════════ */
+let charts = {};
+function renderCharts() {
+  const QX = ['#3C00FF','#E97132','#0F9ED5','#A02B93','#4EA72E'];
+
+  if(charts.status) charts.status.destroy();
+  charts.status = new Chart(document.getElementById('statusChart'), {
+    type:'doughnut',
+    data:{
+      labels:['On Track','At Risk','Delayed'],
+      datasets:[{data:[2,2,1],backgroundColor:['#22c55e','#f59e0b','#ef4444'],borderWidth:0}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}}}
+  });
+
+  if(charts.budget) charts.budget.destroy();
+  charts.budget = new Chart(document.getElementById('budgetChart'), {
+    type:'bar',
+    data:{
+      labels:PRODUCTS.map(p=>p.name.split(' ')[0]),
+      datasets:[
+        {label:'Budget',data:PRODUCTS.map(p=>p.budget),backgroundColor:'#E8E8E8',borderRadius:4},
+        {label:'Actual',data:PRODUCTS.map(p=>p.actual),backgroundColor:QX,borderRadius:4}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#f1f5f9'}}}}
+  });
+
+  if(charts.fte) charts.fte.destroy();
+  charts.fte = new Chart(document.getElementById('fteChart'), {
+    type:'doughnut',
+    data:{
+      labels:PRODUCTS.map(p=>p.name.split(' ')[0]),
+      datasets:[{data:PRODUCTS.map(p=>p.fte),backgroundColor:QX,borderWidth:0}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}}}
+  });
+
+  if(charts.finBar) charts.finBar.destroy();
+  charts.finBar = new Chart(document.getElementById('financialBarChart'), {
+    type:'bar',
+    data:{
+      labels:PRODUCTS.map(p=>p.name.split(' ')[0]),
+      datasets:[
+        {label:'Budget ($K)',data:PRODUCTS.map(p=>p.budget),backgroundColor:'#E8E8E8',borderRadius:4},
+        {label:'Actual ($K)',data:PRODUCTS.map(p=>p.actual),backgroundColor:QX,borderRadius:4},
+        {label:'Forecast ($K)',data:PRODUCTS.map(p=>p.forecast),backgroundColor:QX.map(c=>c+'55'),borderRadius:4,borderDash:[4,4]}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#f1f5f9'}}}}
+  });
+
+  if(charts.forecast) charts.forecast.destroy();
+  charts.forecast = new Chart(document.getElementById('forecastLineChart'), {
+    type:'line',
+    data:{
+      labels:['Jan','Feb','Mar','Apr','May','Jun'],
+      datasets:PRODUCTS.map((p,i)=>({
+        label:p.name.split(' ')[0],
+        data:[p.actual*0.3,p.actual*0.45,p.actual*0.6,p.actual*0.75,p.actual,p.forecast].map(v=>Math.round(v)),
+        borderColor:QX[i],backgroundColor:'transparent',tension:.4,pointRadius:3
+      }))
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#f1f5f9'}}}}
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   EXPORT
+════════════════════════════════════════════════════════════ */
+function exportReport() {
+  const rows = [
+    ['Product','PM','Status','Phase','Completion','Revenue','Users','Adoption','Budget($K)','Actual($K)','Forecast($K)','FTEs'],
+    ...PRODUCTS.map(p=>[p.name,p.pm,p.status,p.phase,p.completion+'%',p.revenue,p.users,p.adoption,p.budget,p.actual,p.forecast,p.fte])
+  ];
+  const csv = rows.map(r=>r.join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='qorix-portfolio-report.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ════════════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  renderCards('overview-cards');
+  renderCards('products-grid');
+  renderRoadmap();
+  renderTeam();
+  renderFinancial();
+  renderRisks();
+  renderCompliance();
+  renderDependencies();
+  renderInsights();
+  renderActivity();
+  setTimeout(renderCharts, 100);
+});
+</script>
+</body>
+</html>
