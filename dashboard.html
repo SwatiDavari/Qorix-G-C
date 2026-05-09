@@ -338,6 +338,7 @@ tr:hover td{background:rgba(60,0,255,.02)}
     <a href="product.html?id=performance" class="stn-link">Performance</a>
     <a href="product.html?id=lightweight" class="stn-link">Light weight</a>
     <a href="product.html?id=processdef" class="stn-link">Process Def</a>
+    <a href="product.html?id=osporting" class="stn-link">OS Porting</a>
   </div>
   <div class="stn-right">
     <a href="index.html" class="stn-badge">← Portal</a>
@@ -353,8 +354,6 @@ tr:hover td{background:rgba(60,0,255,.02)}
   <button class="stab" onclick="navigate('products',this)">📦 Products</button>
   <button class="stab" onclick="navigate('roadmap',this)">🗺️ Roadmap</button>
   <button class="stab" onclick="navigate('team',this)">👥 Team Allocation</button>
-  <button class="stab" onclick="navigate('risks',this)">⚠️ Risk Management <span class="stab-badge" id="risk-badge">8</span></button>
-  <button class="stab" onclick="navigate('compliance',this)">🛡️ Compliance</button>
   <button class="stab" onclick="navigate('dependencies',this)">🔗 Dependencies</button>
   <button class="stab" onclick="navigate('insights',this)">💡 Insights &amp; Alerts <span class="stab-badge" id="alert-badge">5</span></button>
   <button class="stab" onclick="navigate('activity',this)">📋 Activity Log</button>
@@ -373,6 +372,7 @@ tr:hover td{background:rgba(60,0,255,.02)}
         <option value="performance">Qorix Performance</option>
         <option value="lightweight">Qorix Light weight</option>
         <option value="processdef">Qorix Process Definition</option>
+        <option value="osporting">Qorix OS Porting</option>
       </select>
       <select class="filter-select" id="global-status-filter" onchange="applyFilters()">
         <option value="all">All Statuses</option>
@@ -442,6 +442,7 @@ tr:hover td{background:rgba(60,0,255,.02)}
           <option value="performance">Qorix Performance</option>
           <option value="lightweight">Qorix Light weight</option>
           <option value="processdef">Qorix Process Definition</option>
+          <option value="osporting">Qorix OS Porting</option>
         </select>
       </div>
     </div>
@@ -463,58 +464,7 @@ tr:hover td{background:rgba(60,0,255,.02)}
     <div id="team-container"></div>
   </section>
 
-  <!-- note: sec-financial removed -->
-
-  <!-- ═══════ SECTION: RISKS ═══════ -->
-  <section class="section" id="sec-risks">
-    <div class="section-accent-bar"></div>
-    <div class="section-hdr">
-      <h2>Risk Management</h2>
-      <div class="hdr-actions">
-        <select class="filter-select" id="risk-sev-filter" onchange="renderRisks()">
-          <option value="all">All Severities</option>
-          <option value="High">High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
-        </select>
-        <select class="filter-select" id="risk-status-filter" onchange="renderRisks()">
-          <option value="all">All Statuses</option>
-          <option value="Open">Open</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Closed">Closed</option>
-        </select>
-      </div>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Score</th><th>Product</th><th>Risk</th><th>Severity</th>
-            <th>Impact</th><th>Owner</th><th>Mitigation</th><th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="risks-tbody"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- ═══════ SECTION: COMPLIANCE ═══════ -->
-  <section class="section" id="sec-compliance">
-    <div class="section-accent-bar"></div>
-    <div class="section-hdr">
-      <h2>Compliance &amp; Governance</h2>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px" id="compliance-grid"></div>
-    <div class="section-hdr" style="margin-top:8px">
-      <h2>Non-Compliance Flags</h2>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Product</th><th>Area</th><th>Issue</th><th>Required Action</th><th>Deadline</th><th>Status</th></tr></thead>
-        <tbody id="compliance-flags-tbody"></tbody>
-      </table>
-    </div>
-  </section>
+  <!-- note: sec-financial, sec-risks, sec-compliance removed -->
 
   <!-- ═══════ SECTION: DEPENDENCIES ═══════ -->
   <section class="section" id="sec-dependencies">
@@ -578,6 +528,7 @@ tr:hover td{background:rgba(60,0,255,.02)}
           <option value="performance">Qorix Performance</option>
           <option value="lightweight">Qorix Light weight</option>
           <option value="processdef">Qorix Process Definition</option>
+          <option value="osporting">Qorix OS Porting</option>
         </select>
       </div>
     </div>
@@ -859,77 +810,6 @@ function renderTeam() {
   }
 }
 
-
-/* ════════════════════════════════════════════════════════════
-   RENDER: RISKS  (uses data.js RISKS object via allRisksFlat())
-════════════════════════════════════════════════════════════ */
-function renderRisks() {
-  const sf  = document.getElementById('risk-sev-filter').value;
-  const stf = document.getElementById('risk-status-filter').value;
-  const all = allRisksFlat();
-  const filtered = all.filter(r =>
-    (sf==='all'||r.sev===sf) && (stf==='all'||r.status===stf)
-  ).sort((a,b)=>b.score-a.score);
-  const tbody = document.getElementById('risks-tbody');
-  tbody.innerHTML = filtered.map(r => {
-    const stCls = r.status==='Open'?'status-open':r.status==='In Progress'?'status-inprog':'status-closed';
-    return `<tr>
-      <td>${riskScoreBadge(r.score)}</td>
-      <td><strong>${r.pname}</strong></td>
-      <td>${r.title}</td>
-      <td>${sevBadge(r.sev)}</td>
-      <td>${r.impact}</td>
-      <td>${r.owner}</td>
-      <td style="max-width:220px;font-size:12px">${r.mitigation}</td>
-      <td class="${stCls}">${r.status}</td>
-    </tr>`;
-  }).join('');
-  const openCount = all.filter(r=>r.status!=='Closed').length;
-  document.getElementById('risk-badge').textContent = openCount;
-}
-
-/* ════════════════════════════════════════════════════════════
-   RENDER: COMPLIANCE  (uses data.js COMPLIANCE object)
-════════════════════════════════════════════════════════════ */
-function renderCompliance() {
-  const grid = document.getElementById('compliance-grid');
-  const iconMap={pass:'✅',warn:'⚠️',fail:'❌'};
-  const ciCls={pass:'ci-pass',warn:'ci-warn',fail:'ci-fail'};
-  const txtCls={pass:'ci-pass-txt',warn:'ci-warn-txt',fail:'ci-fail-txt'};
-  const labels={pass:'Compliant',warn:'Action Needed',fail:'Non-Compliant'};
-
-  grid.innerHTML = PRODUCTS.map(p => {
-    const items = COMPLIANCE[p.id] || [];
-    if(!items.length) return '';
-    return `
-    <div class="table-wrap" style="padding:18px">
-      <div style="font-weight:700;font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px">
-        <span style="width:10px;height:10px;border-radius:50%;background:${p.color};flex-shrink:0;display:inline-block"></span>
-        ${p.name}
-      </div>
-      ${items.map(it=>`
-        <div class="compliance-item">
-          <div class="ci-icon ${ciCls[it.status]}">${iconMap[it.status]}</div>
-          <div class="ci-info">
-            <div class="ci-name">${it.name}</div>
-            <div class="ci-desc">${it.desc}${it.deadline&&it.deadline!=='—'?` · Due: ${it.deadline}`:''}</div>
-          </div>
-          <div class="ci-status ${txtCls[it.status]}">${labels[it.status]}</div>
-        </div>`).join('')}
-    </div>`;
-  }).join('');
-
-  const tbody = document.getElementById('compliance-flags-tbody');
-  tbody.innerHTML = COMPLIANCE_FLAGS.map(f=>`<tr>
-    <td><strong>${f.product}</strong></td>
-    <td>${f.area}</td>
-    <td style="color:#ef4444;font-weight:500">⚠ ${f.issue}</td>
-    <td style="font-size:12px">${f.action}</td>
-    <td>${f.deadline}</td>
-    <td class="${f.status==='Open'?'status-open':'status-inprog'}">${f.status}</td>
-  </tr>`).join('');
-}
-
 /* ════════════════════════════════════════════════════════════
    RENDER: DEPENDENCIES
 ════════════════════════════════════════════════════════════ */
@@ -1082,8 +962,8 @@ function openProductModal(id) {
       <div class="detail-field"><textarea onchange="updateProduct('${p.id}','desc',this.value)">${p.desc}</textarea></div>
     </div>
     <div>
-      <div class="modal-section-title">Risks (${RISKS.filter(r=>r.product===id).length} total)</div>
-      ${RISKS.filter(r=>r.product===id).map(r=>`
+      <div class="modal-section-title">Risks (${(RISKS[id]||[]).length} total)</div>
+      ${(RISKS[id]||[]).map(r=>`
         <div style="padding:10px;border:1px solid var(--border);border-radius:7px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px">
           ${riskScoreBadge(r.score)}
           <div><div style="font-weight:600;font-size:13px">${r.title}</div>
@@ -1190,8 +1070,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCards('products-grid');
   renderRoadmap();
   renderTeam();
-  renderRisks();
-  renderCompliance();
   renderDependencies();
   renderInsights();
   renderActivity();

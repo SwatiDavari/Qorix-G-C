@@ -161,7 +161,6 @@
       <div class="hero-actions-row">
         <button class="btn btn-lime btn-sm" onclick="saveChanges()">💾 Save Changes</button>
         <button class="btn btn-ghost btn-sm" onclick="exportProduct()">⬇ Export</button>
-        <button class="btn btn-ghost btn-sm" onclick="addRisk()">+ Add Risk</button>
         <button class="btn btn-ghost btn-sm" onclick="addMember()">+ Add Team Member</button>
       </div>
     </div>
@@ -239,113 +238,22 @@
   <!-- ── TAB: JIRA SYNC ── -->
   <div class="ptab-pane" id="pane-jira">
 
-    <!-- Server instructions (shown if server not running) -->
-    <div class="server-warn" id="jira-server-hint">
-      ⚠️ <strong>Start the local server first:</strong> <code style="background:#fde68a;padding:1px 6px;border-radius:4px">npm install && npm start</code> in the project folder, then refresh. The server proxies JIRA API calls to avoid browser CORS restrictions.
-    </div>
-
-    <!-- Config card -->
-    <div class="card">
-      <div class="card-hdr">
-        <h3>🔗 JIRA Cloud Configuration</h3>
-        <span class="jira-conn-badge jira-conn-idle" id="jira-conn-status">Not connected</span>
-      </div>
-      <div class="card-body">
-        <div class="form-row">
-          <div class="form-field">
-            <label>JIRA Domain</label>
-            <input id="jira-domain" placeholder="your-org.atlassian.net" autocomplete="off"/>
-          </div>
-          <div class="form-field">
-            <label>Email</label>
-            <input id="jira-email" type="email" placeholder="you@company.com" autocomplete="off"/>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-field">
-            <label>API Token &nbsp;<a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" style="font-size:10px;color:var(--qx-blue)">Generate ↗</a></label>
-            <input id="jira-token" type="password" placeholder="Atlassian API token" autocomplete="off"/>
-          </div>
-          <div class="form-field">
-            <label>Project Key</label>
-            <input id="jira-project" placeholder="e.g. NX, PULSE, DS" style="text-transform:uppercase"/>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-field">
-            <label>Risk Issue Type</label>
-            <input id="jira-risk-type" placeholder="Risk" value="Risk"/>
-          </div>
-          <div class="form-field">
-            <label>NC / Non-Conformance Issue Type</label>
-            <input id="jira-nc-type" placeholder="Non-Conformance" value="Non-Conformance"/>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
-          <button class="btn btn-outline" onclick="testJira(this)">🔌 Test Connection</button>
-          <button class="btn btn-primary" onclick="saveJiraSettings()">💾 Save Config</button>
-          <button class="btn btn-lime" onclick="syncJira(this)">🔄 Sync Now</button>
-          <button class="btn btn-outline btn-sm" style="margin-left:auto;color:#ef4444;border-color:#fca5a5" onclick="clearJira()">🗑 Clear Data</button>
-        </div>
+    <div class="section-hdr">
+      <h2>JIRA Integration</h2>
+      <div class="actions">
+        <span id="jira-status-pill" style="font-size:11px;padding:4px 10px;border-radius:20px;background:#f1f5f9;color:var(--muted)">Not connected</span>
+        <button class="btn btn-primary btn-sm" onclick="syncJira()">🔄 Sync from JIRA</button>
       </div>
     </div>
-
-    <!-- Sync status bar -->
-    <div id="jira-sync-bar"></div>
-
-    <!-- Stats row -->
-    <div id="jira-stats-row"></div>
-
-    <!-- Issues split: Risks | NCs -->
-    <div class="grid-2" style="align-items:start">
-
-      <!-- Risks from JIRA -->
+    <div id="jira-project-info" style="margin-bottom:16px;font-size:12px;color:var(--muted)"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div class="card">
-        <div class="card-hdr">
-          <h3>⚠️ Risks from JIRA</h3>
-          <div style="display:flex;gap:6px;align-items:center">
-            <span id="jira-risk-badge" style="display:none" class="badge" style="background:#fee2e2;color:#991b1b;border-radius:20px;padding:2px 8px;font-size:11px"></span>
-            <select id="jira-risk-filter" class="filter-select" style="padding:4px 8px;font-size:11px" onchange="renderJiraIssues()">
-              <option value="">All Statuses</option>
-              <option value="To Do">To Do</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Done">Done</option>
-            </select>
-          </div>
-        </div>
-        <div class="card-body" style="padding:0 16px 8px" id="jira-risks-list">
-          <div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">Configure and sync JIRA to see risks here.</div>
-        </div>
+        <div class="card-hdr"><h3>⚠️ Risks</h3><span id="risk-count-jira" style="font-size:11px;color:var(--muted)"></span></div>
+        <div id="jira-risks-list" style="padding:12px"></div>
       </div>
-
-      <!-- NCs from JIRA -->
       <div class="card">
-        <div class="card-hdr">
-          <h3>🔴 Non-Conformances from JIRA</h3>
-          <div style="display:flex;gap:6px;align-items:center">
-            <span id="jira-nc-badge" style="display:none" class="badge" style="background:#fee2e2;color:#991b1b;border-radius:20px;padding:2px 8px;font-size:11px"></span>
-            <select id="jira-nc-filter" class="filter-select" style="padding:4px 8px;font-size:11px" onchange="renderJiraIssues()">
-              <option value="">All Statuses</option>
-              <option value="To Do">To Do</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Done">Done</option>
-            </select>
-          </div>
-        </div>
-        <div class="card-body" style="padding:0 16px 8px" id="jira-ncs-list">
-          <div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">Configure and sync JIRA to see NCs here.</div>
-        </div>
-      </div>
-
-    </div><!-- /grid-2 -->
-
-    <!-- Import JIRA risks into local risk register -->
-    <div class="card">
-      <div class="card-hdr"><h3>📥 Import JIRA Risks into Local Register</h3></div>
-      <div class="card-body">
-        <p style="font-size:13px;margin-bottom:12px">Automatically import synced JIRA risks into this product's local risk register. Existing risks are not overwritten.</p>
-        <button class="btn btn-primary btn-sm" onclick="importJiraRisksToRegister()">Import JIRA Risks → Risk Register</button>
-        <button class="btn btn-outline btn-sm" style="margin-left:8px" onclick="importJiraNcsToCompliance()">Import JIRA NCs → Compliance</button>
+        <div class="card-hdr"><h3>🛡️ Non-Conformances</h3><span id="nc-count-jira" style="font-size:11px;color:var(--muted)"></span></div>
+        <div id="jira-nc-list" style="padding:12px"></div>
       </div>
     </div>
 
@@ -442,17 +350,12 @@ function init(){
   renderHero();
   renderTabs();
   renderOverview();
-  renderRoadmap();
   renderTeam();
-  renderRisksPane();
-  renderCompliance();
   renderActivity();
-  renderJiraPane();
+  _loadCachedJiraData();
   // activate tab from hash
   const hash = location.hash.replace('#','');
   if(hash) activateTab(hash);
-  // check server health silently
-  checkServerHealth();
 }
 
 function switchProduct(id){ if(id) location.href='product.html?id='+id; }
@@ -468,7 +371,7 @@ function renderHero(){
   document.getElementById('hero-badge').style.background=P.color;
   document.getElementById('hero-badge').textContent=P.abbr;
   document.getElementById('hero-name').textContent=P.name;
-  document.getElementById('hero-desc').textContent=P.description;
+  document.getElementById('hero-desc').textContent=P.description||P.desc||'';
   document.getElementById('hero-meta').innerHTML=`
     <span class="badge badge-${P.status}">${statusLabel(P.status)}</span>
     <span class="badge-phase" style="background:${phaseBg(P.phase)};color:${phaseText(P.phase)}">${P.phase}</span>
@@ -502,7 +405,6 @@ function activateTab(id){
 /* ── Overview ─────────────────────────────────────────────────── */
 function renderOverview(){
   // KPIs
-  const riskCount = (RISKS[PID]||[]).filter(r=>r.status!=='Closed').length;
   const kpis=[
     {val:P.users,    label:'Users',      accent:QX.green},
     {val:P.adoption, label:'Adoption',   accent:QX.purple},
@@ -516,41 +418,18 @@ function renderOverview(){
       <div class="kl">${k.label}</div>
     </div>`).join('');
 
-  // Alerts
-  const riskAlerts = (RISKS[PID]||[]).filter(r=>r.status!=='Closed'&&r.sev==='High');
-  const compAlerts = (COMPLIANCE[PID]||[]).filter(c=>c.status==='fail');
+  // Alerts — sourced from JIRA cache
+  const riskAlerts = (_jiraData.risks||[]).filter(r=>r.status!=='Done'&&r.status!=='Closed').slice(0,3);
+  const ncAlerts   = (_jiraData.nc||[]).filter(c=>c.status!=='Done'&&c.status!=='Closed').slice(0,3);
   const alerts = [
-    ...riskAlerts.map(r=>({type:'danger',icon:'⚠️',title:'High Risk: '+r.title,desc:r.mitigation})),
-    ...compAlerts.map(c=>({type:'warning',icon:'🛡️',title:'Compliance Gap: '+c.name,desc:c.desc}))
+    ...riskAlerts.map(r=>({type:'danger', icon:'⚠️', title:'Risk: '+r.title, desc:`${r.key} · ${r.priority} · ${r.assignee}`})),
+    ...ncAlerts.map(c=>({type:'warning', icon:'🛡️', title:'NC: '+c.title,   desc:`${c.key} · ${c.status}`}))
   ];
   document.getElementById('overview-alerts').innerHTML = alerts.length ? `
     <div class="section-hdr"><h3>Product Flags</h3></div>
     <div style="display:flex;flex-direction:column;gap:8px">
       ${alerts.map(a=>`<div class="alert alert-${a.type}"><div class="alert-icon">${a.icon}</div><div class="alert-body"><div class="at">${a.title}</div><div class="ad">${a.desc}</div></div></div>`).join('')}
     </div>` : '<div class="alert alert-info"><div class="alert-icon">✅</div><div class="alert-body"><div class="at">No critical flags</div><div class="ad">This product has no high-severity open issues.</div></div></div>';
-}
-
-/* ── Roadmap ──────────────────────────────────────────────────── */
-function renderRoadmap(){
-  const items = ROADMAP[PID]||[];
-  const renderCol=(col,elId)=>{
-    const el=document.getElementById(elId);
-    const hdr=el.querySelector('.rm-col-hdr').outerHTML;
-    const filtered=items.filter(i=>i.col===col);
-    el.innerHTML=hdr+filtered.map(it=>`
-      <div class="rm-item rm-${it.type}" ondblclick="editRoadmapItem(this,'${it.title}')">
-        <div class="rm-item-title" contenteditable="true" onblur="markChanged()">${it.title}</div>
-        <div class="rm-item-desc">${it.desc}</div>
-        <div class="rm-item-meta">
-          <span class="rm-type-tag type-${it.type}">${it.type}</span>
-          ${it.dep?`<span style="font-size:10px;font-weight:600;color:#92400e;background:#fef3c7;padding:1px 6px;border-radius:4px">Dep: ${it.dep}</span>`:''}
-          ${it.date?`<span style="font-size:10px;color:var(--muted)">📅 ${it.date}</span>`:''}
-        </div>
-      </div>`).join('')+`<button class="add-btn" style="margin-top:8px" onclick="addRoadmapItem('${col}')">+ Add</button>`;
-  };
-  renderCol('now','rm-now');
-  renderCol('next','rm-next');
-  renderCol('later','rm-later');
 }
 
 /* ── Team ─────────────────────────────────────────────────────── */
@@ -705,69 +584,6 @@ function renderTeam(){
   </tr>`).join('');
 }
 
-/* ── Risks ────────────────────────────────────────────────────── */
-function renderRisksPane(){
-  const filter=document.getElementById('risk-filter')?.value||'all';
-  let risks=RISKS[PID]||[];
-  if(filter!=='all') risks=risks.filter(r=>r.status===filter);
-  document.getElementById('risks-grid').innerHTML=risks.map((r,i)=>`
-    <div class="risk-card">
-      <div class="risk-card-top">
-        <div class="risk-score" style="background:${riskScoreColor(r.score)}">${r.score}</div>
-        <div style="flex:1">
-          <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:4px">${r.title}</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;background:${sevBg(r.sev)};color:${sevColor(r.sev)}">${r.sev}</span>
-            <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:var(--bg);color:var(--muted)">${r.impact}</span>
-          </div>
-        </div>
-      </div>
-      <div class="risk-card-body">
-        <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px">MITIGATION</div>
-        <div style="font-size:13px;color:var(--text)" contenteditable="true" class="editable-field" onblur="updateRisk(${i},'mitigation',this.textContent)">${r.mitigation}</div>
-        <div style="margin-top:8px;font-size:12px;color:var(--muted)">Owner: <strong>${r.owner}</strong> · Logged: ${r.created}</div>
-      </div>
-      <div class="risk-card-foot">
-        <select onchange="updateRisk(${i},'status',this.value)" style="border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:12px;outline:none">
-          <option ${r.status==='Open'?'selected':''}>Open</option>
-          <option ${r.status==='In Progress'?'selected':''}>In Progress</option>
-          <option ${r.status==='Closed'?'selected':''}>Closed</option>
-        </select>
-        <button class="btn btn-outline btn-sm" onclick="editRisk(${i})">Edit</button>
-      </div>
-    </div>`).join('');
-}
-
-function updateRisk(i,field,val){
-  if(RISKS[PID]&&RISKS[PID][i]) RISKS[PID][i][field]=val;
-  markChanged();
-}
-
-/* ── Compliance ───────────────────────────────────────────────── */
-function renderCompliance(){
-  const items=COMPLIANCE[PID]||[];
-  const groups={};
-  items.forEach(it=>{ (groups[it.area]=groups[it.area]||[]).push(it); });
-  document.getElementById('comp-grid').innerHTML=Object.entries(groups).map(([area,aItems])=>`
-    <div class="comp-card">
-      <div class="comp-card-title">
-        <span style="width:24px;height:24px;border-radius:6px;background:var(--bg);display:inline-flex;align-items:center;justify-content:center;font-size:12px">
-          ${{Security:'🛡️',Data:'🗄️',Compliance:'📋',Technical:'⚙️'}[area]||'📌'}
-        </span>
-        ${area}
-      </div>
-      ${aItems.map(it=>`
-        <div class="comp-row">
-          <div class="comp-icon" style="background:${{pass:'#dcfce7',warn:'#fef3c7',fail:'#fee2e2'}[it.status]}">${compIcon(it.status)}</div>
-          <div style="flex:1">
-            <div style="font-weight:600;font-size:13px">${it.name}</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:2px">${it.desc}${it.deadline&&it.deadline!=='—'?` · Due ${it.deadline}`:''}</div>
-          </div>
-          <div style="font-size:11px;font-weight:600;color:${compColor(it.status)};white-space:nowrap">${compLabel(it.status)}</div>
-        </div>`).join('')}
-    </div>`).join('');
-}
-
 /* ── Activity ─────────────────────────────────────────────────── */
 function renderActivity(){
   const items=ACTIVITY.filter(a=>a.product===PID);
@@ -793,56 +609,6 @@ function openModal(title,html){
   document.getElementById('modal-overlay').classList.add('open');
 }
 function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); }
-
-function addRisk(){
-  openModal('Log New Risk',`
-    <div class="form-row"><div class="form-field"><label>Risk Title</label><input id="nr-title" placeholder="Describe the risk"/></div>
-    <div class="form-field"><label>Severity</label><select id="nr-sev"><option>High</option><option>Medium</option><option>Low</option></select></div></div>
-    <div class="form-row"><div class="form-field"><label>Impact Area</label><select id="nr-impact"><option>Delivery</option><option>Financial</option><option>Technical</option></select></div>
-    <div class="form-field"><label>Risk Score (1–10)</label><input type="number" id="nr-score" min="1" max="10" value="5"/></div></div>
-    <div class="form-field"><label>Owner</label><input id="nr-owner" value="${P.pm}"/></div>
-    <div class="form-field"><label>Mitigation Plan</label><textarea id="nr-mit" placeholder="Describe the mitigation strategy…"></textarea></div>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
-      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveRisk()">Log Risk</button>
-    </div>`);
-}
-
-function saveRisk(){
-  if(!RISKS[PID]) RISKS[PID]=[];
-  RISKS[PID].unshift({
-    id:'r'+Date.now(), title:document.getElementById('nr-title').value||'New Risk',
-    sev:document.getElementById('nr-sev').value,
-    impact:document.getElementById('nr-impact').value,
-    score:+document.getElementById('nr-score').value,
-    owner:document.getElementById('nr-owner').value,
-    mitigation:document.getElementById('nr-mit').value||'No mitigation defined',
-    status:'Open', created:new Date().toISOString().split('T')[0]
-  });
-  closeModal(); persistData(); renderRisksPane(); showToast('Risk logged');
-}
-
-function editRisk(i){
-  const r=RISKS[PID][i];
-  openModal('Edit Risk',`
-    <div class="form-field"><label>Title</label><input id="er-title" value="${r.title}"/></div>
-    <div class="form-row"><div class="form-field"><label>Severity</label><select id="er-sev"><option ${r.sev==='High'?'selected':''}>High</option><option ${r.sev==='Medium'?'selected':''}>Medium</option><option ${r.sev==='Low'?'selected':''}>Low</option></select></div>
-    <div class="form-field"><label>Score</label><input type="number" id="er-score" min="1" max="10" value="${r.score}"/></div></div>
-    <div class="form-field"><label>Mitigation</label><textarea id="er-mit">${r.mitigation}</textarea></div>
-    <div class="form-field"><label>Status</label><select id="er-status"><option ${r.status==='Open'?'selected':''}>Open</option><option ${r.status==='In Progress'?'selected':''}>In Progress</option><option ${r.status==='Closed'?'selected':''}>Closed</option></select></div>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
-      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="applyRiskEdit(${i})">Save</button>
-    </div>`);
-}
-function applyRiskEdit(i){
-  RISKS[PID][i].title=document.getElementById('er-title').value;
-  RISKS[PID][i].sev=document.getElementById('er-sev').value;
-  RISKS[PID][i].score=+document.getElementById('er-score').value;
-  RISKS[PID][i].mitigation=document.getElementById('er-mit').value;
-  RISKS[PID][i].status=document.getElementById('er-status').value;
-  closeModal(); persistData(); renderRisksPane(); showToast('Risk updated');
-}
 
 /* ── type options HTML helper ─────────────────────────────────── */
 function _typeOpts(sel){
@@ -1177,36 +943,6 @@ function updateMemberAskAlloc(i, val){
   renderTeam();
 }
 
-function addRoadmapItem(col){
-  openModal('Add Roadmap Item',`
-    <div class="form-field"><label>Column</label><select id="ri-col">
-      <option value="now"${col==='now'?' selected':''}>Now (0–3 months)</option>
-      <option value="next"${col==='next'?' selected':''}>Next (3–6 months)</option>
-      <option value="later"${col==='later'?' selected':''}>Later (6+ months)</option>
-    </select></div>
-    <div class="form-field"><label>Title</label><input id="ri-title" placeholder="Initiative or milestone title"/></div>
-    <div class="form-field"><label>Description</label><input id="ri-desc" placeholder="Brief description"/></div>
-    <div class="form-row"><div class="form-field"><label>Type</label><select id="ri-type"><option value="init">Initiative</option><option value="milestone">Milestone</option><option value="dep">Dependency</option></select></div>
-    <div class="form-field"><label>Target Date</label><input id="ri-date" placeholder="e.g. Q3 2026"/></div></div>
-    <div class="form-field"><label>Dependency (optional)</label><input id="ri-dep" placeholder="Team or system dependency"/></div>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
-      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveRoadmapItem()">Add Item</button>
-    </div>`);
-}
-function saveRoadmapItem(){
-  if(!ROADMAP[PID]) ROADMAP[PID]=[];
-  ROADMAP[PID].push({
-    col:document.getElementById('ri-col').value,
-    type:document.getElementById('ri-type').value,
-    title:document.getElementById('ri-title').value||'New Item',
-    desc:document.getElementById('ri-desc').value,
-    date:document.getElementById('ri-date').value,
-    dep:document.getElementById('ri-dep').value||null
-  });
-  closeModal(); persistData(); renderRoadmap(); showToast('Roadmap item added');
-}
-
 /* ── Save / Export ────────────────────────────────────────────── */
 let _changed=false;
 function markChanged(){ _changed=true; document.title='• '+P.name+' — Qorix Portal'; }
@@ -1416,306 +1152,112 @@ function importExcelMembers(){
 }
 
 /* ════════════════════════════════════════════════════════════════
-   JIRA CLOUD SYNC
+   JIRA SYNC — uses JIRA_CFG from data.js
    ════════════════════════════════════════════════════════════════ */
-const JIRA_SERVER = 'http://localhost:3000';
-let _serverAlive = false;
+const JIRA_PROXY = 'http://localhost:3000';
+let _jiraData = {risks:[], nc:[]};
 
-async function checkServerHealth(){
+function jiraProjectKey() {
+  return JIRA_CFG.projects[PID] || null;
+}
+
+async function syncJira() {
+  const key = jiraProjectKey();
+  const pill = document.getElementById('jira-status-pill');
+  if(!key){
+    pill.style.background='#f1f5f9'; pill.style.color='var(--muted)';
+    pill.textContent='No JIRA project configured for this product';
+    document.getElementById('jira-risks-list').innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px">No JIRA project linked to this product.</div>';
+    document.getElementById('jira-nc-list').innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px">No JIRA project linked to this product.</div>';
+    return;
+  }
+  if(JIRA_CFG.email==='YOUR_EMAIL@qorix.com'||JIRA_CFG.token==='YOUR_JIRA_API_TOKEN'){
+    pill.style.background='#fff7ed'; pill.style.color='#c2410c';
+    pill.textContent='⚠ Fill in JIRA_CFG credentials in data.js';
+    return;
+  }
+  pill.style.background='#eff6ff'; pill.style.color='#1d4ed8';
+  pill.textContent='Syncing…';
+  document.getElementById('jira-project-info').textContent=`Project: ${key} · ${JIRA_CFG.domain}`;
   try {
-    const r = await fetch(JIRA_SERVER + '/api/health', {signal: AbortSignal.timeout(2000)});
-    if(r.ok){
-      _serverAlive = true;
-      const hint = document.getElementById('jira-server-hint');
-      if(hint) hint.style.display = 'none';
-    }
-  } catch(e){ _serverAlive = false; }
-}
-
-function getJiraFormValues(){
-  return {
-    domain:    document.getElementById('jira-domain')?.value.trim().replace(/^https?:\/\//,'') || '',
-    email:     document.getElementById('jira-email')?.value.trim() || '',
-    token:     document.getElementById('jira-token')?.value.trim() || '',
-    project:   document.getElementById('jira-project')?.value.trim().toUpperCase() || '',
-    riskType:  document.getElementById('jira-risk-type')?.value.trim() || 'Risk',
-    ncType:    document.getElementById('jira-nc-type')?.value.trim() || 'Non-Conformance'
-  };
-}
-
-function setJiraConnStatus(state, msg){
-  const el = document.getElementById('jira-conn-status');
-  if(!el) return;
-  el.className = 'jira-conn-badge jira-conn-' + state;
-  el.textContent = msg;
-}
-
-function renderJiraPane(){
-  // Load saved config into form
-  const cfg = getJiraConfig(PID);
-  if(cfg){
-    const set = (id, val) => { const el=document.getElementById(id); if(el&&val) el.value=val; };
-    set('jira-domain',    cfg.domain);
-    set('jira-email',     cfg.email);
-    set('jira-token',     cfg.token);
-    set('jira-project',   cfg.project);
-    set('jira-risk-type', cfg.riskType || 'Risk');
-    set('jira-nc-type',   cfg.ncType   || 'Non-Conformance');
-  }
-  // Render previously synced data
-  renderJiraSyncBar();
-  renderJiraIssues();
-}
-
-function renderJiraSyncBar(){
-  const data = getJiraData(PID);
-  const bar  = document.getElementById('jira-sync-bar');
-  if(!bar) return;
-  if(!data){ bar.innerHTML = ''; return; }
-  const ts = data.syncedAt ? new Date(data.syncedAt).toLocaleString() : 'Unknown';
-  const rCount = (data.risks||[]).length;
-  const nCount = (data.ncs||[]).length;
-  const openR  = (data.risks||[]).filter(i => i._statusCat !== 'Done' && i._statusCat !== 'Closed').length;
-  const openN  = (data.ncs||[]).filter(i => i._statusCat  !== 'Done' && i._statusCat  !== 'Closed').length;
-
-  bar.innerHTML = `
-    <div class="jira-sync-bar">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <span style="font-size:12px;color:var(--muted)">Last synced: <strong>${ts}</strong></span>
-        <span class="jira-stat-chip">⚠️ ${rCount} Risk${rCount!==1?'s':''} <span style="color:${openR>0?'#ef4444':'#22c55e'};margin-left:2px">(${openR} open)</span></span>
-        <span class="jira-stat-chip">🔴 ${nCount} NC${nCount!==1?'s':''} <span style="color:${openN>0?'#ef4444':'#22c55e'};margin-left:2px">(${openN} open)</span></span>
-      </div>
-      <button class="btn btn-primary btn-sm" onclick="syncJira(this)">🔄 Sync Now</button>
-    </div>`;
-}
-
-function renderJiraIssues(){
-  const data = getJiraData(PID);
-  const rFilter = document.getElementById('jira-risk-filter')?.value || '';
-  const nFilter = document.getElementById('jira-nc-filter')?.value  || '';
-
-  function renderList(issues, elId, emptyMsg){
-    const el = document.getElementById(elId);
-    if(!el) return;
-    if(!issues||!issues.length){
-      el.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">${emptyMsg}</div>`;
-      return;
-    }
-    const filtered = issues.filter(i => !rFilter || i._statusCat === rFilter || i._status === rFilter);
-    if(!filtered.length){
-      el.innerHTML = `<div style="padding:16px;text-align:center;color:var(--muted);font-size:12px">No issues match this filter.</div>`;
-      return;
-    }
-    el.innerHTML = filtered.map(i => {
-      const pr = jiraPriority(i._priority);
-      const stColor = jiraStatusColor(i._statusCat);
-      const stBg    = jiraStatusBg(i._statusCat);
-      const cfg = getJiraConfig(PID);
-      const jiraUrl = cfg ? `https://${cfg.domain}/browse/${i.key}` : '#';
-      return `
-      <div class="jira-issue-row">
-        <div class="jira-priority-dot" style="background:${pr.color}"></div>
-        <div style="flex:1">
-          <div style="display:flex;align-items:flex-start;gap:6px">
-            <a href="${jiraUrl}" target="_blank" class="jira-key">${i.key}</a>
-            <span class="jira-summary">${i._summary}</span>
-          </div>
-          <div class="jira-meta">
-            <span class="jira-status-pill" style="background:${stBg};color:${stColor}">${i._status}</span>
-            <span class="jira-status-pill" style="background:${pr.bg};color:${pr.color}">${pr.label}</span>
-            ${i._assignee ? `<span style="font-size:10px;color:var(--muted)">👤 ${i._assignee}</span>` : ''}
-            ${i._duedate  ? `<span style="font-size:10px;color:${new Date(i._duedate)<new Date()?'#ef4444':'var(--muted)'}">📅 ${i._duedate}</span>` : ''}
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  if(!data){
-    renderList(null, 'jira-risks-list', 'Configure and sync JIRA to see risks here.');
-    renderList(null, 'jira-ncs-list',   'Configure and sync JIRA to see NCs here.');
-    return;
-  }
-
-  const risks = (data.risks||[]).filter(i => !rFilter || i._statusCat===rFilter || i._status===rFilter);
-  const ncs   = (data.ncs||[]).filter(i   => !nFilter || i._statusCat===nFilter || i._status===nFilter);
-
-  renderList(data.risks||[], 'jira-risks-list', 'No risks found in JIRA for this project.');
-  renderList(data.ncs||[],   'jira-ncs-list',   'No NCs found in JIRA for this project.');
-
-  // Update badges
-  const rb = document.getElementById('jira-risk-badge');
-  const nb = document.getElementById('jira-nc-badge');
-  if(rb){ rb.textContent=(data.risks||[]).length; rb.style.display=(data.risks||[]).length?'':'none'; rb.style.cssText='background:#fee2e2;color:#991b1b;border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700'; }
-  if(nb){ nb.textContent=(data.ncs||[]).length;   nb.style.display=(data.ncs||[]).length?'':'none';   nb.style.cssText='background:#fee2e2;color:#991b1b;border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700'; }
-}
-
-function _normaliseIssue(issue){
-  const f = issue.fields || {};
-  return {
-    key:        issue.key,
-    id:         issue.id,
-    _summary:   f.summary || '(no summary)',
-    _status:    f.status?.name     || '—',
-    _statusCat: f.status?.statusCategory?.name || f.status?.name || '—',
-    _priority:  f.priority?.name   || null,
-    _assignee:  f.assignee?.displayName || null,
-    _created:   (f.created||'').slice(0,10),
-    _updated:   (f.updated||'').slice(0,10),
-    _duedate:   f.duedate || null,
-    _labels:    f.labels || [],
-    _type:      f.issuetype?.name || '—',
-    _desc:      f.description || null
-  };
-}
-
-async function testJira(btn){
-  const cfg = getJiraFormValues();
-  if(!cfg.domain||!cfg.email||!cfg.token){
-    showToast('⚠️ Fill in domain, email and API token first');
-    return;
-  }
-  const origText = btn.textContent;
-  btn.textContent = '⏳ Testing…'; btn.disabled = true;
-  setJiraConnStatus('idle','Connecting…');
-
-  try {
-    const r = await fetch(JIRA_SERVER + '/api/jira/test', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({domain:cfg.domain, email:cfg.email, token:cfg.token})
-    });
-    const data = await r.json();
-    if(data.ok){
-      setJiraConnStatus('ok', `✅ ${data.user}`);
-      showToast(`✅ Connected as ${data.user}`);
-    } else {
-      setJiraConnStatus('fail', '❌ Auth failed');
-      showToast('❌ ' + (data.error || 'Authentication failed'));
-    }
-  } catch(e){
-    setJiraConnStatus('fail', '❌ Server offline');
-    showToast('❌ Server not running — run: npm start');
-  } finally {
-    btn.textContent = origText; btn.disabled = false;
-  }
-}
-
-function saveJiraSettings(){
-  const cfg = getJiraFormValues();
-  if(!cfg.domain||!cfg.email||!cfg.token){
-    showToast('⚠️ Domain, email and token are required');
-    return;
-  }
-  saveJiraConfig(PID, cfg);
-  showToast('✅ JIRA configuration saved');
-}
-
-async function syncJira(btn){
-  const cfg = getJiraFormValues();
-  if(!cfg.domain||!cfg.email||!cfg.token||!cfg.project){
-    showToast('⚠️ Complete all JIRA config fields first');
-    return;
-  }
-  saveJiraConfig(PID, cfg);
-
-  const origText = btn?.textContent || '🔄 Sync Now';
-  if(btn){ btn.textContent='⏳ Syncing…'; btn.disabled=true; }
-  setJiraConnStatus('idle','Syncing…');
-
-  const results = { risks:[], ncs:[], errors:[], syncedAt:new Date().toISOString() };
-
-  async function fetchIssues(jql){
-    const r = await fetch(JIRA_SERVER + '/api/jira/search', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({domain:cfg.domain, email:cfg.email, token:cfg.token, jql, maxResults:200})
-    });
-    const data = await r.json();
-    if(data.error) throw new Error(data.error);
-    return (data.issues || []).map(_normaliseIssue);
-  }
-
-  try {
-    const [risks, ncs] = await Promise.all([
-      fetchIssues(`project = "${cfg.project}" AND issuetype = "${cfg.riskType}" ORDER BY priority ASC`),
-      fetchIssues(`project = "${cfg.project}" AND issuetype = "${cfg.ncType}" ORDER BY priority ASC`)
+    const [risks, nc] = await Promise.all([
+      _fetchJiraIssues(key,'Risk'),
+      _fetchJiraIssues(key,'Non-Conformance')
     ]);
-    results.risks = risks;
-    results.ncs   = ncs;
-    saveJiraData(PID, results);
-    setJiraConnStatus('ok', `✅ Connected · Synced`);
-    renderJiraSyncBar();
-    renderJiraIssues();
-    showToast(`✅ Synced — ${risks.length} risks, ${ncs.length} NCs from JIRA`);
-  } catch(e){
-    setJiraConnStatus('fail', '❌ Sync failed');
-    const isNetwork = e.message.includes('fetch') || e.message.includes('Failed');
-    showToast(isNetwork ? '❌ Cannot reach server — run: npm start' : '❌ JIRA error: ' + e.message);
-  } finally {
-    if(btn){ btn.textContent=origText; btn.disabled=false; }
+    _jiraData = {risks, nc};
+    saveJiraData(PID, _jiraData);
+    pill.style.background='#f0fdf4'; pill.style.color='#15803d';
+    pill.textContent=`✅ Synced · ${risks.length} risks · ${nc.length} NCs`;
+    _renderJiraData();
+  } catch(e) {
+    pill.style.background='#fff5f5'; pill.style.color='#991b1b';
+    pill.textContent='❌ Sync failed — check proxy server & credentials';
+    console.error('[JIRA]', e);
   }
 }
 
-function clearJira(){
-  if(!confirm('Clear all synced JIRA data for this product?')) return;
-  clearJiraData(PID);
-  renderJiraSyncBar();
-  renderJiraIssues();
-  showToast('🗑 JIRA data cleared');
+async function _fetchJiraIssues(projectKey, issueType) {
+  const jql = encodeURIComponent(`project=${projectKey} AND issuetype="${issueType}" ORDER BY priority DESC`);
+  const url = `${JIRA_PROXY}/api/jira?domain=${JIRA_CFG.domain}&email=${encodeURIComponent(JIRA_CFG.email)}&token=${encodeURIComponent(JIRA_CFG.token)}&jql=${jql}&maxResults=50`;
+  const r = await fetch(url);
+  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  const data = await r.json();
+  return (data.issues||[]).map(i=>({
+    key:    i.key,
+    title:  i.fields.summary,
+    status: i.fields.status?.name||'Unknown',
+    priority: i.fields.priority?.name||'Medium',
+    assignee: i.fields.assignee?.displayName||'Unassigned',
+    created: i.fields.created?.slice(0,10)||'—',
+    url:    `https://${JIRA_CFG.domain}/browse/${i.key}`
+  }));
 }
 
-function importJiraRisksToRegister(){
-  const data = getJiraData(PID);
-  if(!data?.risks?.length){ showToast('⚠️ No JIRA risks to import — sync first'); return; }
-  if(!RISKS[PID]) RISKS[PID] = [];
-  const existingKeys = new Set(RISKS[PID].map(r => r.jiraKey).filter(Boolean));
-  let added = 0;
-  data.risks.forEach(issue => {
-    if(existingKeys.has(issue.key)) return;
-    const score = {Highest:9,High:7,Medium:5,Low:3,Lowest:1}[issue._priority] || 5;
-    RISKS[PID].unshift({
-      id: 'jira-' + issue.key,
-      title: issue._summary,
-      jiraKey: issue.key,
-      sev: score >= 7 ? 'High' : score >= 4 ? 'Medium' : 'Low',
-      impact: 'Delivery',
-      owner: issue._assignee || P.pm,
-      mitigation: 'See JIRA: ' + issue.key,
-      status: issue._statusCat === 'Done' || issue._statusCat === 'Closed' ? 'Closed' : 'Open',
-      score,
-      created: issue._created
-    });
-    added++;
-  });
-  persistData();
-  renderRisksPane();
-  activateTab('risks');
-  showToast(`✅ ${added} JIRA risks imported to Risk Register`);
+function _renderJiraData() {
+  const sevColor = {Highest:'#991b1b',High:'#dc2626',Medium:'#d97706',Low:'#16a34a',Lowest:'#6b7280'};
+
+  function issueCard(issue){
+    const c = sevColor[issue.priority]||'#64748b';
+    return `<div style="padding:10px;border:1px solid var(--border);border-radius:7px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="font-weight:600;font-size:13px;flex:1">${issue.title}</div>
+        <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:${c}20;color:${c};white-space:nowrap">${issue.priority}</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:5px;display:flex;gap:12px;flex-wrap:wrap">
+        <span><a href="${issue.url}" target="_blank" style="color:var(--qx-blue);text-decoration:none">${issue.key}</a></span>
+        <span>${issue.status}</span>
+        <span>👤 ${issue.assignee}</span>
+        <span>${issue.created}</span>
+      </div>
+    </div>`;
+  }
+
+  const rEl = document.getElementById('jira-risks-list');
+  const nEl = document.getElementById('jira-nc-list');
+  document.getElementById('risk-count-jira').textContent = _jiraData.risks.length ? `${_jiraData.risks.length} items` : '';
+  document.getElementById('nc-count-jira').textContent   = _jiraData.nc.length    ? `${_jiraData.nc.length} items`    : '';
+
+  rEl.innerHTML = _jiraData.risks.length
+    ? _jiraData.risks.map(issueCard).join('')
+    : '<div style="color:var(--muted);font-size:13px;padding:8px">No Risk issues found.</div>';
+  nEl.innerHTML = _jiraData.nc.length
+    ? _jiraData.nc.map(issueCard).join('')
+    : '<div style="color:var(--muted);font-size:13px;padding:8px">No Non-Conformance issues found.</div>';
 }
 
-function importJiraNcsToCompliance(){
-  const data = getJiraData(PID);
-  if(!data?.ncs?.length){ showToast('⚠️ No JIRA NCs to import — sync first'); return; }
-  if(!COMPLIANCE[PID]) COMPLIANCE[PID] = [];
-  const existingKeys = new Set(COMPLIANCE[PID].map(c=>c.jiraKey).filter(Boolean));
-  let added = 0;
-  data.ncs.forEach(issue => {
-    if(existingKeys.has(issue.key)) return;
-    const isDone = issue._statusCat==='Done'||issue._statusCat==='Closed';
-    COMPLIANCE[PID].push({
-      jiraKey: issue.key,
-      name: issue._summary,
-      area: 'Non-Conformance',
-      status: isDone ? 'pass' : 'fail',
-      desc: `JIRA ${issue.key} · ${issue._status} · ${issue._assignee||'Unassigned'}`,
-      deadline: issue._duedate || '—'
-    });
-    added++;
-  });
-  renderCompliance();
-  activateTab('compliance');
-  showToast(`✅ ${added} NCs imported to Compliance`);
+function _loadCachedJiraData() {
+  const cached = getJiraData(PID);
+  if(cached){ _jiraData=cached; _renderJiraData(); }
+  const key = jiraProjectKey();
+  const info = document.getElementById('jira-project-info');
+  if(info) info.textContent = key ? `Project: ${key} · ${JIRA_CFG.domain}` : 'No JIRA project linked';
+  const pill = document.getElementById('jira-status-pill');
+  if(pill && cached){
+    pill.style.background='#f0fdf4'; pill.style.color='#15803d';
+    pill.textContent='Loaded from cache — click Sync to refresh';
+  } else if(pill && !key){
+    pill.textContent='No JIRA project configured for this product';
+  }
 }
 
 /* ── Boot ─────────────────────────────────────────────────────── */
