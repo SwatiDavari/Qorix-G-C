@@ -19,6 +19,7 @@
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="assets/data.js"></script>
 <style>
 /* ── Qorix Brand Tokens ───────────────────────────────────────────── */
 :root{
@@ -330,11 +331,13 @@ tr:hover td{background:rgba(60,0,255,.02)}
   <div class="stn-links">
     <a href="index.html" class="stn-link">Portal Home</a>
     <a href="dashboard.html" class="stn-link active">Portfolio Dashboard</a>
-    <a href="product.html?id=nexus" class="stn-link">Nexus</a>
-    <a href="product.html?id=pulse" class="stn-link">Pulse</a>
-    <a href="product.html?id=datasphere" class="stn-link">DataSphere</a>
-    <a href="product.html?id=coreapi" class="stn-link">CoreAPI</a>
-    <a href="product.html?id=ehub" class="stn-link">EnterpriseHub</a>
+    <a href="product.html?id=classic" class="stn-link">Classic</a>
+    <a href="product.html?id=adaptive" class="stn-link">Adaptive</a>
+    <a href="product.html?id=bootloader" class="stn-link">Bootloader</a>
+    <a href="product.html?id=developer" class="stn-link">Developer</a>
+    <a href="product.html?id=performance" class="stn-link">Performance</a>
+    <a href="product.html?id=lightweight" class="stn-link">Light weight</a>
+    <a href="product.html?id=processdef" class="stn-link">Process Def</a>
   </div>
   <div class="stn-right">
     <a href="index.html" class="stn-badge">← Portal</a>
@@ -364,11 +367,13 @@ tr:hover td{background:rgba(60,0,255,.02)}
     <div class="filter-bar">
       <select class="filter-select" id="global-product-filter" onchange="applyFilters()">
         <option value="all">All Products</option>
-        <option value="nexus">Nexus Platform</option>
-        <option value="pulse">Pulse Mobile</option>
-        <option value="datasphere">DataSphere</option>
-        <option value="coreapi">CoreAPI Gateway</option>
-        <option value="ehub">EnterpriseHub</option>
+        <option value="classic">Qorix Classic</option>
+        <option value="adaptive">Qorix Adaptive</option>
+        <option value="bootloader">Qorix Bootloader</option>
+        <option value="developer">Qorix Developer</option>
+        <option value="performance">Qorix Performance</option>
+        <option value="lightweight">Qorix Light weight</option>
+        <option value="processdef">Qorix Process Definition</option>
       </select>
       <select class="filter-select" id="global-status-filter" onchange="applyFilters()">
         <option value="all">All Statuses</option>
@@ -385,39 +390,8 @@ tr:hover td{background:rgba(60,0,255,.02)}
   <section class="section active" id="sec-overview">
     <div class="section-accent-bar"></div>
 
-    <!-- KPIs -->
-    <div class="kpi-grid">
-      <div class="kpi-card k1">
-        <div class="kpi-icon">📦</div>
-        <div class="kpi-label">Total Products</div>
-        <div class="kpi-value">5</div>
-        <div class="kpi-sub">Across all portfolios</div>
-      </div>
-      <div class="kpi-card k2">
-        <div class="kpi-icon">🚀</div>
-        <div class="kpi-label">Active Projects</div>
-        <div class="kpi-value">18</div>
-        <div class="kpi-sub">4 launching this quarter</div>
-      </div>
-      <div class="kpi-card k3">
-        <div class="kpi-icon">👥</div>
-        <div class="kpi-label">Team Members</div>
-        <div class="kpi-value">67</div>
-        <div class="kpi-sub">3 shared resources</div>
-      </div>
-      <div class="kpi-card k4">
-        <div class="kpi-icon">⚠️</div>
-        <div class="kpi-label">Open Risks</div>
-        <div class="kpi-value">8</div>
-        <div class="kpi-sub">3 high severity</div>
-      </div>
-      <div class="kpi-card k5">
-        <div class="kpi-icon">📅</div>
-        <div class="kpi-label">Deadlines (30d)</div>
-        <div class="kpi-value">6</div>
-        <div class="kpi-sub">2 at risk of slipping</div>
-      </div>
-    </div>
+    <!-- KPIs (rendered by JS into #kpi-grid) -->
+    <div class="kpi-grid" id="kpi-grid"></div>
 
     <!-- Quick product summary -->
     <div class="section-hdr">
@@ -466,11 +440,13 @@ tr:hover td{background:rgba(60,0,255,.02)}
       <div class="hdr-actions">
         <select class="filter-select" id="roadmap-filter" onchange="renderRoadmap()">
           <option value="all">All Products</option>
-          <option value="nexus">Nexus Platform</option>
-          <option value="pulse">Pulse Mobile</option>
-          <option value="datasphere">DataSphere</option>
-          <option value="coreapi">CoreAPI Gateway</option>
-          <option value="ehub">EnterpriseHub</option>
+          <option value="classic">Qorix Classic</option>
+          <option value="adaptive">Qorix Adaptive</option>
+          <option value="bootloader">Qorix Bootloader</option>
+          <option value="developer">Qorix Developer</option>
+          <option value="performance">Qorix Performance</option>
+          <option value="lightweight">Qorix Light weight</option>
+          <option value="processdef">Qorix Process Definition</option>
         </select>
       </div>
     </div>
@@ -630,11 +606,13 @@ tr:hover td{background:rgba(60,0,255,.02)}
       <div class="hdr-actions">
         <select class="filter-select" id="activity-filter" onchange="renderActivity()">
           <option value="all">All Products</option>
-          <option value="nexus">Nexus Platform</option>
-          <option value="pulse">Pulse Mobile</option>
-          <option value="datasphere">DataSphere</option>
-          <option value="coreapi">CoreAPI Gateway</option>
-          <option value="ehub">EnterpriseHub</option>
+          <option value="classic">Qorix Classic</option>
+          <option value="adaptive">Qorix Adaptive</option>
+          <option value="bootloader">Qorix Bootloader</option>
+          <option value="developer">Qorix Developer</option>
+          <option value="performance">Qorix Performance</option>
+          <option value="lightweight">Qorix Light weight</option>
+          <option value="processdef">Qorix Process Definition</option>
         </select>
       </div>
     </div>
@@ -660,207 +638,61 @@ tr:hover td{background:rgba(60,0,255,.02)}
 
 <script>
 /* ════════════════════════════════════════════════════════════
-   DATA
+   LOCAL DATA  (data.js supplies PRODUCTS / TEAM / RISKS /
+   ROADMAP / COMPLIANCE / ACTIVITY — no need to redeclare them)
 ════════════════════════════════════════════════════════════ */
-const PRODUCTS = [
-  {
-    id:'nexus', name:'Nexus Platform', pm:'Aisha Rahman',
-    status:'on-track', phase:'Development', completion:72,
-    revenue:'$2.4M', users:'14,200', adoption:'68%',
-    updated:'2026-05-07', color:'#3C00FF',
-    desc:'Core B2B SaaS platform powering enterprise workflows.',
-    fte:18, budget:850, actual:610, forecast:830, fteCost:320
-  },
-  {
-    id:'pulse', name:'Pulse Mobile', pm:'Jordan Lee',
-    status:'at-risk', phase:'Launch', completion:88,
-    revenue:'$820K', users:'52,000', adoption:'41%',
-    updated:'2026-05-08', color:'#E97132',
-    desc:'Consumer-facing mobile app for real-time engagement.',
-    fte:14, budget:420, actual:398, forecast:445, fteCost:210
-  },
-  {
-    id:'datasphere', name:'DataSphere Analytics', pm:'Priya Nair',
-    status:'on-track', phase:'Scale', completion:91,
-    revenue:'$3.1M', users:'8,700', adoption:'83%',
-    updated:'2026-05-06', color:'#0F9ED5',
-    desc:'Advanced analytics suite for enterprise data intelligence.',
-    fte:22, budget:1100, actual:890, forecast:1050, fteCost:440
-  },
-  {
-    id:'coreapi', name:'CoreAPI Gateway', pm:'Marcus Webb',
-    status:'delayed', phase:'Development', completion:44,
-    revenue:'$510K', users:'3,200', adoption:'29%',
-    updated:'2026-05-05', color:'#ef4444',
-    desc:'Unified API gateway and developer ecosystem platform.',
-    fte:9, budget:310, actual:195, forecast:360, fteCost:135
-  },
-  {
-    id:'ehub', name:'EnterpriseHub', pm:'Sofia Chen',
-    status:'at-risk', phase:'Discovery', completion:21,
-    revenue:'—', users:'—', adoption:'—',
-    updated:'2026-05-04', color:'#A02B93',
-    desc:'Next-gen enterprise portal for integrated service delivery.',
-    fte:4, budget:180, actual:42, forecast:210, fteCost:60
-  }
-];
 
-const ROADMAP = {
-  nexus:[
-    {col:'now',type:'milestone',title:'v3.2 Feature Release',desc:'Auth redesign + SSO',dep:'Platform Team'},
-    {col:'now',type:'init',title:'Performance Hardening',desc:'p95 latency < 200ms'},
-    {col:'next',type:'init',title:'Multi-tenant Billing Engine',desc:'Stripe integration'},
-    {col:'next',type:'dep',title:'Compliance Audit Prep',desc:'Depends: Legal Team'},
-    {col:'later',type:'milestone',title:'v4.0 Architecture Shift',desc:'Microservices migration'},
-    {col:'later',type:'init',title:'AI Feature Layer',desc:'LLM-assisted workflows'}
-  ],
-  pulse:[
-    {col:'now',type:'milestone',title:'iOS App Store Launch',desc:'Target: May 20 2026'},
-    {col:'now',type:'init',title:'Push Notification Infra',desc:'FCM + APNs wired'},
-    {col:'next',type:'init',title:'Android Feature Parity',desc:'Q3 2026'},
-    {col:'next',type:'dep',title:'Payment Gateway',desc:'Depends: Stripe API'},
-    {col:'later',type:'milestone',title:'100K MAU Target',desc:'Growth campaign Q4'},
-    {col:'later',type:'init',title:'Offline Mode',desc:'PWA support'}
-  ],
-  datasphere:[
-    {col:'now',type:'init',title:'Real-time Dashboard v2',desc:'WebSocket streaming'},
-    {col:'now',type:'milestone',title:'SOC 2 Certification',desc:'Audit in progress'},
-    {col:'next',type:'init',title:'ML Anomaly Detection',desc:'Python model integration'},
-    {col:'next',type:'dep',title:'Data Warehouse Migration',desc:'Depends: Infra Team'},
-    {col:'later',type:'milestone',title:'$5M ARR Milestone',desc:'Expansion into APAC'},
-    {col:'later',type:'init',title:'Natural Language Query',desc:'LLM on top of dataset'}
-  ],
-  coreapi:[
-    {col:'now',type:'milestone',title:'API v2 Design Freeze',desc:'⚠ Delayed 3 weeks'},
-    {col:'now',type:'init',title:'Rate Limiting Engine',desc:'Redis-based throttle'},
-    {col:'next',type:'init',title:'Developer Portal',desc:'Docs + sandbox env'},
-    {col:'next',type:'dep',title:'Security Review',desc:'Depends: SecOps Team'},
-    {col:'later',type:'milestone',title:'Partner Ecosystem Launch',desc:'10 integrations target'},
-    {col:'later',type:'init',title:'Monetisation Layer',desc:'Usage-based billing'}
-  ],
-  ehub:[
-    {col:'now',type:'init',title:'Discovery Workshops',desc:'Stakeholder interviews'},
-    {col:'now',type:'milestone',title:'PRD Sign-off',desc:'⚠ Ownership undefined'},
-    {col:'next',type:'init',title:'Architecture Proposal',desc:'Pending PM assignment'},
-    {col:'next',type:'dep',title:'Legacy System Audit',desc:'Depends: IT Ops'},
-    {col:'later',type:'milestone',title:'Prototype Demo',desc:'Q1 2027'},
-    {col:'later',type:'init',title:'Pilot Rollout',desc:'3 enterprise clients'}
-  ]
-};
-
-const TEAM = [
-  {product:'Nexus Platform',  pm:1, eng:10, design:2, qa:3, ops:2, total:18},
-  {product:'Pulse Mobile',    pm:1, eng:7,  design:3, qa:2, ops:1, total:14},
-  {product:'DataSphere',      pm:2, eng:12, design:2, qa:4, ops:2, total:22},
-  {product:'CoreAPI Gateway', pm:1, eng:5,  design:1, qa:1, ops:1, total:9},
-  {product:'EnterpriseHub',   pm:1, eng:2,  design:1, qa:0, ops:0, total:4}
-];
-
-const RISKS = [
-  {id:'r1',product:'pulse',  pname:'Pulse Mobile',    title:'App Store Rejection',       sev:'High',   impact:'Delivery',  owner:'Jordan Lee',  mitigation:'Pre-review checklist, TestFlight beta deployed',  status:'In Progress', score:8},
-  {id:'r2',product:'coreapi',pname:'CoreAPI Gateway', title:'Design Freeze Delay',       sev:'High',   impact:'Delivery',  owner:'Marcus Webb', mitigation:'Escalated to CTO; sprint re-planned',             status:'Open',        score:9},
-  {id:'r3',product:'nexus',  pname:'Nexus Platform',  title:'SSO Integration Bug',       sev:'Medium', impact:'Technical', owner:'Aisha Rahman',mitigation:'Hot-fix branch open, ETA May 12',                 status:'In Progress', score:5},
-  {id:'r4',product:'datasphere',pname:'DataSphere',   title:'SOC 2 Audit Gap',           sev:'High',   impact:'Financial', owner:'Priya Nair',  mitigation:'3rd-party auditor engaged, gap remediation plan',  status:'Open',        score:9},
-  {id:'r5',product:'ehub',   pname:'EnterpriseHub',   title:'Undefined Product Ownership',sev:'Medium',impact:'Delivery',  owner:'—',           mitigation:'⚠ No mitigation plan defined',                    status:'Open',        score:6},
-  {id:'r6',product:'coreapi',pname:'CoreAPI Gateway', title:'Vendor API Deprecation',    sev:'Medium', impact:'Technical', owner:'Marcus Webb', mitigation:'Evaluate alternative providers by May 30',         status:'Open',        score:6},
-  {id:'r7',product:'pulse',  pname:'Pulse Mobile',    title:'Budget Overrun Risk',        sev:'Medium', impact:'Financial', owner:'Jordan Lee',  mitigation:'Scope reduction under review',                    status:'In Progress', score:5},
-  {id:'r8',product:'nexus',  pname:'Nexus Platform',  title:'Performance Regression',    sev:'Low',    impact:'Technical', owner:'Aisha Rahman',mitigation:'Load testing scheduled for May 15',               status:'Closed',      score:2}
-];
-
-const COMPLIANCE = [
-  {product:'Nexus Platform', items:[
-    {name:'GDPR Data Processing',area:'Data',status:'pass',desc:'DPA signed, data map complete',deadline:'—'},
-    {name:'SOC 2 Type II',area:'Security',status:'warn',desc:'Renewal due Jun 2026',deadline:'2026-06-30'},
-    {name:'ISO 27001 Audit',area:'Security',status:'pass',desc:'Certified 2025',deadline:'2027-01-01'},
-    {name:'Pen Test',area:'Security',status:'pass',desc:'Completed Q1 2026',deadline:'—'}
-  ]},
-  {product:'Pulse Mobile', items:[
-    {name:'GDPR Consent Flow',area:'Data',status:'warn',desc:'Consent UI under review',deadline:'2026-05-31'},
-    {name:'App Privacy Labels',area:'Compliance',status:'fail',desc:'⚠ Missing nutrition labels on App Store',deadline:'2026-05-20'},
-    {name:'CCPA Compliance',area:'Data',status:'pass',desc:'Privacy policy updated',deadline:'—'},
-    {name:'Security Scan',area:'Security',status:'warn',desc:'2 medium CVEs open',deadline:'2026-05-25'}
-  ]},
-  {product:'DataSphere', items:[
-    {name:'SOC 2 Audit',area:'Security',status:'warn',desc:'In progress — gap identified',deadline:'2026-06-15'},
-    {name:'GDPR Article 30',area:'Data',status:'pass',desc:'Record of processing updated',deadline:'—'},
-    {name:'Data Retention Policy',area:'Data',status:'pass',desc:'Automated purge active',deadline:'—'},
-    {name:'Pen Test',area:'Security',status:'pass',desc:'Q4 2025 — clean',deadline:'—'}
-  ]},
-  {product:'CoreAPI Gateway', items:[
-    {name:'API Security Review',area:'Security',status:'fail',desc:'⚠ SecOps review not scheduled',deadline:'2026-06-01'},
-    {name:'OWASP Top 10 Check',area:'Security',status:'warn',desc:'2 issues flagged',deadline:'2026-05-30'},
-    {name:'GDPR Data Transit',area:'Data',status:'pass',desc:'TLS 1.3 enforced',deadline:'—'},
-    {name:'Dependency Audit',area:'Technical',status:'warn',desc:'14 outdated packages',deadline:'2026-05-31'}
-  ]},
-  {product:'EnterpriseHub', items:[
-    {name:'GDPR Assessment',area:'Data',status:'fail',desc:'⚠ Not started — product in Discovery',deadline:'2026-07-01'},
-    {name:'Security Baseline',area:'Security',status:'fail',desc:'⚠ No security plan defined',deadline:'2026-07-01'},
-    {name:'Audit Readiness',area:'Compliance',status:'fail',desc:'⚠ N/A — too early',deadline:'TBD'},
-    {name:'Data Architecture Review',area:'Data',status:'warn',desc:'Pending architecture sign-off',deadline:'2026-06-30'}
-  ]}
-];
+/* Flat-risks helper (data.js RISKS is an object keyed by product id) */
+function allRisksFlat(){
+  return Object.entries(RISKS).flatMap(([pid,arr])=>
+    (arr||[]).map(r=>({...r, product:pid, pname:getProduct(pid)?.name||pid}))
+  );
+}
 
 const COMPLIANCE_FLAGS = [
-  {product:'Pulse Mobile',   area:'Compliance','issue':'Missing App Store Privacy Labels','action':'Submit updated metadata','deadline':'2026-05-20','status':'Open'},
-  {product:'CoreAPI Gateway',area:'Security',  'issue':'API Security Review Not Scheduled','action':'Book SecOps session','deadline':'2026-06-01','status':'Open'},
-  {product:'EnterpriseHub',  area:'Data',      'issue':'GDPR Assessment Not Started','action':'Appoint DPO & begin DPIA','deadline':'2026-07-01','status':'Open'},
-  {product:'EnterpriseHub',  area:'Security',  'issue':'No Security Plan Defined','action':'Create security baseline doc','deadline':'2026-07-01','status':'Open'},
-  {product:'DataSphere',     area:'Security',  'issue':'SOC 2 Gap Identified','action':'Remediate control gaps with auditor','deadline':'2026-06-15','status':'In Progress'}
+  {product:'Qorix Developer',      area:'Data',      issue:'Opt-out telemetry not implemented',          action:'Implement GDPR-compliant opt-out',  deadline:'2026-05-31', status:'Open'},
+  {product:'Qorix Developer',      area:'Security',  issue:'3 medium CVEs in SDK dependencies',           action:'Patch or replace vulnerable packages', deadline:'2026-05-31', status:'Open'},
+  {product:'Qorix Bootloader',     area:'Security',  issue:'FIPS 140-2 not certifiable until HSM chosen', action:'Complete HSM vendor selection',        deadline:'2026-08-01', status:'Open'},
+  {product:'Qorix Process Definition',area:'Compliance','issue':'Process governance not started',         action:'Appoint PM and initiate governance',   deadline:'2026-06-01', status:'Open'},
+  {product:'Qorix Classic',        area:'Safety',    issue:'ISO 26262 gaps — 4 items identified',         action:'Remediate before Jun 12 audit',        deadline:'2026-06-30', status:'In Progress'}
 ];
 
 const DEPS_INTERNAL = [
-  {product:'Nexus Platform',  depends:'Platform Team',  team:'Infra',       desc:'Shared auth service dependency',   status:'Active'},
-  {product:'Nexus Platform',  depends:'Legal Team',      team:'Legal',       desc:'Compliance review for v3.2',        status:'Pending'},
-  {product:'DataSphere',      depends:'Infra Team',      team:'Infra',       desc:'Data warehouse migration support',  status:'Active'},
-  {product:'CoreAPI Gateway', depends:'SecOps Team',     team:'Security',    desc:'Security review sign-off needed',   status:'Blocked'},
-  {product:'EnterpriseHub',   depends:'IT Ops',          team:'Operations',  desc:'Legacy system audit access',        status:'Pending'},
-  {product:'Pulse Mobile',    depends:'Design System',   team:'Design',      desc:'Shared component library v2',       status:'Active'}
+  {product:'Qorix Classic',    depends:'Safety/Legal Team',  team:'Legal',      desc:'ISO 26262 compliance review',          status:'Pending'},
+  {product:'Qorix Adaptive',   depends:'Qorix Classic team', team:'Engineering',desc:'Adaptive runtime integrates with Classic',status:'Active'},
+  {product:'Qorix Light weight',depends:'Qorix Developer',  team:'SDK',        desc:'Needs Developer SDK toolchain',         status:'Pending'},
+  {product:'Qorix Developer',  depends:'API Design Freeze',  team:'Architecture',desc:'⚠ Blocked — API freeze overdue',       status:'Blocked'},
+  {product:'Qorix Classic',    depends:'Qorix Bootloader',   team:'Firmware',   desc:'OTA update feature dependency',         status:'Pending'}
 ];
 
 const DEPS_EXTERNAL = [
-  {product:'Pulse Mobile',    vendor:'Stripe API',       type:'Payments',    desc:'Payment gateway integration',       status:'Active'},
-  {product:'Nexus Platform',  vendor:'Okta SSO',         type:'Auth',        desc:'Enterprise SSO provider',           status:'Active'},
-  {product:'DataSphere',      vendor:'Snowflake',        type:'Data',        desc:'Data warehouse cloud provider',     status:'Active'},
-  {product:'CoreAPI Gateway', vendor:'Legacy Vendor API',type:'Integration', desc:'⚠ Deprecation notice received Q1 2026',status:'At Risk'},
-  {product:'EnterpriseHub',   vendor:'TBD',              type:'Platform',    desc:'⚠ Vendor not yet selected',         status:'Undefined'}
+  {product:'Qorix Bootloader',  vendor:'HSM Vendor (TBD)',  type:'Security',    desc:'Hardware security module — 3 vendors evaluated', status:'At Risk'},
+  {product:'Qorix Classic',     vendor:'ARM/AUTOSAR',       type:'Standard',    desc:'AUTOSAR migration dependency',                  status:'Active'},
+  {product:'Qorix Light weight',vendor:'STMicroelectronics',type:'Hardware',    desc:'STM32 reference platform',                      status:'Active'},
+  {product:'Qorix Performance', vendor:'Percepio / SEGGER', type:'Competitive', desc:'Benchmarking against third-party tools',         status:'Active'}
 ];
 
 const BLOCKERS = [
-  {product:'CoreAPI Gateway', blocker:'API Design Freeze Overdue',        owner:'Marcus Webb', eta:'2026-05-15', impact:'Delays v2 launch by 3 weeks'},
-  {product:'Pulse Mobile',    blocker:'App Store Privacy Labels Missing',  owner:'Jordan Lee',  eta:'2026-05-20', impact:'Blocks public launch'},
-  {product:'EnterpriseHub',   blocker:'Product Owner Not Assigned',        owner:'—',           eta:'TBD',        impact:'All work blocked'},
-  {product:'DataSphere',      blocker:'SOC 2 Gap — 3 controls open',       owner:'Priya Nair',  eta:'2026-06-15', impact:'Enterprise deal at risk'}
-];
-
-const ACTIVITY = [
-  {ts:'2026-05-08 14:32',product:'pulse',   pname:'Pulse Mobile',    type:'risk',     msg:'Risk "App Store Rejection" updated to In Progress by Jordan Lee'},
-  {ts:'2026-05-08 11:15',product:'nexus',   pname:'Nexus Platform',  type:'roadmap',  msg:'Milestone "v3.2 Feature Release" moved to Now column'},
-  {ts:'2026-05-07 16:45',product:'coreapi', pname:'CoreAPI Gateway', type:'risk',     msg:'New High risk added: "Design Freeze Delay" — score 9'},
-  {ts:'2026-05-07 10:00',product:'datasphere',pname:'DataSphere',    type:'team',     msg:'2 Engineers allocated from shared pool (FTE: 22 → 24)'},
-  {ts:'2026-05-06 15:20',product:'ehub',    pname:'EnterpriseHub',   type:'flag',     msg:'⚠ Undefined ownership flagged — PM role vacant'},
-  {ts:'2026-05-06 09:10',product:'nexus',   pname:'Nexus Platform',  type:'roadmap',  msg:'Initiative "AI Feature Layer" added to Later column'},
-  {ts:'2026-05-05 17:00',product:'coreapi', pname:'CoreAPI Gateway', type:'risk',     msg:'Risk "Vendor API Deprecation" opened — Medium severity'},
-  {ts:'2026-05-05 13:30',product:'datasphere',pname:'DataSphere',    type:'compliance',msg:'SOC 2 audit gap identified — remediation plan submitted'},
-  {ts:'2026-05-04 11:00',product:'pulse',   pname:'Pulse Mobile',    type:'financial',msg:'Budget forecast revised upward: $420K → $445K'},
-  {ts:'2026-05-03 09:45',product:'nexus',   pname:'Nexus Platform',  type:'team',     msg:'Designer moved from Pulse Mobile to Nexus (shared resource)'},
-  {ts:'2026-05-02 16:00',product:'ehub',    pname:'EnterpriseHub',   type:'roadmap',  msg:'Discovery phase started — 4 stakeholder interviews scheduled'},
-  {ts:'2026-05-01 10:20',product:'datasphere',pname:'DataSphere',    type:'milestone',msg:'DataSphere reached 91% completion — Scale phase confirmed'}
+  {product:'Qorix Developer',         blocker:'API Design Freeze Overdue',    owner:'Marcus Webb',    eta:'2026-05-15', impact:'Delays SDK beta by 6+ weeks'},
+  {product:'Qorix Process Definition', blocker:'No Product Manager Assigned', owner:'— Leadership —', eta:'TBD',        impact:'Entire product blocked'},
+  {product:'Qorix Adaptive',          blocker:'Go/no-go Review — May 20',     owner:'Jordan Lee',     eta:'2026-05-20', impact:'Scope reduction may pause work'},
+  {product:'Qorix Bootloader',        blocker:'HSM Vendor Not Selected',       owner:'Priya Nair',     eta:'2026-06-01', impact:'Cannot start FIPS certification'}
 ];
 
 const ALERTS = [
-  {type:'danger', icon:'🚨', title:'CoreAPI Gateway Critically Delayed', desc:'Design freeze overdue by 3 weeks. Sprint re-planning needed.', product:'CoreAPI Gateway'},
-  {type:'danger', icon:'⚠️', title:'EnterpriseHub — No Product Owner', desc:'Product ownership undefined. All roadmap and delivery work is blocked.', product:'EnterpriseHub'},
-  {type:'warning',icon:'💸', title:'Pulse Mobile Budget Overrun Risk', desc:'Actual spend $398K vs $420K budget with forecast at $445K. Variance: +$25K.', product:'Pulse Mobile'},
-  {type:'danger', icon:'🛡️', title:'DataSphere SOC 2 Audit Gap', desc:'3 controls failing. Enterprise deal at risk if not resolved by Jun 15.', product:'DataSphere'},
-  {type:'warning',icon:'📅', title:'Pulse Mobile Launch Deadline at Risk', desc:'App Store privacy labels missing — must be resolved before May 20 launch.', product:'Pulse Mobile'},
-  {type:'info',   icon:'👥', title:'DataSphere Resource Heavy', desc:'22 FTEs allocated. Consider rebalancing with EnterpriseHub (4 FTEs, early stage).', product:'DataSphere'}
+  {type:'danger', icon:'🚩', title:'Qorix Process Definition — No PM',        desc:'Product ownership undefined. All roadmap and delivery work is blocked.', product:'Qorix Process Definition'},
+  {type:'danger', icon:'⚠️', title:'Qorix Developer — API Freeze Delayed',    desc:'Design freeze overdue. SDK beta timeline slipping by 6+ weeks.',          product:'Qorix Developer'},
+  {type:'warning',icon:'⏳', title:'Qorix Adaptive — Go/No-Go Review',        desc:'Stakeholder review on May 20. Scope reduction option on the table.',       product:'Qorix Adaptive'},
+  {type:'warning',icon:'💸', title:'Qorix Adaptive — Budget Overrun Risk',    desc:'Forecast $575K vs $520K budget. Variance: +$55K.',                         product:'Qorix Adaptive'},
+  {type:'danger', icon:'🛠️', title:'Qorix Light weight — Memory Target Risk','desc':'Sub-256KB target proving harder than estimated. Compiler opts in progress.',product:'Qorix Light weight'},
+  {type:'info',   icon:'📋', title:'Qorix Performance — Assessment Stage',    desc:'Business case pending leadership approval before any development begins.', product:'Qorix Performance'}
 ];
 
 const FLAGS = [
-  {type:'danger', icon:'🚩', title:'Missing Roadmap Data', desc:'EnterpriseHub Next/Later roadmap items have no owners or dates assigned.', product:'EnterpriseHub'},
-  {type:'danger', icon:'🚩', title:'No Risk Mitigation Plan', desc:'EnterpriseHub risk "Undefined Ownership" has no mitigation strategy documented.', product:'EnterpriseHub'},
-  {type:'warning',icon:'🚩', title:'Missing Revenue Metrics', desc:'EnterpriseHub has no revenue or user metrics — product is in Discovery.', product:'EnterpriseHub'},
-  {type:'warning',icon:'🚩', title:'Compliance Gaps — 4 Open Flags', desc:'Pulse Mobile, CoreAPI, and EnterpriseHub have unresolved compliance items.', product:'Multiple'}
+  {type:'danger', icon:'🚩', title:'Scope Undefined — Process Definition', desc:'No scope, no PM, no mitigation plan. Product is effectively blocked.', product:'Qorix Process Definition'},
+  {type:'warning',icon:'🚩', title:'No Revenue Data — 4 Products',         desc:'Bootloader, Performance, Light weight, Process Definition have no revenue metrics (pre-GA phases).', product:'Multiple'},
+  {type:'warning',icon:'🚩', title:'Shared Resource Over-allocation Risk', desc:'Sam Torres, Mia Patel, Felix Brand, and Priya Das are shared across 3+ products — check total %.',  product:'Multiple'},
+  {type:'danger', icon:'🚩', title:'Compliance Fails — Developer + Process Def', desc:'Telemetry opt-out (Developer) and process governance (Process Def) are failing.', product:'Multiple'}
 ];
 
 /* ════════════════════════════════════════════════════════════
@@ -895,8 +727,9 @@ function statusBadge(s) {
   return `<span class="status-badge ${cls}">${label}</span>`;
 }
 function phaseBadge(p) {
-  const map = {Discovery:'phase-discovery',Development:'phase-development',Launch:'phase-launch',Scale:'phase-scale'};
-  return `<span class="product-phase ${map[p]||''}">${p}</span>`;
+  const bg  = phaseBg(p);
+  const col = phaseText(p);
+  return `<span class="product-phase" style="background:${bg};color:${col}">${p}</span>`;
 }
 function sevBadge(s){return `<span class="sev-${s.toLowerCase()}">${s}</span>`}
 function riskScoreBadge(n){
@@ -984,48 +817,84 @@ function renderRoadmap() {
 }
 
 /* ════════════════════════════════════════════════════════════
-   RENDER: TEAM
+   RENDER: TEAM  (uses data.js TEAM object format)
 ════════════════════════════════════════════════════════════ */
 function renderTeam() {
   const view = document.getElementById('team-view-toggle').value;
   const container = document.getElementById('team-container');
+
+  /* Build per-product summary from data.js TEAM */
+  const summary = PRODUCTS.map(p => {
+    const members = TEAM[p.id] || [];
+    const pm     = members.filter(m=>m.type==='pm').length;
+    const eng    = members.filter(m=>m.type==='eng').length;
+    const design = members.filter(m=>m.type==='design').length;
+    const qa     = members.filter(m=>m.type==='qa').length;
+    const ops    = members.filter(m=>m.type==='ops').length;
+    const total  = members.length;
+    const totAlloc = members.reduce((s,m)=>s+(m.allocation||0),0);
+    const totAsk   = members.reduce((s,m)=>s+(m.askAllocation||0),0);
+    const gap      = totAsk - totAlloc;
+    return {name:p.name, id:p.id, color:p.color, pm, eng, design, qa, ops, total, totAlloc, totAsk, gap};
+  });
+
   if(view === 'table') {
     container.innerHTML = `
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Product</th><th>PM</th><th>Engineers</th><th>Designers</th><th>QA</th><th>Ops</th><th>Total FTEs</th><th>Allocation</th></tr></thead>
-        <tbody>${TEAM.map(t => {
-          const over = t.total >= 20;
+        <thead>
+          <tr>
+            <th>Product</th><th>PM</th><th>Eng</th><th>Design</th><th>QA</th><th>Ops</th>
+            <th>Total</th><th>Allocated %</th><th>Ask %</th><th>Gap</th><th></th>
+          </tr>
+        </thead>
+        <tbody>${summary.map(t => {
+          const gapColor = t.gap>0?'#ef4444':t.gap<0?'#22c55e':'var(--muted)';
           return `<tr>
-            <td><strong>${t.product}</strong></td>
+            <td><strong style="color:${t.color}">${t.name}</strong></td>
             <td>${t.pm}</td>
             <td>${t.eng}</td>
             <td>${t.design}</td>
             <td>${t.qa}</td>
             <td>${t.ops}</td>
-            <td><strong style="color:${over?'#ef4444':'var(--heading)'}">${t.total} ${over?'⚠':''}FTE</strong></td>
-            <td><div class="fin-bar-wrap" style="width:120px"><div class="fin-bar-actual ${t.total>=20?'fin-over':'fin-ok'}" style="width:${Math.min(t.total/25*100,100)}%"></div></div></td>
+            <td><strong>${t.total}</strong></td>
+            <td>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div class="fin-bar-wrap" style="width:80px">
+                  <div class="fin-bar-actual fin-ok" style="width:${Math.min(t.totAlloc/Math.max(t.total,1)/100*100,100)}%;background:${t.color}"></div>
+                </div>
+                <span style="font-size:12px;font-weight:600">${t.totAlloc}%</span>
+              </div>
+            </td>
+            <td style="font-weight:600">${t.totAsk}%</td>
+            <td style="font-weight:700;color:${gapColor}">${t.gap>0?'+':''}${t.gap}%</td>
+            <td><a href="product.html?id=${t.id}#team" class="btn btn-outline btn-sm">View →</a></td>
           </tr>`;
         }).join('')}</tbody>
       </table>
+    </div>
+    <div style="margin-top:10px;padding:10px 14px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;font-size:12px;color:#1d4ed8">
+      <strong>Gap = Ask% − Allocated%</strong> &nbsp;·&nbsp; Positive gap (red) = team wants more allocation than currently assigned &nbsp;·&nbsp; Negative (green) = surplus capacity
     </div>`;
   } else {
-    const roles = ['PM','Engineers','Designers','QA','Ops'];
-    const roleKeys = ['pm','eng','design','qa','ops'];
     const heatClass = v => v===0?'h0':v<=2?'h1':v<=5?'h2':v<=9?'h3':'h4';
     container.innerHTML = `
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Product</th>${roles.map(r=>`<th>${r}</th>`).join('')}<th>Total</th></tr></thead>
-        <tbody>${TEAM.map(t=>`<tr>
-          <td><strong>${t.product}</strong></td>
-          ${roleKeys.map(k=>`<td><div class="heatmap-cell ${heatClass(t[k])}">${t[k]}</div></td>`).join('')}
-          <td><strong>${t.total}</strong></td>
-        </tr>`).join('')}</tbody>
+        <thead><tr><th>Product</th><th>PM</th><th>Eng</th><th>Design</th><th>QA</th><th>Ops</th><th>Total</th><th>Ask% Gap</th></tr></thead>
+        <tbody>${summary.map(t=>{
+          const gapColor = t.gap>0?'#ef4444':t.gap<0?'#22c55e':'var(--muted)';
+          return `<tr>
+            <td><strong style="color:${t.color}">${t.name}</strong></td>
+            ${['pm','eng','design','qa','ops'].map(k=>`<td><div class="heatmap-cell ${heatClass(t[k])}">${t[k]}</div></td>`).join('')}
+            <td><strong>${t.total}</strong></td>
+            <td style="font-weight:700;color:${gapColor}">${t.gap>0?'+':''}${t.gap}%</td>
+          </tr>`;
+        }).join('')}</tbody>
       </table>
     </div>
     <div style="margin-top:12px;display:flex;gap:10px;align-items:center;font-size:12px;color:var(--muted)">
-      <span>Heatmap key:</span>
+      <span>FTE heatmap:</span>
       <span class="heatmap-cell h0" style="padding:3px 10px">0</span>
       <span class="heatmap-cell h1" style="padding:3px 10px">1–2</span>
       <span class="heatmap-cell h2" style="padding:3px 10px">3–5</span>
@@ -1064,14 +933,15 @@ function renderFinancial() {
 }
 
 /* ════════════════════════════════════════════════════════════
-   RENDER: RISKS
+   RENDER: RISKS  (uses data.js RISKS object via allRisksFlat())
 ════════════════════════════════════════════════════════════ */
 function renderRisks() {
-  const sf = document.getElementById('risk-sev-filter').value;
+  const sf  = document.getElementById('risk-sev-filter').value;
   const stf = document.getElementById('risk-status-filter').value;
-  const filtered = RISKS.filter(r =>
+  const all = allRisksFlat();
+  const filtered = all.filter(r =>
     (sf==='all'||r.sev===sf) && (stf==='all'||r.status===stf)
-  );
+  ).sort((a,b)=>b.score-a.score);
   const tbody = document.getElementById('risks-tbody');
   tbody.innerHTML = filtered.map(r => {
     const stCls = r.status==='Open'?'status-open':r.status==='In Progress'?'status-inprog':'status-closed';
@@ -1086,32 +956,40 @@ function renderRisks() {
       <td class="${stCls}">${r.status}</td>
     </tr>`;
   }).join('');
-  document.getElementById('risk-badge').textContent = RISKS.filter(r=>r.status!=='Closed').length;
+  const openCount = all.filter(r=>r.status!=='Closed').length;
+  document.getElementById('risk-badge').textContent = openCount;
 }
 
 /* ════════════════════════════════════════════════════════════
-   RENDER: COMPLIANCE
+   RENDER: COMPLIANCE  (uses data.js COMPLIANCE object)
 ════════════════════════════════════════════════════════════ */
 function renderCompliance() {
   const grid = document.getElementById('compliance-grid');
-  grid.innerHTML = COMPLIANCE.map(c => `
+  const iconMap={pass:'✅',warn:'⚠️',fail:'❌'};
+  const ciCls={pass:'ci-pass',warn:'ci-warn',fail:'ci-fail'};
+  const txtCls={pass:'ci-pass-txt',warn:'ci-warn-txt',fail:'ci-fail-txt'};
+  const labels={pass:'Compliant',warn:'Action Needed',fail:'Non-Compliant'};
+
+  grid.innerHTML = PRODUCTS.map(p => {
+    const items = COMPLIANCE[p.id] || [];
+    if(!items.length) return '';
+    return `
     <div class="table-wrap" style="padding:18px">
-      <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">${c.product}</div>
-      ${c.items.map(it=>{
-        const iconMap={pass:'✅',warn:'⚠️',fail:'❌'};
-        const ciCls={pass:'ci-pass',warn:'ci-warn',fail:'ci-fail'};
-        const txtCls={pass:'ci-pass-txt',warn:'ci-warn-txt',fail:'ci-fail-txt'};
-        const labels={pass:'Compliant',warn:'Action Needed',fail:'Non-Compliant'};
-        return `<div class="compliance-item">
+      <div style="font-weight:700;font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+        <span style="width:10px;height:10px;border-radius:50%;background:${p.color};flex-shrink:0;display:inline-block"></span>
+        ${p.name}
+      </div>
+      ${items.map(it=>`
+        <div class="compliance-item">
           <div class="ci-icon ${ciCls[it.status]}">${iconMap[it.status]}</div>
           <div class="ci-info">
             <div class="ci-name">${it.name}</div>
             <div class="ci-desc">${it.desc}${it.deadline&&it.deadline!=='—'?` · Due: ${it.deadline}`:''}</div>
           </div>
           <div class="ci-status ${txtCls[it.status]}">${labels[it.status]}</div>
-        </div>`;
-      }).join('')}
-    </div>`).join('');
+        </div>`).join('')}
+    </div>`;
+  }).join('');
 
   const tbody = document.getElementById('compliance-flags-tbody');
   tbody.innerHTML = COMPLIANCE_FLAGS.map(f=>`<tr>
@@ -1164,8 +1042,15 @@ function switchDepTab(name, btn) {
    RENDER: INSIGHTS
 ════════════════════════════════════════════════════════════ */
 function renderInsights() {
+  /* Merge static ALERTS with dynamic auto-generated ones */
+  const autoAlerts = [];
+  PRODUCTS.forEach(p=>{
+    if(p.forecast > p.budget) autoAlerts.push({type:'warning',icon:'💸',title:`${p.name} — Budget Overrun`,desc:`Forecast $${p.forecast}K exceeds budget $${p.budget}K (+$${p.forecast-p.budget}K)`,product:p.name});
+  });
+  const allAlerts = [...ALERTS, ...autoAlerts];
+
   const alertsGrid = document.getElementById('alerts-grid');
-  alertsGrid.innerHTML = ALERTS.map(a=>`
+  alertsGrid.innerHTML = allAlerts.map(a=>`
     <div class="alert-card alert-${a.type}">
       <div class="alert-icon">${a.icon}</div>
       <div class="alert-body">
@@ -1185,7 +1070,33 @@ function renderInsights() {
         <div class="alert-product">${f.product}</div>
       </div>
     </div>`).join('');
-  document.getElementById('alert-badge').textContent = ALERTS.filter(a=>a.type==='danger').length + FLAGS.filter(f=>f.type==='danger').length;
+  document.getElementById('alert-badge').textContent = allAlerts.filter(a=>a.type==='danger').length + FLAGS.filter(f=>f.type==='danger').length;
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: KPIs  (dynamic from data.js)
+════════════════════════════════════════════════════════════ */
+function renderKPIs() {
+  const allM  = Object.values(TEAM).flat();
+  const uniqM = new Set(allM.map(m=>m.name)).size;
+  const sharedM = allM.filter(m=>m.shared).length;
+  const openR = allRisksFlat().filter(r=>r.status!=='Closed').length;
+  const highR = allRisksFlat().filter(r=>r.sev==='High'&&r.status!=='Closed').length;
+  const kpis = [
+    {cls:'k1',icon:'📦',label:'Total Products',    val:PRODUCTS.length,   sub:`${PRODUCTS.filter(p=>p.status==='on-track').length} on track`},
+    {cls:'k2',icon:'🚀',label:'On Track',          val:PRODUCTS.filter(p=>p.status==='on-track').length, sub:`${PRODUCTS.filter(p=>p.status==='delayed').length} delayed`},
+    {cls:'k3',icon:'👥',label:'Team Members',      val:uniqM,             sub:`${sharedM} shared allocations`},
+    {cls:'k4',icon:'⚠️',label:'Open Risks',        val:openR,             sub:`${highR} high severity`},
+    {cls:'k5',icon:'📋',label:'Phases in Progress',val:PRODUCTS.filter(p=>p.phase==='Development').length, sub:`${PRODUCTS.filter(p=>p.phase==='POC').length} POC · ${PRODUCTS.filter(p=>p.phase==='Assessment').length} Assessment`}
+  ];
+  const grid = document.getElementById('kpi-grid');
+  if(grid) grid.innerHTML = kpis.map(k=>`
+    <div class="kpi-card ${k.cls}">
+      <div class="kpi-icon">${k.icon}</div>
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.val}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1232,10 +1143,9 @@ function openProductModal(id) {
         </div>
         <div class="detail-field"><label>Phase</label>
           <select onchange="updateProduct('${p.id}','phase',this.value)">
-            <option ${p.phase==='Discovery'?'selected':''}>Discovery</option>
             <option ${p.phase==='Development'?'selected':''}>Development</option>
-            <option ${p.phase==='Launch'?'selected':''}>Launch</option>
-            <option ${p.phase==='Scale'?'selected':''}>Scale</option>
+            <option ${p.phase==='POC'?'selected':''}>POC</option>
+            <option ${p.phase==='Assessment'?'selected':''}>Assessment</option>
           </select>
         </div>
         <div class="detail-field"><label>Completion %</label><input type="number" min="0" max="100" value="${p.completion}" onchange="updateProduct('${p.id}','completion',+this.value)"/></div>
@@ -1273,7 +1183,7 @@ function openNewProductModal(){
         <div class="detail-field"><label>Product Name</label><input placeholder="e.g. Product Alpha" id="np-name"/></div>
         <div class="detail-field"><label>Product Manager</label><input placeholder="Full name" id="np-pm"/></div>
         <div class="detail-field"><label>Status</label><select id="np-status"><option>on-track</option><option>at-risk</option><option>delayed</option></select></div>
-        <div class="detail-field"><label>Phase</label><select id="np-phase"><option>Discovery</option><option>Development</option><option>Launch</option><option>Scale</option></select></div>
+        <div class="detail-field"><label>Phase</label><select id="np-phase"><option>Development</option><option>POC</option><option>Assessment</option></select></div>
         <div class="detail-field"><label>Budget ($K)</label><input type="number" id="np-budget" placeholder="0"/></div>
         <div class="detail-field"><label>FTEs</label><input type="number" id="np-fte" placeholder="0"/></div>
       </div>
@@ -1306,14 +1216,18 @@ function closeModalDirect() {
 ════════════════════════════════════════════════════════════ */
 let charts = {};
 function renderCharts() {
-  const QX = ['#3C00FF','#E97132','#0F9ED5','#A02B93','#4EA72E'];
+  const QX = PRODUCTS.map(p=>p.color);
 
   if(charts.status) charts.status.destroy();
   charts.status = new Chart(document.getElementById('statusChart'), {
     type:'doughnut',
     data:{
       labels:['On Track','At Risk','Delayed'],
-      datasets:[{data:[2,2,1],backgroundColor:['#22c55e','#f59e0b','#ef4444'],borderWidth:0}]
+      datasets:[{data:[
+        PRODUCTS.filter(p=>p.status==='on-track').length,
+        PRODUCTS.filter(p=>p.status==='at-risk').length,
+        PRODUCTS.filter(p=>p.status==='delayed').length
+      ],backgroundColor:['#22c55e','#f59e0b','#ef4444'],borderWidth:0}]
     },
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}}}
   });
@@ -1390,6 +1304,7 @@ function exportReport() {
    INIT
 ════════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
+  renderKPIs();
   renderCards('overview-cards');
   renderCards('products-grid');
   renderRoadmap();
@@ -1407,9 +1322,9 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ════════════════════════════════════════════════════════════════
    JIRA DASHBOARD STRIP
 ════════════════════════════════════════════════════════════════ */
-const PRODUCTS_IDS = ['nexus','pulse','datasphere','coreapi','ehub'];
-const PRODUCTS_NAMES = {nexus:'Nexus Platform',pulse:'Pulse Mobile',datasphere:'DataSphere Analytics',coreapi:'CoreAPI Gateway',ehub:'EnterpriseHub'};
-const PRODUCTS_COLORS = {nexus:'#3C00FF',pulse:'#E97132',datasphere:'#0F9ED5',coreapi:'#ef4444',ehub:'#A02B93'};
+const PRODUCTS_IDS = PRODUCTS.map(p=>p.id);
+const PRODUCTS_NAMES = Object.fromEntries(PRODUCTS.map(p=>[p.id,p.name]));
+const PRODUCTS_COLORS = Object.fromEntries(PRODUCTS.map(p=>[p.id,p.color]));
 
 function getJiraConfig(pid){
   try{ return JSON.parse(localStorage.getItem('qx_jira_cfg_'+pid)||'null'); }catch(e){return null;}

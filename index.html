@@ -112,7 +112,7 @@
   <div class="nav-links">
     <a href="index.html" class="nav-link active">Portal Home</a>
     <a href="dashboard.html" class="nav-link">Portfolio Dashboard</a>
-    <a href="product.html?id=nexus" class="nav-link">Products</a>
+    <a href="product.html?id=classic" class="nav-link">Products</a>
   </div>
   <a href="dashboard.html" class="nav-cta">Open Dashboard →</a>
 </nav>
@@ -121,7 +121,7 @@
 <div class="hero">
   <div class="hero-inner">
     <div class="hero-greeting">Qorix · Product Management Portal</div>
-    <h1 class="hero-title">Your <span>5 Products</span>,<br/>One Source of Truth</h1>
+    <h1 class="hero-title">Your <span>7 Products</span>,<br/>One Source of Truth</h1>
     <p class="hero-sub">Plan, track, and deliver across your entire product portfolio. Real-time visibility for leadership, PMs, and delivery teams.</p>
     <div class="hero-actions">
       <a href="dashboard.html" class="btn btn-lime btn-lg">View Full Dashboard →</a>
@@ -164,10 +164,9 @@
       <button class="filter-chip" data-filter="delayed" onclick="setFilter('status','delayed',this)">Delayed</button>
       <span class="filter-label" style="margin-left:8px">Phase:</span>
       <button class="filter-chip active" data-filter="all-phase" onclick="setFilter('phase','all',this)">All</button>
-      <button class="filter-chip" data-filter="Discovery" onclick="setFilter('phase','Discovery',this)">Discovery</button>
       <button class="filter-chip" data-filter="Development" onclick="setFilter('phase','Development',this)">Development</button>
-      <button class="filter-chip" data-filter="Launch" onclick="setFilter('phase','Launch',this)">Launch</button>
-      <button class="filter-chip" data-filter="Scale" onclick="setFilter('phase','Scale',this)">Scale</button>
+      <button class="filter-chip" data-filter="POC" onclick="setFilter('phase','POC',this)">POC</button>
+      <button class="filter-chip" data-filter="Assessment" onclick="setFilter('phase','Assessment',this)">Assessment</button>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px" id="product-grid"></div>
   </div>
@@ -241,7 +240,7 @@ const state = { statusFilter:'all', phaseFilter:'all', search:'' };
 function renderHeroKPIs(){
   const or = openRisks();
   const items = [
-    {val:5,             label:'Products',      dot:'#3C00FF'},
+    {val:PRODUCTS.length,  label:'Products',      dot:'#3C00FF'},
     {val:PRODUCTS.filter(p=>p.status==='on-track').length, label:'On Track', dot:'#22c55e'},
     {val:PRODUCTS.filter(p=>p.status==='at-risk'||p.status==='delayed').length, label:'Need Attention', dot:'#ef4444'},
     {val:totalFTE(),    label:'Total FTEs',    dot:'#0F9ED5'},
@@ -256,11 +255,11 @@ function renderHeroKPIs(){
 
 /* ── Alert strip ──────────────────────────────────────────────── */
 const ALERTS_DATA=[
-  {icon:'🚨',border:'#ef4444',msg:'CoreAPI Gateway design freeze overdue by 3 weeks',product:'CoreAPI Gateway'},
-  {icon:'⚠️',border:'#f59e0b',msg:'Pulse Mobile App Store launch blocked — privacy labels missing',product:'Pulse Mobile'},
-  {icon:'🚩',border:'#ef4444',msg:'EnterpriseHub has no assigned Product Owner',product:'EnterpriseHub'},
-  {icon:'🛡️',border:'#f59e0b',msg:'DataSphere SOC 2 audit gap — 3 controls failing',product:'DataSphere'},
-  {icon:'💸',border:'#f59e0b',msg:'Pulse Mobile forecast exceeds budget by $25K',product:'Pulse Mobile'}
+  {icon:'🚩',border:'#ef4444',msg:'Qorix Process Definition has no assigned Product Manager — blocked',product:'Qorix Process Definition'},
+  {icon:'⚠️',border:'#ef4444',msg:'Qorix Developer API Design Freeze delayed — escalated to CTO',product:'Qorix Developer'},
+  {icon:'⚠️',border:'#f59e0b',msg:'Qorix Adaptive go/no-go stakeholder review — scope reduction on table',product:'Qorix Adaptive'},
+  {icon:'🛠️',border:'#f59e0b',msg:'Qorix Light weight memory target may slip — optimisation in progress',product:'Qorix Light weight'},
+  {icon:'💸',border:'#f59e0b',msg:'Qorix Adaptive forecast exceeds budget by $55K',product:'Qorix Adaptive'}
 ];
 function renderAlerts(){
   document.getElementById('alert-strip').innerHTML=ALERTS_DATA.map(a=>`
@@ -335,7 +334,7 @@ function setFilter(type, val, btn){
     document.querySelectorAll('[data-filter]:not([data-filter$="-phase"])').forEach(b=>b.classList.toggle('active',b.dataset.filter===val||(val==='all'&&b.dataset.filter==='all')));
   } else {
     state.phaseFilter=val;
-    document.querySelectorAll('[data-filter$="-phase"],[data-filter="all-phase"],[data-filter="Discovery"],[data-filter="Development"],[data-filter="Launch"],[data-filter="Scale"]').forEach(b=>b.classList.toggle('active',b.dataset.filter===(val==='all'?'all-phase':val)));
+    document.querySelectorAll('[data-filter="all-phase"],[data-filter="Development"],[data-filter="POC"],[data-filter="Assessment"]').forEach(b=>b.classList.toggle('active',b.dataset.filter===(val==='all'?'all-phase':val)));
   }
   renderCards();
 }
@@ -402,7 +401,7 @@ function renderRisks(){
 
 /* ── Charts ───────────────────────────────────────────────────── */
 function renderCharts(){
-  const QXC=['#3C00FF','#E97132','#0F9ED5','#A02B93','#4EA72E'];
+  const QXC=PRODUCTS.map(p=>p.color);
   new Chart(document.getElementById('finChart'),{
     type:'bar',
     data:{
@@ -419,7 +418,11 @@ function renderCharts(){
     type:'doughnut',
     data:{
       labels:['On Track','At Risk','Delayed'],
-      datasets:[{data:[2,2,1],backgroundColor:['#22c55e','#f59e0b','#ef4444'],borderWidth:0}]
+      datasets:[{data:[
+        PRODUCTS.filter(p=>p.status==='on-track').length,
+        PRODUCTS.filter(p=>p.status==='at-risk').length,
+        PRODUCTS.filter(p=>p.status==='delayed').length
+      ],backgroundColor:['#22c55e','#f59e0b','#ef4444'],borderWidth:0}]
     },
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}}}}
   });

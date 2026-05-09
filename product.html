@@ -255,7 +255,7 @@
       <div class="section-hdr" style="margin-top:4px"><h3>Full Roster</h3></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Name</th><th>Role</th><th>Type</th><th>Allocation %</th><th>Shared</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Name</th><th>Role</th><th>Type</th><th>Allocation %</th><th>Ask %</th><th>Gap</th><th>Shared</th><th>Actions</th></tr></thead>
           <tbody id="team-table"></tbody>
         </table>
       </div>
@@ -442,7 +442,7 @@
 
       <!-- Column mapping hint -->
       <div style="margin-bottom:14px;padding:10px 12px;background:#eff6ff;border-radius:8px;border:1px solid #bfdbfe;font-size:12px;color:#1d4ed8">
-        <strong>Expected columns:</strong> Name · Initials · Role · Type (pm/eng/design/qa/ops) · Allocation% · Shared (Yes/No)
+        <strong>Expected columns:</strong> Name · Initials · Role · Type (pm/eng/design/qa/ops) · Allocation% · Ask% · Shared (Yes/No)
         <br/>Column headers are auto-detected — order doesn't matter.
       </div>
 
@@ -486,7 +486,7 @@
 <script>
 /* ── Init ─────────────────────────────────────────────────────── */
 const params = new URLSearchParams(location.search);
-let PID = params.get('id') || 'nexus';
+let PID = params.get('id') || 'classic';
 let P = null;
 
 function init(){
@@ -775,6 +775,17 @@ function renderTeam(){
         <span style="font-size:11px;color:var(--muted)">%</span>
       </div>
     </td>
+    <td>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input class="alloc-input" type="number" min="0" max="100" value="${m.askAllocation||0}"
+          title="Edit ask allocation %"
+          onchange="updateMemberAskAlloc(${m._idx},this.value)"/>
+        <span style="font-size:11px;color:var(--muted)">%</span>
+      </div>
+    </td>
+    <td style="font-weight:700;color:${(m.askAllocation||0)>m.allocation?'#ef4444':(m.askAllocation||0)<m.allocation?'#22c55e':'var(--muted)'}">
+      ${(m.askAllocation||0)-m.allocation > 0 ? '+' : ''}${(m.askAllocation||0)-m.allocation}%
+    </td>
     <td>${m.shared?'<span class="shared-tag">Shared</span>':'<span style="color:var(--muted);font-size:12px">—</span>'}</td>
     <td>
       <div style="display:flex;gap:6px">
@@ -965,19 +976,27 @@ function addMember(){
       </div>
       <div class="form-row">
         <div class="form-field">
-          <label>Allocation %</label>
+          <label>Allocation % <span style="font-size:10px;color:var(--muted)">(actual)</span></label>
           <div style="display:flex;align-items:center;gap:8px">
             <input type="number" id="nm-alloc" min="1" max="100" value="100"
               style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
             <span style="font-size:12px;color:var(--muted);white-space:nowrap">/ 100%</span>
           </div>
         </div>
-        <div class="form-field"><label>Shared Resource?</label>
-          <select id="nm-shared">
-            <option value="">No — dedicated to this product</option>
-            <option value="1">Yes — shared across products</option>
-          </select>
+        <div class="form-field">
+          <label>Ask % <span style="font-size:10px;color:var(--muted)">(requested)</span></label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" id="nm-ask" min="0" max="100" value="100"
+              style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+            <span style="font-size:12px;color:var(--muted);white-space:nowrap">/ 100%</span>
+          </div>
         </div>
+      </div>
+      <div class="form-field"><label>Shared Resource?</label>
+        <select id="nm-shared">
+          <option value="">No — dedicated to this product</option>
+          <option value="1">Yes — shared across products</option>
+        </select>
       </div>
     </div>
 
@@ -993,7 +1012,7 @@ function addMember(){
       </div>
       <div class="form-row">
         <div class="form-field">
-          <label>Allocation %</label>
+          <label>Allocation % <span style="font-size:10px;color:var(--muted)">(actual)</span></label>
           <div id="ep-alloc-wrap">
             <div style="display:flex;align-items:center;gap:8px">
               <input type="number" id="ep-alloc" min="1" max="100" value="20"
@@ -1003,11 +1022,19 @@ function addMember(){
             <div id="ep-alloc-hint" style="font-size:11px;color:var(--muted);margin-top:4px"></div>
           </div>
         </div>
-        <div class="form-field"><label>Shared Resource?</label>
-          <select id="ep-shared">
-            <option value="">No</option><option value="1">Yes</option>
-          </select>
+        <div class="form-field">
+          <label>Ask % <span style="font-size:10px;color:var(--muted)">(requested)</span></label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" id="ep-ask" min="0" max="100" value="20"
+              style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+            <span style="font-size:12px;color:var(--muted);white-space:nowrap">/ 100%</span>
+          </div>
         </div>
+      </div>
+      <div class="form-field"><label>Shared Resource?</label>
+        <select id="ep-shared">
+          <option value="">No</option><option value="1">Yes</option>
+        </select>
       </div>
     </div>
 
@@ -1045,24 +1072,28 @@ function saveMember(){
     const name = document.getElementById('nm-name').value.trim() || 'New Member';
     const raw  = document.getElementById('nm-init').value.trim().toUpperCase();
     const initials = raw || name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase() || 'NM';
+    const allocation = Math.max(1,Math.min(100,+document.getElementById('nm-alloc').value||100));
     TEAM[PID].push({
       name, initials,
-      role:       document.getElementById('nm-role').value.trim()  || 'Team Member',
-      type:       document.getElementById('nm-type').value,
-      allocation: Math.max(1,Math.min(100,+document.getElementById('nm-alloc').value||100)),
-      shared:     !!document.getElementById('nm-shared').value
+      role:         document.getElementById('nm-role').value.trim()  || 'Team Member',
+      type:         document.getElementById('nm-type').value,
+      allocation,
+      askAllocation: Math.max(0,Math.min(100,+document.getElementById('nm-ask').value||allocation)),
+      shared:       !!document.getElementById('nm-shared').value
     });
     showToast('✅ Member added');
   } else {
     const name     = document.getElementById('ep-name').value;
     const initials = document.getElementById('ep-init').value || '??';
     if(!name){ showToast('⚠️ Select a person first'); return; }
+    const allocation = Math.max(1,Math.min(100,+document.getElementById('ep-alloc').value||20));
     TEAM[PID].push({
       name, initials,
-      role:       document.getElementById('ep-role').value.trim()  || 'Team Member',
-      type:       document.getElementById('ep-type').value,
-      allocation: Math.max(1,Math.min(100,+document.getElementById('ep-alloc').value||20)),
-      shared:     !!document.getElementById('ep-shared').value
+      role:         document.getElementById('ep-role').value.trim()  || 'Team Member',
+      type:         document.getElementById('ep-type').value,
+      allocation,
+      askAllocation: Math.max(0,Math.min(100,+document.getElementById('ep-ask').value||allocation)),
+      shared:       !!document.getElementById('ep-shared').value
     });
     showToast('✅ Role added for ' + name);
   }
@@ -1100,7 +1131,7 @@ function addRoleFor(name, initials){
     </div>
     <div class="form-row">
       <div class="form-field">
-        <label>Allocation %</label>
+        <label>Allocation % <span style="font-size:10px;color:var(--muted)">(actual)</span></label>
         <div style="display:flex;align-items:center;gap:8px">
           <input type="number" id="ar-alloc" min="1" max="100" value="${Math.min(remain,20)||10}"
             style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
@@ -1108,9 +1139,17 @@ function addRoleFor(name, initials){
         </div>
         ${total+20>100?`<div style="font-size:11px;color:#f59e0b;margin-top:3px">⚠ Total may exceed 100% — review carefully</div>`:''}
       </div>
-      <div class="form-field"><label>Shared?</label>
-        <select id="ar-shared"><option value="">No</option><option value="1">Yes</option></select>
+      <div class="form-field">
+        <label>Ask % <span style="font-size:10px;color:var(--muted)">(requested)</span></label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="number" id="ar-ask" min="0" max="100" value="${Math.min(remain,20)||10}"
+            style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+          <span style="font-size:12px;color:var(--muted)">/100%</span>
+        </div>
       </div>
+    </div>
+    <div class="form-field"><label>Shared?</label>
+      <select id="ar-shared"><option value="">No</option><option value="1">Yes</option></select>
     </div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
       <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
@@ -1120,12 +1159,14 @@ function addRoleFor(name, initials){
 
 function saveRoleFor(name, initials){
   if(!TEAM[PID]) TEAM[PID]=[];
+  const allocation = Math.max(1,Math.min(100,+document.getElementById('ar-alloc').value||10));
   TEAM[PID].push({
     name, initials,
-    role:       document.getElementById('ar-role').value.trim()  || 'Additional Role',
-    type:       document.getElementById('ar-type').value,
-    allocation: Math.max(1,Math.min(100,+document.getElementById('ar-alloc').value||10)),
-    shared:     !!document.getElementById('ar-shared').value
+    role:         document.getElementById('ar-role').value.trim()  || 'Additional Role',
+    type:         document.getElementById('ar-type').value,
+    allocation,
+    askAllocation: Math.max(0,Math.min(100,+document.getElementById('ar-ask').value||allocation)),
+    shared:       !!document.getElementById('ar-shared').value
   });
   closeModal(); persistData(); renderTeam();
   showToast(`✅ New role added for ${name}`);
@@ -1153,7 +1194,7 @@ function editMember(i){
     </div>
     <div class="form-row">
       <div class="form-field">
-        <label>Allocation %</label>
+        <label>Allocation % <span style="font-size:10px;color:var(--muted)">(actual)</span></label>
         <div style="display:flex;align-items:center;gap:8px">
           <input type="number" id="em-alloc" min="1" max="100" value="${m.allocation}"
             style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
@@ -1161,12 +1202,20 @@ function editMember(i){
         </div>
         ${allForPerson.length>1?`<div style="font-size:11px;color:var(--muted);margin-top:3px">Other roles: ${totalOthers}% · this role: ${m.allocation}% · total: ${totalOthers+m.allocation}%</div>`:''}
       </div>
-      <div class="form-field"><label>Shared?</label>
-        <select id="em-shared">
-          <option value=""${!m.shared?' selected':''}>No</option>
-          <option value="1"${m.shared?' selected':''}>Yes</option>
-        </select>
+      <div class="form-field">
+        <label>Ask % <span style="font-size:10px;color:var(--muted)">(requested)</span></label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="number" id="em-ask" min="0" max="100" value="${m.askAllocation||m.allocation}"
+            style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+          <span style="font-size:12px;color:var(--muted)">/100%</span>
+        </div>
       </div>
+    </div>
+    <div class="form-field"><label>Shared?</label>
+      <select id="em-shared">
+        <option value=""${!m.shared?' selected':''}>No</option>
+        <option value="1"${m.shared?' selected':''}>Yes</option>
+      </select>
     </div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
       <button class="btn btn-sm" style="background:#fff5f5;color:#ef4444;border:1px solid #fca5a5;border-radius:7px;padding:6px 12px;cursor:pointer;font-weight:600"
@@ -1177,12 +1226,13 @@ function editMember(i){
 }
 
 function applyMemberEdit(i){
-  TEAM[PID][i].name       = document.getElementById('em-name').value.trim()  || TEAM[PID][i].name;
-  TEAM[PID][i].initials   = document.getElementById('em-init').value.trim().toUpperCase() || TEAM[PID][i].initials;
-  TEAM[PID][i].role       = document.getElementById('em-role').value.trim()  || TEAM[PID][i].role;
-  TEAM[PID][i].type       = document.getElementById('em-type').value;
-  TEAM[PID][i].allocation = Math.max(1,Math.min(100,+document.getElementById('em-alloc').value||TEAM[PID][i].allocation));
-  TEAM[PID][i].shared     = !!document.getElementById('em-shared').value;
+  TEAM[PID][i].name         = document.getElementById('em-name').value.trim()  || TEAM[PID][i].name;
+  TEAM[PID][i].initials     = document.getElementById('em-init').value.trim().toUpperCase() || TEAM[PID][i].initials;
+  TEAM[PID][i].role         = document.getElementById('em-role').value.trim()  || TEAM[PID][i].role;
+  TEAM[PID][i].type         = document.getElementById('em-type').value;
+  TEAM[PID][i].allocation   = Math.max(1,Math.min(100,+document.getElementById('em-alloc').value||TEAM[PID][i].allocation));
+  TEAM[PID][i].askAllocation= Math.max(0,Math.min(100,+document.getElementById('em-ask').value||TEAM[PID][i].askAllocation||TEAM[PID][i].allocation));
+  TEAM[PID][i].shared       = !!document.getElementById('em-shared').value;
   closeModal(); persistData(); renderTeam(); showToast('✅ Role updated');
 }
 
@@ -1204,7 +1254,13 @@ function updateMemberAlloc(i, val){
   const v = Math.max(1, Math.min(100, parseInt(val)||1));
   if(TEAM[PID][i]) TEAM[PID][i].allocation = v;
   persistData(); markChanged();
-  // Re-render only the footer total on the card to avoid focus loss
+  renderTeam();
+}
+
+function updateMemberAskAlloc(i, val){
+  const v = Math.max(0, Math.min(100, parseInt(val)||0));
+  if(TEAM[PID][i]) TEAM[PID][i].askAllocation = v;
+  persistData(); markChanged();
   renderTeam();
 }
 
@@ -1243,7 +1299,7 @@ let _changed=false;
 function markChanged(){ _changed=true; document.title='• '+P.name+' — Qorix Portal'; }
 function saveChanges(){ _changed=false; persistData(); document.title=P.name+' — Qorix Portal'; showToast('✅ Changes saved'); }
 function exportProduct(){
-  const rows=[['Name','Role','Type','Allocation%','Shared'],...(TEAM[PID]||[]).map(m=>[m.name,m.role,m.type,m.allocation,m.shared?'Yes':'No'])];
+  const rows=[['Name','Role','Type','Allocation%','Ask%','Shared'],...(TEAM[PID]||[]).map(m=>[m.name,m.role,m.type,m.allocation,m.askAllocation||m.allocation,m.shared?'Yes':'No'])];
   const csv=rows.map(r=>r.join(',')).join('\n');
   const blob=new Blob([csv],{type:'text/csv'});
   const url=URL.createObjectURL(blob);
@@ -1276,15 +1332,15 @@ function closeExcelModal(){
 }
 
 function downloadExcelTemplate(){
-  const header = 'Name,Initials,Role,Type,Allocation%,Shared';
+  const header = 'Name,Initials,Role,Type,Allocation%,Ask%,Shared';
   const rows = [
-    'Aisha Rahman,AR,Product Manager,pm,100,No',
-    'Dev Team Alpha,DA,Engineering Lead,eng,100,No',
-    'Lena Kovacs,LK,Senior Engineer,eng,100,No',
-    'Sam Torres,ST,Engineer,eng,80,Yes',
-    'Mia Patel,MP,UX Designer,design,80,No',
-    'Nour Al-Rashid,NA,QA Lead,qa,100,No',
-    'Leo Petrov,LP,DevOps Engineer,ops,100,No'
+    'Aisha Rahman,AR,Product Manager,pm,100,100,No',
+    'Dev Team Alpha,DA,Engineering Lead,eng,100,100,No',
+    'Lena Kovacs,LK,Senior Engineer,eng,100,100,No',
+    'Sam Torres,ST,Engineer,eng,80,100,Yes',
+    'Mia Patel,MP,UX Designer,design,80,100,No',
+    'Nour Al-Rashid,NA,QA Lead,qa,100,100,No',
+    'Leo Petrov,LP,DevOps Engineer,ops,100,100,No'
   ];
   const csv = [header, ...rows].join('\n');
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
@@ -1358,7 +1414,8 @@ function _processExcelRows(rows){
     initials: idx('initial'),
     role:     [idx('role'),idx('position'),idx('title')].find(i=>i>=0),
     type:     [idx('type'),idx('department'),idx('team')].find(i=>i>=0),
-    alloc:    [idx('alloc'),idx('%'),idx('percent'),idx('capacity')].find(i=>i>=0),
+    alloc:    [idx('alloc%'),idx('allocation'),idx('alloc'),idx('capacity')].find(i=>i>=0),
+    ask:      [idx('ask%'),idx('ask'),idx('request')].find(i=>i>=0),
     shared:   [idx('shared'),idx('cross')].find(i=>i>=0)
   };
 
@@ -1372,12 +1429,14 @@ function _processExcelRows(rows){
       const type = TYPE_MAP[rawType] || 'eng';
       const rawAlloc = cols.alloc >= 0 ? r[cols.alloc]?.toString().replace(/[^0-9]/g,'') : '100';
       const allocation = Math.min(100, Math.max(1, parseInt(rawAlloc) || 100));
+      const rawAsk = cols.ask >= 0 ? r[cols.ask]?.toString().replace(/[^0-9]/g,'') : '';
+      const askAllocation = rawAsk ? Math.min(100, Math.max(0, parseInt(rawAsk) || allocation)) : allocation;
       const rawShared = cols.shared >= 0 ? r[cols.shared]?.toString().toLowerCase() : '';
       const shared = rawShared.includes('yes') || rawShared.includes('true') || rawShared === '1';
       return {
         name, initials,
         role: cols.role >= 0 ? r[cols.role]?.toString().trim() || 'Team Member' : 'Team Member',
-        type, allocation, shared
+        type, allocation, askAllocation, shared
       };
     });
 
@@ -1396,7 +1455,7 @@ function _renderExcelPreview(){
     <div style="overflow-x:auto;border-radius:8px;border:1px solid var(--border)">
     <table style="width:100%;border-collapse:collapse;font-size:12px">
     <thead><tr style="background:var(--bg)">
-      ${['Name','Initials','Role','Type','Alloc%','Shared'].map(h=>`<th style="padding:7px 12px;text-align:left;font-weight:600;color:var(--muted);font-size:11px;border-bottom:1px solid var(--border);white-space:nowrap">${h}</th>`).join('')}
+      ${['Name','Initials','Role','Type','Alloc%','Ask%','Shared'].map(h=>`<th style="padding:7px 12px;text-align:left;font-weight:600;color:var(--muted);font-size:11px;border-bottom:1px solid var(--border);white-space:nowrap">${h}</th>`).join('')}
     </tr></thead>
     <tbody>
     ${_parsedMembers.slice(0,8).map(m=>`<tr>
@@ -1409,9 +1468,10 @@ function _renderExcelPreview(){
         <span style="background:${typeColor[m.type]}20;color:${typeColor[m.type]};border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;text-transform:uppercase">${m.type}</span>
       </td>
       <td style="padding:7px 12px;border-bottom:1px solid var(--border);font-weight:700;color:${m.allocation<50?'#ef4444':'var(--heading)'}">${m.allocation}%</td>
+      <td style="padding:7px 12px;border-bottom:1px solid var(--border);font-weight:700;color:${(m.askAllocation||0)>m.allocation?'#f59e0b':'var(--heading)'}">${m.askAllocation||m.allocation}%</td>
       <td style="padding:7px 12px;border-bottom:1px solid var(--border)">${m.shared?'<span style="color:#7e22ce;font-size:11px;font-weight:600">Yes</span>':'<span style="color:var(--muted);font-size:11px">No</span>'}</td>
     </tr>`).join('')}
-    ${_parsedMembers.length>8?`<tr><td colspan="6" style="padding:8px 12px;color:var(--muted);font-size:11px;font-style:italic">…and ${_parsedMembers.length-8} more rows</td></tr>`:''}
+    ${_parsedMembers.length>8?`<tr><td colspan="7" style="padding:8px 12px;color:var(--muted);font-size:11px;font-style:italic">…and ${_parsedMembers.length-8} more rows</td></tr>`:''}
     </tbody></table></div>`;
 
   document.getElementById('excel-import-options').style.display = 'block';
