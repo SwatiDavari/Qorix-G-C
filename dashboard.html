@@ -56,52 +56,35 @@
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;font-size:14px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
 
-/* ── Sidebar ─────────────────────────────────────────────────────── */
-.sidebar{
-  width:var(--sidebar-w);min-width:var(--sidebar-w);
-  background:var(--sidebar);
-  display:flex;flex-direction:column;
-  position:fixed;top:0;left:0;bottom:0;z-index:50;
-  overflow-y:auto;
+/* ── Section tab bar (replaces sidebar) ──────────────────────────── */
+.section-tabbar{
+  background:#fff;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 28px;gap:2px;
+  overflow-x:auto;position:sticky;top:44px;z-index:40;
+  scrollbar-width:none;
 }
-.sidebar-logo{
-  padding:20px 20px 16px;
-  border-bottom:1px solid rgba(255,255,255,.08);
-  display:flex;align-items:center;gap:10px;
+.section-tabbar::-webkit-scrollbar{display:none}
+.stab{
+  display:flex;align-items:center;gap:6px;
+  padding:12px 14px;border:none;background:none;
+  font-size:13px;font-weight:600;color:var(--muted);
+  cursor:pointer;border-bottom:2px solid transparent;
+  white-space:nowrap;transition:color .15s;margin-bottom:-1px;
 }
-.logo-mark{
-  width:36px;height:36px;border-radius:8px;
-  background:linear-gradient(135deg,var(--qx-blue),var(--qx-sky));
-  display:flex;align-items:center;justify-content:center;
-  font-weight:800;color:#fff;font-size:15px;letter-spacing:-1px;
-  flex-shrink:0;
-}
-.logo-text{font-weight:700;color:#fff;font-size:16px;letter-spacing:.3px}
-.logo-sub{font-size:10px;color:rgba(255,255,255,.45);font-weight:400;margin-top:1px}
-
-.nav-section{padding:16px 12px 4px;font-size:10px;font-weight:600;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase}
-.nav-item{
-  display:flex;align-items:center;gap:10px;
-  padding:9px 14px;margin:1px 8px;border-radius:7px;
-  color:rgba(255,255,255,.65);cursor:pointer;font-size:13px;font-weight:500;
-  transition:background .15s,color .15s;
-  border:none;background:none;width:calc(100% - 16px);text-align:left;
-}
-.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
-.nav-item.active{background:linear-gradient(90deg,rgba(60,0,255,.35),rgba(15,158,213,.2));color:#fff;border-left:3px solid var(--qx-cyan)}
-.nav-item .nav-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
-.nav-item .nav-badge{margin-left:auto;background:var(--qx-orange);color:#fff;border-radius:9px;padding:1px 7px;font-size:10px;font-weight:700}
+.stab:hover{color:var(--text)}
+.stab.active{color:var(--qx-blue);border-bottom-color:var(--qx-blue)}
+.stab .stab-badge{background:var(--qx-orange);color:#fff;border-radius:9px;padding:1px 6px;font-size:10px;font-weight:700}
 
 /* ── Main ────────────────────────────────────────────────────────── */
-.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.main{display:flex;flex-direction:column;min-height:100vh}
 
 /* ── Topbar ──────────────────────────────────────────────────────── */
 .topbar{
   height:var(--topbar-h);background:#fff;border-bottom:1px solid var(--border);
   display:flex;align-items:center;padding:0 28px;gap:16px;
-  position:sticky;top:0;z-index:40;
+  position:sticky;top:44px;z-index:39;
 }
 .topbar-title{font-weight:700;font-size:18px;color:var(--heading);flex:1}
 .topbar-title span{color:var(--qx-blue)}
@@ -315,9 +298,6 @@ tr:hover td{background:rgba(60,0,255,.02)}
 /* ── Responsive ──────────────────────────────────────────────────── */
 @media(max-width:900px){
   .kpi-grid{grid-template-columns:repeat(3,1fr)}
-  .sidebar{transform:translateX(-100%);transition:transform .2s}
-  .sidebar.open{transform:none}
-  .main{margin-left:0}
 }
 
 /* ── Editable field highlight ────────────────────────────────────── */
@@ -361,59 +341,22 @@ tr:hover td{background:rgba(60,0,255,.02)}
   </div>
 </nav>
 
-<!-- ═══════════════════════════════════════════════════════════ SIDEBAR -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-mark">Q</div>
-    <div>
-      <div class="logo-text">Qorix</div>
-      <div class="logo-sub">Portfolio Dashboard</div>
-    </div>
-  </div>
-
-  <div class="nav-section">Overview</div>
-  <button class="nav-item active" onclick="navigate('overview',this)">
-    <span class="nav-icon">⬛</span> Dashboard
-  </button>
-  <button class="nav-item" onclick="navigate('products',this)">
-    <span class="nav-icon">📦</span> Products
-  </button>
-
-  <div class="nav-section">Planning</div>
-  <button class="nav-item" onclick="navigate('roadmap',this)">
-    <span class="nav-icon">🗺️</span> Roadmap
-  </button>
-  <button class="nav-item" onclick="navigate('team',this)">
-    <span class="nav-icon">👥</span> Team Allocation
-  </button>
-  <button class="nav-item" onclick="navigate('financial',this)">
-    <span class="nav-icon">💰</span> Financial
-  </button>
-
-  <div class="nav-section">Governance</div>
-  <button class="nav-item" onclick="navigate('risks',this)">
-    <span class="nav-icon">⚠️</span> Risk Management
-    <span class="nav-badge" id="risk-badge">8</span>
-  </button>
-  <button class="nav-item" onclick="navigate('compliance',this)">
-    <span class="nav-icon">🛡️</span> Compliance
-  </button>
-  <button class="nav-item" onclick="navigate('dependencies',this)">
-    <span class="nav-icon">🔗</span> Dependencies
-  </button>
-
-  <div class="nav-section">Intelligence</div>
-  <button class="nav-item" onclick="navigate('insights',this)">
-    <span class="nav-icon">💡</span> Insights &amp; Alerts
-    <span class="nav-badge" id="alert-badge">5</span>
-  </button>
-  <button class="nav-item" onclick="navigate('activity',this)">
-    <span class="nav-icon">📋</span> Activity Log
-  </button>
-</aside>
-
 <!-- ═══════════════════════════════════════════════════════════ MAIN -->
 <div class="main">
+
+<!-- SECTION TAB BAR -->
+<div class="section-tabbar" id="section-tabbar">
+  <button class="stab active" onclick="navigate('overview',this)">⬛ Dashboard</button>
+  <button class="stab" onclick="navigate('products',this)">📦 Products</button>
+  <button class="stab" onclick="navigate('roadmap',this)">🗺️ Roadmap</button>
+  <button class="stab" onclick="navigate('team',this)">👥 Team Allocation</button>
+  <button class="stab" onclick="navigate('financial',this)">💰 Financial</button>
+  <button class="stab" onclick="navigate('risks',this)">⚠️ Risk Management <span class="stab-badge" id="risk-badge">8</span></button>
+  <button class="stab" onclick="navigate('compliance',this)">🛡️ Compliance</button>
+  <button class="stab" onclick="navigate('dependencies',this)">🔗 Dependencies</button>
+  <button class="stab" onclick="navigate('insights',this)">💡 Insights &amp; Alerts <span class="stab-badge" id="alert-badge">5</span></button>
+  <button class="stab" onclick="navigate('activity',this)">📋 Activity Log</button>
+</div>
 
   <!-- TOPBAR -->
   <div class="topbar">
@@ -480,7 +423,7 @@ tr:hover td{background:rgba(60,0,255,.02)}
     <div class="section-hdr">
       <h2>Portfolio Health</h2>
       <div class="hdr-actions">
-        <button class="btn btn-outline btn-sm" onclick="navigate('products', document.querySelector('[onclick*=products]'))">View All Products →</button>
+        <button class="btn btn-outline btn-sm" onclick="navigate('products', document.querySelector('.stab:nth-child(2)'))">View All Products →</button>
       </div>
     </div>
 
@@ -917,7 +860,7 @@ const FLAGS = [
 function navigate(sec, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById('sec-' + sec).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.stab').forEach(n => n.classList.remove('active'));
   if(btn) btn.classList.add('active');
 }
 
