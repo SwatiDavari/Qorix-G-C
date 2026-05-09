@@ -4,6 +4,19 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Qorix – Product Portfolio Dashboard</title>
+<style>
+.site-topbar-nav{height:44px;background:rgba(14,40,65,.97);backdrop-filter:blur(12px);display:flex;align-items:center;padding:0 24px;gap:24px;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;z-index:60}
+.stn-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+.stn-logo-mark{width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,#3C00FF,#0F9ED5);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:12px}
+.stn-logo-text{font-weight:700;color:#fff;font-size:14px}
+.stn-links{display:flex;gap:2px}
+.stn-link{color:rgba(255,255,255,.6);font-size:12px;font-weight:500;padding:4px 12px;border-radius:6px;text-decoration:none;transition:all .15s}
+.stn-link:hover{color:#fff;background:rgba(255,255,255,.08)}
+.stn-link.active{color:#fff;background:rgba(60,0,255,.35)}
+.stn-sep{width:1px;height:20px;background:rgba(255,255,255,.1);margin:0 8px;align-self:center}
+.stn-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.stn-badge{background:#D7FF3C;color:#0E2841;font-weight:700;padding:4px 12px;border-radius:6px;font-size:12px;text-decoration:none}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
@@ -327,6 +340,26 @@ tr:hover td{background:rgba(60,0,255,.02)}
 </style>
 </head>
 <body>
+<!-- SITE NAV BAR -->
+<nav class="site-topbar-nav">
+  <a href="index.html" class="stn-logo">
+    <div class="stn-logo-mark">Q</div>
+    <div class="stn-logo-text">Qorix</div>
+  </a>
+  <div class="stn-sep"></div>
+  <div class="stn-links">
+    <a href="index.html" class="stn-link">Portal Home</a>
+    <a href="dashboard.html" class="stn-link active">Portfolio Dashboard</a>
+    <a href="product.html?id=nexus" class="stn-link">Nexus</a>
+    <a href="product.html?id=pulse" class="stn-link">Pulse</a>
+    <a href="product.html?id=datasphere" class="stn-link">DataSphere</a>
+    <a href="product.html?id=coreapi" class="stn-link">CoreAPI</a>
+    <a href="product.html?id=ehub" class="stn-link">EnterpriseHub</a>
+  </div>
+  <div class="stn-right">
+    <a href="index.html" class="stn-badge">← Portal</a>
+  </div>
+</nav>
 
 <!-- ═══════════════════════════════════════════════════════════ SIDEBAR -->
 <aside class="sidebar" id="sidebar">

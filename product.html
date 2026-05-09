@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Product — Qorix Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="assets/styles.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="assets/data.js"></script>
+<style>
+/* ── Product-page specific ────────────────────────────────────── */
+.product-hero{
+  padding:32px 40px 0;
+  background:linear-gradient(135deg,var(--qx-navy),#1a0a6e 80%);
+  position:relative;overflow:hidden;
+}
+.product-hero::before{
+  content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,255,255,.1),transparent 70%);pointer-events:none;
+}
+.hero-top{display:flex;align-items:flex-start;gap:20px;position:relative;z-index:1;max-width:1300px;margin:0 auto}
+.product-badge-large{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:20px;flex-shrink:0}
+.hero-info{flex:1}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.hero-name{font-size:clamp(20px,3vw,30px);font-weight:800;color:#fff;margin-bottom:4px}
+.hero-desc{font-size:13px;color:rgba(255,255,255,.65);max-width:560px;margin-bottom:12px}
+.hero-actions-row{display:flex;gap:8px;flex-wrap:wrap}
+
+/* nav tabs inside hero */
+.product-tabs{max-width:1300px;margin:20px auto 0;position:relative;z-index:1;display:flex;gap:0;border-bottom:none}
+.ptab{padding:11px 20px;border:none;background:none;font-size:13px;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;border-bottom:3px solid transparent;transition:all .15s}
+.ptab:hover{color:rgba(255,255,255,.85)}
+.ptab.active{color:var(--qx-lime);border-bottom-color:var(--qx-lime)}
+.ptab-pane{display:none}.ptab-pane.active{display:flex;flex-direction:column;gap:20px}
+
+/* Product body */
+.product-body{padding:28px 40px;max-width:1300px;margin:0 auto}
+
+/* KPI strip */
+.kpi-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.ks-card{background:var(--card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border);position:relative;overflow:hidden}
+.ks-card .kv{font-size:22px;font-weight:800;color:var(--heading);line-height:1}
+.ks-card .kl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.ks-accent{position:absolute;top:0;left:0;right:0;height:3px}
+
+/* Roadmap */
+.rm-now .rm-col-hdr{color:var(--qx-blue);border-color:var(--qx-blue)}
+.rm-next .rm-col-hdr{color:var(--qx-orange);border-color:var(--qx-orange)}
+.rm-later .rm-col-hdr{color:var(--muted);border-color:var(--border)}
+
+/* Team member card */
+.member-card{background:var(--card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.member-info{flex:1}
+.member-name{font-weight:600;font-size:13px;color:var(--heading)}
+.member-role{font-size:11px;color:var(--muted);margin-top:2px}
+.member-alloc{text-align:right}
+.alloc-pct{font-size:14px;font-weight:800}
+.alloc-label{font-size:10px;color:var(--muted)}
+
+/* Risk card (product view) */
+.risk-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+.risk-card-top{padding:14px 16px;display:flex;align-items:flex-start;gap:10px}
+.risk-card-body{padding:0 16px 14px}
+.risk-card-foot{padding:10px 16px;background:var(--bg);border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;justify-content:space-between}
+
+/* Compliance card */
+.comp-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);padding:16px}
+.comp-card-title{font-weight:700;font-size:13px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+
+/* Editable highlight */
+.editable-field{cursor:text;border-bottom:1px dashed transparent;border-radius:3px;padding:1px 3px;transition:border-color .15s,background .15s}
+.editable-field:hover{border-color:var(--qx-blue);background:rgba(60,0,255,.04)}
+.editable-field:focus{outline:none;border-color:var(--qx-blue);background:rgba(60,0,255,.06)}
+
+/* add risk/member btn */
+.add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:2px dashed var(--border);border-radius:var(--radius);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;background:none;width:100%;transition:border-color .15s,color .15s}
+.add-btn:hover{border-color:var(--qx-blue);color:var(--qx-blue)}
+
+/* Summary chart strip */
+.summary-charts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.sc-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);padding:16px}
+.sc-card h4{font-size:13px;font-weight:700;margin-bottom:14px}
+.chart-sm{position:relative;height:160px}
+
+/* Fin table */
+.fin-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.fin-row:last-child{border-bottom:none}
+.fin-label{font-size:12px;color:var(--muted);font-weight:500}
+.fin-val{font-size:14px;font-weight:700;color:var(--heading)}
+.fin-bar-r{flex:1;margin:0 16px;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.fin-bar-f{height:100%;border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark">Q</div>
+    <div class="nav-logo-text">Qorix</div>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Portal Home</a>
+    <a href="dashboard.html" class="nav-link">Portfolio Dashboard</a>
+    <a href="product.html" class="nav-link active">Products</a>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;margin-left:auto">
+    <!-- Product switcher -->
+    <select id="product-switcher" class="filter-select" onchange="switchProduct(this.value)" style="border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;border-radius:7px;padding:6px 12px;font-size:13px;cursor:pointer">
+      <option value="">Switch product…</option>
+    </select>
+    <a href="dashboard.html" class="nav-cta">Full Dashboard →</a>
+  </div>
+</nav>
+
+<!-- PRODUCT HERO -->
+<div class="product-hero" id="product-hero">
+  <div class="hero-top">
+    <div class="product-badge-large" id="hero-badge"></div>
+    <div class="hero-info">
+      <div class="hero-meta" id="hero-meta"></div>
+      <div class="hero-name" id="hero-name"></div>
+      <div class="hero-desc" id="hero-desc"></div>
+      <div class="hero-actions-row">
+        <button class="btn btn-lime btn-sm" onclick="saveChanges()">💾 Save Changes</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportProduct()">⬇ Export</button>
+        <button class="btn btn-ghost btn-sm" onclick="addRisk()">+ Add Risk</button>
+        <button class="btn btn-ghost btn-sm" onclick="addMember()">+ Add Team Member</button>
+      </div>
+    </div>
+    <!-- Completion ring -->
+    <div style="text-align:center;flex-shrink:0;position:relative">
+      <canvas id="ringChart" width="90" height="90"></canvas>
+      <div id="ring-pct" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;font-weight:800;color:#fff"></div>
+      <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:4px">Complete</div>
+    </div>
+  </div>
+  <!-- Tab bar -->
+  <div class="product-tabs" id="ptabs"></div>
+</div>
+
+<!-- BODY -->
+<div class="product-body">
+
+  <!-- ── TAB: OVERVIEW ── -->
+  <div class="ptab-pane active" id="pane-overview">
+
+    <!-- KPI strip -->
+    <div class="kpi-strip" id="kpi-strip"></div>
+
+    <!-- Summary charts + fin -->
+    <div class="summary-charts">
+      <div class="sc-card">
+        <h4>Budget Breakdown</h4>
+        <div class="chart-sm"><canvas id="finBarChart"></canvas></div>
+      </div>
+      <div class="sc-card">
+        <h4>Financial Summary</h4>
+        <div id="fin-summary"></div>
+        <div id="variance-bar" style="margin-top:14px"></div>
+      </div>
+    </div>
+
+    <!-- Alerts -->
+    <div id="overview-alerts"></div>
+
+  </div>
+
+  <!-- ── TAB: ROADMAP ── -->
+  <div class="ptab-pane" id="pane-roadmap">
+    <div class="section-hdr">
+      <h2>Roadmap — Now · Next · Later</h2>
+      <div class="actions">
+        <button class="btn btn-primary btn-sm" onclick="addRoadmapItem()">+ Add Item</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="rm-grid">
+        <div class="roadmap-col rm-now" id="rm-now">
+          <div class="rm-col-hdr">🟦 Now (0–3 months)</div>
+        </div>
+        <div class="roadmap-col rm-next" id="rm-next">
+          <div class="rm-col-hdr">🟧 Next (3–6 months)</div>
+        </div>
+        <div class="roadmap-col rm-later" id="rm-later">
+          <div class="rm-col-hdr">⬜ Later (6+ months)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: TEAM ── -->
+  <div class="ptab-pane" id="pane-team">
+    <div class="section-hdr">
+      <h2>Team Allocation</h2>
+      <div class="actions">
+        <button class="btn btn-primary btn-sm" onclick="addMember()">+ Add Member</button>
+        <button class="btn btn-outline btn-sm" onclick="exportTeam()">⬇ Export</button>
+      </div>
+    </div>
+
+    <!-- Role summary -->
+    <div id="role-summary" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px"></div>
+
+    <!-- Member grid -->
+    <div>
+      <div id="team-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:16px"></div>
+      <button class="add-btn" style="margin-top:12px" onclick="addMember()">+ Add Team Member</button>
+    </div>
+
+    <!-- Shared resources callout -->
+    <div id="shared-callout"></div>
+
+    <!-- Team table -->
+    <div>
+      <div class="section-hdr" style="margin-top:4px"><h3>Full Roster</h3></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Role</th><th>Type</th><th>Allocation</th><th>Shared</th><th>Actions</th></tr></thead>
+          <tbody id="team-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: RISKS ── -->
+  <div class="ptab-pane" id="pane-risks">
+    <div class="section-hdr">
+      <h2>Risk Register</h2>
+      <div class="actions">
+        <select class="filter-select" id="risk-filter" onchange="renderRisksPane()">
+          <option value="all">All</option><option value="Open">Open</option><option value="In Progress">In Progress</option><option value="Closed">Closed</option>
+        </select>
+        <button class="btn btn-danger btn-sm" onclick="addRisk()">+ Log Risk</button>
+      </div>
+    </div>
+    <div id="risks-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px"></div>
+    <button class="add-btn" onclick="addRisk()">+ Log New Risk</button>
+  </div>
+
+  <!-- ── TAB: COMPLIANCE ── -->
+  <div class="ptab-pane" id="pane-compliance">
+    <div class="section-hdr"><h2>Compliance & Governance</h2></div>
+    <div id="comp-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px"></div>
+  </div>
+
+  <!-- ── TAB: ACTIVITY ── -->
+  <div class="ptab-pane" id="pane-activity">
+    <div class="section-hdr"><h2>Activity Log</h2></div>
+    <div class="card card-body">
+      <div class="timeline" id="activity-timeline"></div>
+    </div>
+  </div>
+
+</div><!-- /product-body -->
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3 id="modal-title">Add Item</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── Init ─────────────────────────────────────────────────────── */
+const params = new URLSearchParams(location.search);
+let PID = params.get('id') || 'nexus';
+let P = null;
+
+function init(){
+  P = getProduct(PID);
+  if(!P){ document.body.innerHTML='<div style="padding:60px;text-align:center;color:#64748b">Product not found. <a href="index.html">Go home</a></div>'; return; }
+  document.title = P.name + ' — Qorix Portal';
+  buildSwitcher();
+  renderHero();
+  renderTabs();
+  renderOverview();
+  renderRoadmap();
+  renderTeam();
+  renderRisksPane();
+  renderCompliance();
+  renderActivity();
+  // activate tab from hash
+  const hash = location.hash.replace('#','');
+  if(hash) activateTab(hash);
+}
+
+function switchProduct(id){ if(id) location.href='product.html?id='+id; }
+
+function buildSwitcher(){
+  const sel = document.getElementById('product-switcher');
+  sel.innerHTML = '<option value="">Switch product…</option>' + PRODUCTS.map(p=>`<option value="${p.id}"${p.id===PID?' selected':''}>${p.name}</option>`).join('');
+}
+
+/* ── Hero ─────────────────────────────────────────────────────── */
+function renderHero(){
+  document.getElementById('product-hero').style.background=`linear-gradient(135deg,${P.color}33 0%,var(--qx-navy) 40%,#1a0a6e 100%)`;
+  document.getElementById('hero-badge').style.background=P.color;
+  document.getElementById('hero-badge').textContent=P.abbr;
+  document.getElementById('hero-name').textContent=P.name;
+  document.getElementById('hero-desc').textContent=P.description;
+  document.getElementById('hero-meta').innerHTML=`
+    <span class="badge badge-${P.status}">${statusLabel(P.status)}</span>
+    <span class="badge-phase" style="background:${phaseBg(P.phase)};color:${phaseText(P.phase)}">${P.phase}</span>
+    <span style="font-size:12px;color:rgba(255,255,255,.5)">PM: <strong style="color:rgba(255,255,255,.85)">${P.pm}</strong></span>
+    <span style="font-size:12px;color:rgba(255,255,255,.5)">Updated: <strong style="color:rgba(255,255,255,.85)">${P.updated}</strong></span>`;
+
+  // Completion ring
+  const ring = new Chart(document.getElementById('ringChart'),{
+    type:'doughnut',
+    data:{datasets:[{data:[P.completion,100-P.completion],backgroundColor:[P.color,'rgba(255,255,255,.1)'],borderWidth:0,borderRadius:4}]},
+    options:{responsive:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{enabled:false}}}
+  });
+  document.getElementById('ring-pct').textContent=P.completion+'%';
+}
+
+/* ── Tabs ─────────────────────────────────────────────────────── */
+const TABS=[
+  {id:'overview', label:'Overview'},
+  {id:'roadmap',  label:'🗺 Roadmap'},
+  {id:'team',     label:'👥 Team'},
+  {id:'risks',    label:'⚠ Risks'},
+  {id:'compliance',label:'🛡 Compliance'},
+  {id:'activity', label:'📋 Activity'}
+];
+function renderTabs(){
+  document.getElementById('ptabs').innerHTML = TABS.map(t=>`<button class="ptab${t.id==='overview'?' active':''}" onclick="activateTab('${t.id}')">${t.label}</button>`).join('');
+}
+function activateTab(id){
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.toggle('active',b.textContent.includes(TABS.find(t=>t.id===id)?.label||id)));
+  document.querySelectorAll('.ptab-pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+id));
+  history.replaceState(null,'','product.html?id='+PID+'#'+id);
+}
+
+/* ── Overview ─────────────────────────────────────────────────── */
+function renderOverview(){
+  // KPIs
+  const riskCount = (RISKS[PID]||[]).filter(r=>r.status!=='Closed').length;
+  const overBudget = P.forecast > P.budget;
+  const kpis=[
+    {val:P.revenue,  label:'Revenue',    accent:P.color},
+    {val:P.mrr,      label:'MRR',        accent:QX.sky},
+    {val:P.users,    label:'Users',      accent:QX.green},
+    {val:P.adoption, label:'Adoption',   accent:QX.purple},
+    {val:P.nps+'',   label:'NPS Score',  accent:QX.orange},
+    {val:P.fte+' FTE',label:'Team Size', accent:QX.steelBlue}
+  ];
+  document.getElementById('kpi-strip').innerHTML=kpis.map(k=>`
+    <div class="ks-card">
+      <div class="ks-accent" style="background:${k.accent}"></div>
+      <div class="kv">${k.val}</div>
+      <div class="kl">${k.label}</div>
+    </div>`).join('');
+
+  // Financial bar chart
+  setTimeout(()=>{
+    new Chart(document.getElementById('finBarChart'),{
+      type:'bar',
+      data:{
+        labels:['Budget','Actual','Forecast'],
+        datasets:[{data:[P.budget,P.actual,P.forecast],backgroundColor:[QX.gray,P.color,P.color+'66'],borderRadius:6}]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'#f1f5f9'}}}}
+    });
+  },100);
+
+  // Financial summary
+  const variance=P.forecast-P.budget;
+  const usedPct=Math.round(P.actual/P.budget*100);
+  document.getElementById('fin-summary').innerHTML=`
+    <div class="fin-row"><span class="fin-label">Budget</span><div class="fin-bar-r"><div class="fin-bar-f" style="width:100%;background:var(--qx-gray)"></div></div><span class="fin-val">$${P.budget}K</span></div>
+    <div class="fin-row"><span class="fin-label">Actual Spend</span><div class="fin-bar-r"><div class="fin-bar-f" style="width:${usedPct}%;background:${P.color}"></div></div><span class="fin-val">$${P.actual}K <span style="font-size:11px;color:var(--muted)">(${usedPct}%)</span></span></div>
+    <div class="fin-row"><span class="fin-label">Forecast</span><div class="fin-bar-r"><div class="fin-bar-f" style="width:${Math.min(P.forecast/P.budget*100,100)}%;background:${overBudget?'#ef4444':P.color}88"></div></div><span class="fin-val" style="color:${overBudget?'#ef4444':'var(--heading)'}">$${P.forecast}K</span></div>
+    <div class="fin-row"><span class="fin-label">FTE Cost</span><div class="fin-bar-r"><div class="fin-bar-f" style="width:${Math.round(P.fteCost/P.budget*100)}%;background:${QX.purple}"></div></div><span class="fin-val">$${P.fteCost}K</span></div>`;
+  document.getElementById('variance-bar').innerHTML=`
+    <div style="padding:10px;border-radius:8px;background:${overBudget?'#fff5f5':'#f0fdf4'};border:1px solid ${overBudget?'#fca5a5':'#bbf7d0'}">
+      <div style="font-size:12px;font-weight:700;color:${overBudget?'#991b1b':'#15803d'}">
+        ${overBudget?'⚠ Budget Overrun':'✅ Within Budget'}: ${overBudget?'+':''}$${variance}K variance
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">${overBudget?'Forecast exceeds budget — review scope or request additional funding':'Forecast is within approved budget'}
+      </div>
+    </div>`;
+
+  // Alerts
+  const riskAlerts = (RISKS[PID]||[]).filter(r=>r.status!=='Closed'&&r.sev==='High');
+  const compAlerts = (COMPLIANCE[PID]||[]).filter(c=>c.status==='fail');
+  const alerts = [
+    ...riskAlerts.map(r=>({type:'danger',icon:'⚠️',title:'High Risk: '+r.title,desc:r.mitigation})),
+    ...compAlerts.map(c=>({type:'warning',icon:'🛡️',title:'Compliance Gap: '+c.name,desc:c.desc})),
+    ...(P.forecast>P.budget?[{type:'warning',icon:'💸',title:'Budget Overrun Forecast',desc:`Forecast $${P.forecast}K exceeds budget $${P.budget}K by $${P.forecast-P.budget}K`}]:[])
+  ];
+  document.getElementById('overview-alerts').innerHTML = alerts.length ? `
+    <div class="section-hdr"><h3>Product Flags</h3></div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${alerts.map(a=>`<div class="alert alert-${a.type}"><div class="alert-icon">${a.icon}</div><div class="alert-body"><div class="at">${a.title}</div><div class="ad">${a.desc}</div></div></div>`).join('')}
+    </div>` : '<div class="alert alert-info"><div class="alert-icon">✅</div><div class="alert-body"><div class="at">No critical flags</div><div class="ad">This product has no high-severity open issues.</div></div></div>';
+}
+
+/* ── Roadmap ──────────────────────────────────────────────────── */
+function renderRoadmap(){
+  const items = ROADMAP[PID]||[];
+  const renderCol=(col,elId)=>{
+    const el=document.getElementById(elId);
+    const hdr=el.querySelector('.rm-col-hdr').outerHTML;
+    const filtered=items.filter(i=>i.col===col);
+    el.innerHTML=hdr+filtered.map(it=>`
+      <div class="rm-item rm-${it.type}" ondblclick="editRoadmapItem(this,'${it.title}')">
+        <div class="rm-item-title" contenteditable="true" onblur="markChanged()">${it.title}</div>
+        <div class="rm-item-desc">${it.desc}</div>
+        <div class="rm-item-meta">
+          <span class="rm-type-tag type-${it.type}">${it.type}</span>
+          ${it.dep?`<span style="font-size:10px;font-weight:600;color:#92400e;background:#fef3c7;padding:1px 6px;border-radius:4px">Dep: ${it.dep}</span>`:''}
+          ${it.date?`<span style="font-size:10px;color:var(--muted)">📅 ${it.date}</span>`:''}
+        </div>
+      </div>`).join('')+`<button class="add-btn" style="margin-top:8px" onclick="addRoadmapItem('${col}')">+ Add</button>`;
+  };
+  renderCol('now','rm-now');
+  renderCol('next','rm-next');
+  renderCol('later','rm-later');
+}
+
+/* ── Team ─────────────────────────────────────────────────────── */
+function renderTeam(){
+  const members=TEAM[PID]||[];
+  const roles=[{key:'pm',label:'Product Manager',color:QX.blue},{key:'eng',label:'Engineering',color:QX.sky},{key:'design',label:'Design',color:QX.purple},{key:'qa',label:'QA',color:QX.green},{key:'ops',label:'Ops',color:QX.orange}];
+
+  // Role summary chips
+  document.getElementById('role-summary').innerHTML=roles.map(r=>{
+    const cnt=members.filter(m=>m.type===r.key).length;
+    return `<div class="ks-card"><div class="ks-accent" style="background:${r.color}"></div><div class="kv">${cnt}</div><div class="kl">${r.label}</div></div>`;
+  }).join('');
+
+  // Member cards
+  const memberCard=m=>{
+    const over=m.allocation>=100&&m.shared;
+    return `<div class="member-card">
+      <div class="avatar avatar-md" style="background:${{'pm':QX.blue,'eng':QX.sky,'design':QX.purple,'qa':QX.green,'ops':QX.orange}[m.type]||QX.blue}">${m.initials}</div>
+      <div class="member-info">
+        <div class="member-name">${m.name} ${m.shared?'<span class="shared-tag">Shared</span>':''}</div>
+        <div class="member-role">${m.role}</div>
+        <div style="margin-top:5px;display:flex;align-items:center;gap:6px">
+          <div class="progress-wrap" style="width:80px;height:4px"><div class="progress-fill" style="width:${m.allocation}%;background:${m.allocation>=90&&m.shared?'#ef4444':{'pm':QX.blue,'eng':QX.sky,'design':QX.purple,'qa':QX.green,'ops':QX.orange}[m.type]||QX.blue}"></div></div>
+          <span style="font-size:11px;font-weight:700;color:${m.allocation>=90&&m.shared?'#ef4444':'var(--heading)'}">@${m.allocation}%</span>
+        </div>
+      </div>
+    </div>`;
+  };
+  document.getElementById('team-grid').innerHTML=members.map(memberCard).join('');
+
+  // Shared callout
+  const shared=members.filter(m=>m.shared);
+  if(shared.length){
+    document.getElementById('shared-callout').innerHTML=`
+      <div class="alert alert-warning mt-12"><div class="alert-icon">⚠️</div>
+      <div class="alert-body"><div class="at">${shared.length} Shared Resource${shared.length>1?'s':''}</div>
+      <div class="ad">${shared.map(m=>m.name+' @'+m.allocation+'%').join(', ')} — verify no overallocation across products</div></div></div>`;
+  }
+
+  // Table
+  document.getElementById('team-table').innerHTML=members.map((m,i)=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar avatar-sm">${m.initials}</div><span class="text-bold">${m.name}</span></div></td>
+    <td contenteditable="true" class="editable-field" onblur="markChanged()">${m.role}</td>
+    <td><span class="badge-phase" style="background:${{pm:'#ede9fe',eng:'#dbeafe',design:'#fdf4ff',qa:'#dcfce7',ops:'#fff7ed'}[m.type]};color:${{pm:'#6d28d9',eng:'#1d4ed8',design:'#7e22ce',qa:'#15803d',ops:'#c2410c'}[m.type]}">${m.type.toUpperCase()}</span></td>
+    <td>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="progress-wrap" style="width:60px"><div class="progress-fill" style="width:${m.allocation}%;background:${m.allocation>=90&&m.shared?'#ef4444':QX.blue}"></div></div>
+        <span class="text-bold" style="color:${m.allocation>=90&&m.shared?'#ef4444':'var(--heading)'}">${m.allocation}%</span>
+      </div>
+    </td>
+    <td>${m.shared?'<span class="shared-tag">Shared</span>':'<span style="color:var(--muted);font-size:12px">—</span>'}</td>
+    <td><button class="btn btn-outline btn-sm" onclick="editMember(${i})">Edit</button></td>
+  </tr>`).join('');
+}
+
+/* ── Risks ────────────────────────────────────────────────────── */
+function renderRisksPane(){
+  const filter=document.getElementById('risk-filter')?.value||'all';
+  let risks=RISKS[PID]||[];
+  if(filter!=='all') risks=risks.filter(r=>r.status===filter);
+  document.getElementById('risks-grid').innerHTML=risks.map((r,i)=>`
+    <div class="risk-card">
+      <div class="risk-card-top">
+        <div class="risk-score" style="background:${riskScoreColor(r.score)}">${r.score}</div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:4px">${r.title}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;background:${sevBg(r.sev)};color:${sevColor(r.sev)}">${r.sev}</span>
+            <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:var(--bg);color:var(--muted)">${r.impact}</span>
+          </div>
+        </div>
+      </div>
+      <div class="risk-card-body">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px">MITIGATION</div>
+        <div style="font-size:13px;color:var(--text)" contenteditable="true" class="editable-field" onblur="updateRisk(${i},'mitigation',this.textContent)">${r.mitigation}</div>
+        <div style="margin-top:8px;font-size:12px;color:var(--muted)">Owner: <strong>${r.owner}</strong> · Logged: ${r.created}</div>
+      </div>
+      <div class="risk-card-foot">
+        <select onchange="updateRisk(${i},'status',this.value)" style="border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:12px;outline:none">
+          <option ${r.status==='Open'?'selected':''}>Open</option>
+          <option ${r.status==='In Progress'?'selected':''}>In Progress</option>
+          <option ${r.status==='Closed'?'selected':''}>Closed</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="editRisk(${i})">Edit</button>
+      </div>
+    </div>`).join('');
+}
+
+function updateRisk(i,field,val){
+  if(RISKS[PID]&&RISKS[PID][i]) RISKS[PID][i][field]=val;
+  markChanged();
+}
+
+/* ── Compliance ───────────────────────────────────────────────── */
+function renderCompliance(){
+  const items=COMPLIANCE[PID]||[];
+  const groups={};
+  items.forEach(it=>{ (groups[it.area]=groups[it.area]||[]).push(it); });
+  document.getElementById('comp-grid').innerHTML=Object.entries(groups).map(([area,aItems])=>`
+    <div class="comp-card">
+      <div class="comp-card-title">
+        <span style="width:24px;height:24px;border-radius:6px;background:var(--bg);display:inline-flex;align-items:center;justify-content:center;font-size:12px">
+          ${{Security:'🛡️',Data:'🗄️',Compliance:'📋',Technical:'⚙️'}[area]||'📌'}
+        </span>
+        ${area}
+      </div>
+      ${aItems.map(it=>`
+        <div class="comp-row">
+          <div class="comp-icon" style="background:${{pass:'#dcfce7',warn:'#fef3c7',fail:'#fee2e2'}[it.status]}">${compIcon(it.status)}</div>
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:13px">${it.name}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">${it.desc}${it.deadline&&it.deadline!=='—'?` · Due ${it.deadline}`:''}</div>
+          </div>
+          <div style="font-size:11px;font-weight:600;color:${compColor(it.status)};white-space:nowrap">${compLabel(it.status)}</div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+/* ── Activity ─────────────────────────────────────────────────── */
+function renderActivity(){
+  const items=ACTIVITY.filter(a=>a.product===PID);
+  const typeColor={risk:'#ef4444',roadmap:QX.blue,team:QX.sky,flag:'#f59e0b',financial:QX.orange,compliance:'#22c55e',milestone:QX.blue};
+  const typeIcon={risk:'⚠️',roadmap:'🗺️',team:'👥',flag:'🚩',financial:'💰',compliance:'🛡️',milestone:'🏁'};
+  document.getElementById('activity-timeline').innerHTML=items.length?items.map((a,i)=>`
+    <div class="tl-item">
+      <div class="tl-dot-wrap">
+        <div class="tl-dot" style="background:${typeColor[a.type]||QX.blue}"></div>
+      </div>
+      <div style="flex:1">
+        <div class="tl-ts">${typeIcon[a.type]||'📌'} ${a.ts}</div>
+        <div class="tl-msg">${a.msg}</div>
+      </div>
+    </div>`).join(''):
+    '<div style="padding:20px;text-align:center;color:var(--muted)">No recent activity for this product.</div>';
+}
+
+/* ── Modal helpers ────────────────────────────────────────────── */
+function openModal(title,html){
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-body').innerHTML=html;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); }
+
+function addRisk(){
+  openModal('Log New Risk',`
+    <div class="form-row"><div class="form-field"><label>Risk Title</label><input id="nr-title" placeholder="Describe the risk"/></div>
+    <div class="form-field"><label>Severity</label><select id="nr-sev"><option>High</option><option>Medium</option><option>Low</option></select></div></div>
+    <div class="form-row"><div class="form-field"><label>Impact Area</label><select id="nr-impact"><option>Delivery</option><option>Financial</option><option>Technical</option></select></div>
+    <div class="form-field"><label>Risk Score (1–10)</label><input type="number" id="nr-score" min="1" max="10" value="5"/></div></div>
+    <div class="form-field"><label>Owner</label><input id="nr-owner" value="${P.pm}"/></div>
+    <div class="form-field"><label>Mitigation Plan</label><textarea id="nr-mit" placeholder="Describe the mitigation strategy…"></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveRisk()">Log Risk</button>
+    </div>`);
+}
+
+function saveRisk(){
+  if(!RISKS[PID]) RISKS[PID]=[];
+  RISKS[PID].unshift({
+    id:'r'+Date.now(), title:document.getElementById('nr-title').value||'New Risk',
+    sev:document.getElementById('nr-sev').value,
+    impact:document.getElementById('nr-impact').value,
+    score:+document.getElementById('nr-score').value,
+    owner:document.getElementById('nr-owner').value,
+    mitigation:document.getElementById('nr-mit').value||'No mitigation defined',
+    status:'Open', created:new Date().toISOString().split('T')[0]
+  });
+  closeModal(); renderRisksPane(); showToast('Risk logged');
+}
+
+function editRisk(i){
+  const r=RISKS[PID][i];
+  openModal('Edit Risk',`
+    <div class="form-field"><label>Title</label><input id="er-title" value="${r.title}"/></div>
+    <div class="form-row"><div class="form-field"><label>Severity</label><select id="er-sev"><option ${r.sev==='High'?'selected':''}>High</option><option ${r.sev==='Medium'?'selected':''}>Medium</option><option ${r.sev==='Low'?'selected':''}>Low</option></select></div>
+    <div class="form-field"><label>Score</label><input type="number" id="er-score" min="1" max="10" value="${r.score}"/></div></div>
+    <div class="form-field"><label>Mitigation</label><textarea id="er-mit">${r.mitigation}</textarea></div>
+    <div class="form-field"><label>Status</label><select id="er-status"><option ${r.status==='Open'?'selected':''}>Open</option><option ${r.status==='In Progress'?'selected':''}>In Progress</option><option ${r.status==='Closed'?'selected':''}>Closed</option></select></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="applyRiskEdit(${i})">Save</button>
+    </div>`);
+}
+function applyRiskEdit(i){
+  RISKS[PID][i].title=document.getElementById('er-title').value;
+  RISKS[PID][i].sev=document.getElementById('er-sev').value;
+  RISKS[PID][i].score=+document.getElementById('er-score').value;
+  RISKS[PID][i].mitigation=document.getElementById('er-mit').value;
+  RISKS[PID][i].status=document.getElementById('er-status').value;
+  closeModal(); renderRisksPane(); showToast('Risk updated');
+}
+
+function addMember(){
+  openModal('Add Team Member',`
+    <div class="form-row"><div class="form-field"><label>Full Name</label><input id="nm-name" placeholder="Name"/></div>
+    <div class="form-field"><label>Initials</label><input id="nm-init" placeholder="AB" maxlength="2"/></div></div>
+    <div class="form-row"><div class="form-field"><label>Role</label><input id="nm-role" placeholder="e.g. Senior Engineer"/></div>
+    <div class="form-field"><label>Type</label><select id="nm-type"><option value="pm">PM</option><option value="eng" selected>Engineering</option><option value="design">Design</option><option value="qa">QA</option><option value="ops">Ops</option></select></div></div>
+    <div class="form-row"><div class="form-field"><label>Allocation %</label><input type="number" id="nm-alloc" min="1" max="100" value="100"/></div>
+    <div class="form-field"><label>Shared?</label><select id="nm-shared"><option value="">No</option><option value="1">Yes</option></select></div></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMember()">Add Member</button>
+    </div>`);
+}
+function saveMember(){
+  if(!TEAM[PID]) TEAM[PID]=[];
+  TEAM[PID].push({
+    name:document.getElementById('nm-name').value||'New Member',
+    initials:document.getElementById('nm-init').value||'NM',
+    role:document.getElementById('nm-role').value||'Team Member',
+    type:document.getElementById('nm-type').value,
+    allocation:+document.getElementById('nm-alloc').value,
+    shared:!!document.getElementById('nm-shared').value
+  });
+  closeModal(); renderTeam(); showToast('Member added');
+}
+function editMember(i){
+  const m=TEAM[PID][i];
+  openModal('Edit Member',`
+    <div class="form-row"><div class="form-field"><label>Name</label><input id="em-name" value="${m.name}"/></div>
+    <div class="form-field"><label>Role</label><input id="em-role" value="${m.role}"/></div></div>
+    <div class="form-row"><div class="form-field"><label>Allocation %</label><input type="number" id="em-alloc" min="1" max="100" value="${m.allocation}"/></div>
+    <div class="form-field"><label>Shared?</label><select id="em-shared"><option value=""${!m.shared?' selected':''}>No</option><option value="1"${m.shared?' selected':''}>Yes</option></select></div></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-danger btn-sm" onclick="removeMember(${i})">Remove</button>
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="applyMemberEdit(${i})">Save</button>
+    </div>`);
+}
+function applyMemberEdit(i){
+  TEAM[PID][i].name=document.getElementById('em-name').value;
+  TEAM[PID][i].role=document.getElementById('em-role').value;
+  TEAM[PID][i].allocation=+document.getElementById('em-alloc').value;
+  TEAM[PID][i].shared=!!document.getElementById('em-shared').value;
+  closeModal(); renderTeam(); showToast('Member updated');
+}
+function removeMember(i){ TEAM[PID].splice(i,1); closeModal(); renderTeam(); showToast('Member removed'); }
+
+function addRoadmapItem(col){
+  openModal('Add Roadmap Item',`
+    <div class="form-field"><label>Column</label><select id="ri-col">
+      <option value="now"${col==='now'?' selected':''}>Now (0–3 months)</option>
+      <option value="next"${col==='next'?' selected':''}>Next (3–6 months)</option>
+      <option value="later"${col==='later'?' selected':''}>Later (6+ months)</option>
+    </select></div>
+    <div class="form-field"><label>Title</label><input id="ri-title" placeholder="Initiative or milestone title"/></div>
+    <div class="form-field"><label>Description</label><input id="ri-desc" placeholder="Brief description"/></div>
+    <div class="form-row"><div class="form-field"><label>Type</label><select id="ri-type"><option value="init">Initiative</option><option value="milestone">Milestone</option><option value="dep">Dependency</option></select></div>
+    <div class="form-field"><label>Target Date</label><input id="ri-date" placeholder="e.g. Q3 2026"/></div></div>
+    <div class="form-field"><label>Dependency (optional)</label><input id="ri-dep" placeholder="Team or system dependency"/></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveRoadmapItem()">Add Item</button>
+    </div>`);
+}
+function saveRoadmapItem(){
+  if(!ROADMAP[PID]) ROADMAP[PID]=[];
+  ROADMAP[PID].push({
+    col:document.getElementById('ri-col').value,
+    type:document.getElementById('ri-type').value,
+    title:document.getElementById('ri-title').value||'New Item',
+    desc:document.getElementById('ri-desc').value,
+    date:document.getElementById('ri-date').value,
+    dep:document.getElementById('ri-dep').value||null
+  });
+  closeModal(); renderRoadmap(); showToast('Roadmap item added');
+}
+
+/* ── Save / Export ────────────────────────────────────────────── */
+let _changed=false;
+function markChanged(){ _changed=true; document.title='• '+P.name+' — Qorix Portal'; }
+function saveChanges(){ _changed=false; document.title=P.name+' — Qorix Portal'; showToast('✅ Changes saved'); }
+function exportProduct(){
+  const rows=[['Name','Role','Type','Allocation%','Shared'],...(TEAM[PID]||[]).map(m=>[m.name,m.role,m.type,m.allocation,m.shared?'Yes':'No'])];
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=P.id+'-team.csv';a.click();URL.revokeObjectURL(url);
+  showToast('Team exported as CSV');
+}
+function exportTeam(){ exportProduct(); }
+
+/* ── Toast ────────────────────────────────────────────────────── */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+/* ── Boot ─────────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
