@@ -192,29 +192,6 @@
 
   </div>
 
-  <!-- ── TAB: ROADMAP ── -->
-  <div class="ptab-pane" id="pane-roadmap">
-    <div class="section-hdr">
-      <h2>Roadmap — Now · Next · Later</h2>
-      <div class="actions">
-        <button class="btn btn-primary btn-sm" onclick="addRoadmapItem()">+ Add Item</button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="rm-grid">
-        <div class="roadmap-col rm-now" id="rm-now">
-          <div class="rm-col-hdr">🟦 Now (0–3 months)</div>
-        </div>
-        <div class="roadmap-col rm-next" id="rm-next">
-          <div class="rm-col-hdr">🟧 Next (3–6 months)</div>
-        </div>
-        <div class="roadmap-col rm-later" id="rm-later">
-          <div class="rm-col-hdr">⬜ Later (6+ months)</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- ── TAB: TEAM ── -->
   <div class="ptab-pane" id="pane-team">
     <div class="section-hdr">
@@ -249,27 +226,6 @@
         </table>
       </div>
     </div>
-  </div>
-
-  <!-- ── TAB: RISKS ── -->
-  <div class="ptab-pane" id="pane-risks">
-    <div class="section-hdr">
-      <h2>Risk Register</h2>
-      <div class="actions">
-        <select class="filter-select" id="risk-filter" onchange="renderRisksPane()">
-          <option value="all">All</option><option value="Open">Open</option><option value="In Progress">In Progress</option><option value="Closed">Closed</option>
-        </select>
-        <button class="btn btn-danger btn-sm" onclick="addRisk()">+ Log Risk</button>
-      </div>
-    </div>
-    <div id="risks-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px"></div>
-    <button class="add-btn" onclick="addRisk()">+ Log New Risk</button>
-  </div>
-
-  <!-- ── TAB: COMPLIANCE ── -->
-  <div class="ptab-pane" id="pane-compliance">
-    <div class="section-hdr"><h2>Compliance & Governance</h2></div>
-    <div id="comp-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px"></div>
   </div>
 
   <!-- ── TAB: ACTIVITY ── -->
@@ -530,13 +486,9 @@ function renderHero(){
 
 /* ── Tabs ─────────────────────────────────────────────────────── */
 const TABS=[
-  {id:'overview',    label:'Overview'},
-  {id:'roadmap',     label:'🗺 Roadmap'},
-  {id:'team',        label:'👥 Team'},
-  {id:'risks',       label:'⚠ Risks'},
-  {id:'compliance',  label:'🛡 Compliance'},
-  {id:'activity',    label:'📋 Activity'},
-  {id:'jira',        label:'🔗 JIRA Sync'}
+  {id:'overview',  label:'📊 Overview'},
+  {id:'team',      label:'👥 Team'},
+  {id:'jira',      label:'🔗 JIRA'}
 ];
 function renderTabs(){
   document.getElementById('ptabs').innerHTML = TABS.map(t=>`<button class="ptab${t.id==='overview'?' active':''}" onclick="activateTab('${t.id}')">${t.label}</button>`).join('');

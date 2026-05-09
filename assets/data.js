@@ -1,5 +1,25 @@
 /* ─── Qorix Product Management — Data Layer v2 ──────────────────────────── */
 
+/* ── JIRA Configuration ───────────────────────────────────────────────────
+   Fill in JIRA_EMAIL and JIRA_TOKEN before use.
+   The proxy server (node server.js) must be running at localhost:3000.
+─────────────────────────────────────────────────────────────────────────── */
+const JIRA_CFG = {
+  domain : 'qorix.atlassian.net',
+  email  : 'YOUR_EMAIL@qorix.com',     // ← replace with your Atlassian email
+  token  : 'YOUR_JIRA_API_TOKEN',      // ← replace with your Atlassian API token
+  projects: {
+    classic    : 'CP',
+    adaptive   : 'AP',
+    bootloader : 'QB',
+    developer  : 'QD',
+    osporting  : null,
+    performance: null,
+    lightweight: null,
+    processdef : null
+  }
+};
+
 const QX = {
   blue:'#3C00FF', cyan:'#00FFFF', lime:'#D7FF3C', navy:'#0E2841',
   steel:'#156082', sky:'#0F9ED5', orange:'#E97132', green:'#4EA72E',
@@ -71,73 +91,46 @@ const PRODUCTS = [
     revenue:'—', mrr:'—', users:'—', adoption:'—', nps:'—', churn:'—',
     updated:'2026-05-03',
     description:'Process modelling and lifecycle governance layer. Assessment stage — no PM assigned. Scope and ownership undefined.',
-    tags:['Process','Governance','Lifecycle','Assessment'] }
+    tags:['Process','Governance','Lifecycle','Assessment'] },
+
+  {
+    id:'osporting', name:'Qorix OS Porting', abbr:'OP', tagline:'Embedded OS abstraction and porting layer',
+    color:'#0891b2', status:'on-track', phase:'POC', completion:15,
+    pm:'TBD', pmInitials:'TB', tags:['OS','Porting','Embedded'],
+    desc:'OS porting layer providing POSIX and AUTOSAR abstraction for Qorix platform targets.',
+    users:'—', adoption:'—', nps:0, mrr:'—',
+    budget:0, actual:0, forecast:0, fteCost:0, fte:0,
+    updated:'2026-05-09'
+  }
 ];
 
 /* ── Team  (allocation = actual %, askAllocation = requested %) ─────────── */
 const TEAM = {
-  classic:[
-    {name:'Aisha Rahman',   initials:'AR', role:'Product Manager',   type:'quality-manager',     allocation:100, askAllocation:100, shared:false},
-    {name:'Dev Lead Classic',initials:'DL',role:'Engineering Lead',  type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Lena Kovacs',    initials:'LK', role:'Senior Engineer',   type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Sam Torres',     initials:'ST', role:'Engineer',          type:'safety-manager',    allocation:80,  askAllocation:100, shared:true},
-    {name:'Yuki Tanaka',    initials:'YT', role:'Engineer',          type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Rin Okawa',      initials:'RO', role:'Engineer',          type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Obi Mensah',     initials:'OM', role:'Embedded Engineer', type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Cai Zheng',      initials:'CZ', role:'Engineer',          type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Mia Patel',      initials:'MP', role:'UX Designer',       type:'safety-consultant', allocation:80,  askAllocation:100, shared:true},
-    {name:'Felix Brand',    initials:'FB', role:'UI Designer',       type:'safety-consultant', allocation:60,  askAllocation:60,  shared:true},
-    {name:'Nour Al-Rashid', initials:'NA', role:'QA Lead',           type:'quality-consultant',     allocation:100, askAllocation:100, shared:false},
-    {name:'Tomas Varga',    initials:'TV', role:'QA Engineer',       type:'quality-consultant',     allocation:100, askAllocation:100, shared:false},
-    {name:'Leo Petrov',     initials:'LP', role:'DevOps Engineer',   type:'security-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'security-manager',    allocation:60,  askAllocation:80,  shared:true}
+  classic: [
+    {name:'Shubham Borude', initials:'SB', role:'Quality Manager',   type:'quality-consultant', allocation:50, askAllocation:50, shared:false},
+    {name:'Chetan Baragi',  initials:'CB', role:'Safety Manager',    type:'safety-manager',     allocation:50, askAllocation:50, shared:false},
+    {name:'Karthik Vanka',  initials:'KV', role:'Security Manager',  type:'security-manager',   allocation:30, askAllocation:30, shared:true}
   ],
-  adaptive:[
-    {name:'Jordan Lee',     initials:'JL', role:'Product Manager',   type:'quality-manager',     allocation:100, askAllocation:100, shared:false},
-    {name:'Chris Park',     initials:'CP', role:'Engineering Lead',  type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Amara Diop',     initials:'AD', role:'ML Engineer',       type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Kai Sorensen',   initials:'KS', role:'Backend Engineer',  type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Tess Ricci',     initials:'TR', role:'Engineer',          type:'safety-manager',    allocation:80,  askAllocation:100, shared:true},
-    {name:'Felix Brand',    initials:'FB', role:'UI Designer',       type:'safety-consultant', allocation:40,  askAllocation:60,  shared:true},
-    {name:'Mei Lin',        initials:'ML', role:'QA Engineer',       type:'quality-consultant',     allocation:100, askAllocation:100, shared:false},
-    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'security-manager',    allocation:40,  askAllocation:60,  shared:true}
+  adaptive: [
+    {name:'Kavitha KG',     initials:'KK', role:'Quality Consultant',type:'quality-consultant', allocation:50, askAllocation:50, shared:true},
+    {name:'Nikita Nakhade', initials:'NN', role:'Safety Manager',    type:'safety-manager',     allocation:50, askAllocation:50, shared:false}
   ],
-  bootloader:[
-    {name:'Priya Nair',     initials:'PN', role:'Product Manager',   type:'quality-manager',     allocation:100, askAllocation:100, shared:false},
-    {name:'Dex Anand',      initials:'DA', role:'Firmware Engineer', type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Ren Nakamura',   initials:'RN', role:'Security Engineer', type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Sam Torres',     initials:'ST', role:'Embedded Engineer', type:'safety-manager',    allocation:20,  askAllocation:50,  shared:true},
-    {name:'Zara Osei',      initials:'ZO', role:'QA Engineer',       type:'quality-consultant',     allocation:60,  askAllocation:80,  shared:true},
-    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'security-manager',    allocation:20,  askAllocation:40,  shared:true}
+  bootloader: [
+    {name:'Kavitha KG',     initials:'KK', role:'Quality Consultant',type:'quality-consultant', allocation:25, askAllocation:25, shared:true},
+    {name:'Rakshith CS',    initials:'RC', role:'Safety Manager',    type:'safety-manager',     allocation:50, askAllocation:50, shared:false}
   ],
-  developer:[
-    {name:'Marcus Webb',    initials:'MW', role:'Product Manager',   type:'quality-manager',     allocation:100, askAllocation:100, shared:false},
-    {name:'Vera Morin',     initials:'VM', role:'SDK Lead',          type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Hugo Ferreira',  initials:'HF', role:'Toolchain Engineer',type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Nadia Cohn',     initials:'NC', role:'IDE Plugin Dev',    type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Sam Torres',     initials:'ST', role:'API Integration',   type:'safety-manager',    allocation:20,  askAllocation:40,  shared:true},
-    {name:'Mia Patel',      initials:'MP', role:'UX / DX Designer',  type:'safety-consultant', allocation:20,  askAllocation:40,  shared:true},
-    {name:'Zara Osei',      initials:'ZO', role:'QA Engineer',       type:'quality-consultant',     allocation:40,  askAllocation:60,  shared:true},
-    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'security-manager',    allocation:20,  askAllocation:20,  shared:true}
+  developer: [
+    {name:'Kavitha KG',     initials:'KK', role:'Quality Consultant',type:'quality-consultant', allocation:25, askAllocation:25, shared:true},
+    {name:'Chetan Baragi',  initials:'CB', role:'Safety Manager',    type:'safety-manager',     allocation:25, askAllocation:25, shared:true}
   ],
-  performance:[
-    {name:'Sofia Chen',     initials:'SC', role:'Product Manager',   type:'quality-manager',     allocation:100, askAllocation:100, shared:false},
-    {name:'Ivan Popov',     initials:'IP', role:'Perf Engineer',     type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Zhen Wu',        initials:'ZW', role:'Analyst',           type:'safety-manager',    allocation:60,  askAllocation:100, shared:true}
+  performance: [
+    {name:'Volker HS',      initials:'VH', role:'Quality Consultant',type:'quality-consultant', allocation:50, askAllocation:50, shared:true},
+    {name:'Volker HS',      initials:'VH', role:'Safety Manager',    type:'safety-manager',     allocation:50, askAllocation:50, shared:true},
+    {name:'Karthik Vanka',  initials:'KV', role:'Security Manager',  type:'security-manager',   allocation:60, askAllocation:60, shared:true}
   ],
-  lightweight:[
-    {name:'Raj Iyer',       initials:'RI', role:'Product Manager',   type:'quality-manager',     allocation:100, askAllocation:100, shared:false},
-    {name:'Ana Sousa',      initials:'AS', role:'Firmware Engineer', type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Carlos Ruiz',    initials:'CR', role:'Systems Engineer',  type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
-    {name:'Layla Hassan',   initials:'LH', role:'Engineer',          type:'safety-manager',    allocation:80,  askAllocation:100, shared:false},
-    {name:'Felix Brand',    initials:'FB', role:'UI Designer',       type:'safety-consultant', allocation:20,  askAllocation:20,  shared:true},
-    {name:'Bram Visser',    initials:'BV', role:'QA Engineer',       type:'quality-consultant',     allocation:80,  askAllocation:100, shared:false},
-    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'security-manager',    allocation:20,  askAllocation:20,  shared:true}
-  ],
-  processdef:[
-    {name:'— Unassigned —', initials:'??', role:'Product Manager',   type:'quality-manager',     allocation:0,   askAllocation:100, shared:false},
-    {name:'Intern Eng A',   initials:'IA', role:'Engineer (Intern)', type:'safety-manager',    allocation:100, askAllocation:100, shared:false}
-  ]
+  osporting:   [],
+  lightweight: [],
+  processdef:  []
 };
 
 /* ── Roadmap ─────────────────────────────────────────────────────────────── */
@@ -190,17 +183,18 @@ const ROADMAP = {
     {col:'now',  type:'init',     title:'Scope Definition',       desc:'What is this product?',                 dep:null,           date:'Jun 2026'},
     {col:'next', type:'init',     title:'Stakeholder Interviews', desc:'Pending PM assignment',                 dep:null,           date:'Jul 2026'},
     {col:'later',type:'milestone',title:'Assessment Complete',    desc:'Pending all prior steps',               dep:null,           date:'Q3 2026'}
-  ]
+  ],
+  osporting:[]
 };
 
 /* ── Risks ───────────────────────────────────────────────────────────────── */
 const RISKS = {
-  classic:[], adaptive:[], bootloader:[], developer:[], performance:[], lightweight:[], processdef:[]
+  classic:[], adaptive:[], bootloader:[], developer:[], performance:[], lightweight:[], processdef:[], osporting:[]
 };
 
 /* ── Compliance ──────────────────────────────────────────────────────────── */
 const COMPLIANCE = {
-  classic:[], adaptive:[], bootloader:[], developer:[], performance:[], lightweight:[], processdef:[]
+  classic:[], adaptive:[], bootloader:[], developer:[], performance:[], lightweight:[], processdef:[], osporting:[]
 };
 
 /* ── Activity log ────────────────────────────────────────────────────────── */
