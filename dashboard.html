@@ -353,7 +353,6 @@ tr:hover td{background:rgba(60,0,255,.02)}
   <button class="stab" onclick="navigate('products',this)">📦 Products</button>
   <button class="stab" onclick="navigate('roadmap',this)">🗺️ Roadmap</button>
   <button class="stab" onclick="navigate('team',this)">👥 Team Allocation</button>
-  <button class="stab" onclick="navigate('financial',this)">💰 Financial</button>
   <button class="stab" onclick="navigate('risks',this)">⚠️ Risk Management <span class="stab-badge" id="risk-badge">8</span></button>
   <button class="stab" onclick="navigate('compliance',this)">🛡️ Compliance</button>
   <button class="stab" onclick="navigate('dependencies',this)">🔗 Dependencies</button>
@@ -404,14 +403,10 @@ tr:hover td{background:rgba(60,0,255,.02)}
     <div class="product-grid" id="overview-cards"></div>
 
     <!-- Charts row -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
       <div class="table-wrap" style="padding:18px">
         <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">Status Distribution</div>
         <div class="chart-container-sm"><canvas id="statusChart"></canvas></div>
-      </div>
-      <div class="table-wrap" style="padding:18px">
-        <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">Budget Utilisation</div>
-        <div class="chart-container-sm"><canvas id="budgetChart"></canvas></div>
       </div>
       <div class="table-wrap" style="padding:18px">
         <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">Team FTE Distribution</div>
@@ -468,37 +463,7 @@ tr:hover td{background:rgba(60,0,255,.02)}
     <div id="team-container"></div>
   </section>
 
-  <!-- ═══════ SECTION: FINANCIAL ═══════ -->
-  <section class="section" id="sec-financial">
-    <div class="section-accent-bar"></div>
-    <div class="section-hdr">
-      <h2>Financial &amp; Effort Overview</h2>
-      <div class="hdr-actions">
-        <button class="btn-export btn-sm" onclick="exportReport()">⬇ Export</button>
-      </div>
-    </div>
-    <div class="table-wrap">
-      <table id="financial-table">
-        <thead>
-          <tr>
-            <th>Product</th><th>Budget ($K)</th><th>Actual ($K)</th><th>Forecast ($K)</th>
-            <th>Variance</th><th>FTE Cost ($K)</th><th>Utilisation</th>
-          </tr>
-        </thead>
-        <tbody id="financial-tbody"></tbody>
-      </table>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px">
-      <div class="table-wrap" style="padding:18px">
-        <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">Budget vs Actual ($K)</div>
-        <div class="chart-container"><canvas id="financialBarChart"></canvas></div>
-      </div>
-      <div class="table-wrap" style="padding:18px">
-        <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">Forecast Trend</div>
-        <div class="chart-container"><canvas id="forecastLineChart"></canvas></div>
-      </div>
-    </div>
-  </section>
+  <!-- note: sec-financial removed -->
 
   <!-- ═══════ SECTION: RISKS ═══════ -->
   <section class="section" id="sec-risks">
@@ -683,14 +648,12 @@ const ALERTS = [
   {type:'danger', icon:'🚩', title:'Qorix Process Definition — No PM',        desc:'Product ownership undefined. All roadmap and delivery work is blocked.', product:'Qorix Process Definition'},
   {type:'danger', icon:'⚠️', title:'Qorix Developer — API Freeze Delayed',    desc:'Design freeze overdue. SDK beta timeline slipping by 6+ weeks.',          product:'Qorix Developer'},
   {type:'warning',icon:'⏳', title:'Qorix Adaptive — Go/No-Go Review',        desc:'Stakeholder review on May 20. Scope reduction option on the table.',       product:'Qorix Adaptive'},
-  {type:'warning',icon:'💸', title:'Qorix Adaptive — Budget Overrun Risk',    desc:'Forecast $575K vs $520K budget. Variance: +$55K.',                         product:'Qorix Adaptive'},
   {type:'danger', icon:'🛠️', title:'Qorix Light weight — Memory Target Risk','desc':'Sub-256KB target proving harder than estimated. Compiler opts in progress.',product:'Qorix Light weight'},
   {type:'info',   icon:'📋', title:'Qorix Performance — Assessment Stage',    desc:'Business case pending leadership approval before any development begins.', product:'Qorix Performance'}
 ];
 
 const FLAGS = [
   {type:'danger', icon:'🚩', title:'Scope Undefined — Process Definition', desc:'No scope, no PM, no mitigation plan. Product is effectively blocked.', product:'Qorix Process Definition'},
-  {type:'warning',icon:'🚩', title:'No Revenue Data — 4 Products',         desc:'Bootloader, Performance, Light weight, Process Definition have no revenue metrics (pre-GA phases).', product:'Multiple'},
   {type:'warning',icon:'🚩', title:'Shared Resource Over-allocation Risk', desc:'Sam Torres, Mia Patel, Felix Brand, and Priya Das are shared across 3+ products — check total %.',  product:'Multiple'},
   {type:'danger', icon:'🚩', title:'Compliance Fails — Developer + Process Def', desc:'Telemetry opt-out (Developer) and process governance (Process Def) are failing.', product:'Multiple'}
 ];
@@ -741,9 +704,6 @@ function riskScoreBadge(n){
    RENDER: PRODUCT CARDS
 ════════════════════════════════════════════════════════════ */
 function buildCard(p) {
-  const flags = [];
-  if(p.revenue==='—') flags.push('No Revenue Data');
-  const flagHtml = flags.map(f=>`<span class="flag-chip">⚠ ${f}</span>`).join('');
   return `
   <div class="product-card" data-id="${p.id}" data-status="${p.status}" onclick="openProductModal('${p.id}')">
     <div class="product-card-top">
@@ -751,7 +711,7 @@ function buildCard(p) {
         <div>
           <div class="product-name">${p.name}</div>
           <div style="margin-top:5px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-            ${statusBadge(p.status)} ${phaseBadge(p.phase)} ${flagHtml}
+            ${statusBadge(p.status)} ${phaseBadge(p.phase)}
           </div>
         </div>
         <div style="width:8px;height:8px;border-radius:50%;background:${p.color};margin-top:4px;flex-shrink:0"></div>
@@ -762,7 +722,6 @@ function buildCard(p) {
       </div>
     </div>
     <div class="product-card-mid">
-      <div class="metric-pill"><div class="mp-val">${p.revenue}</div><div class="mp-label">Revenue</div></div>
       <div class="metric-pill"><div class="mp-val">${p.users}</div><div class="mp-label">Users</div></div>
       <div class="metric-pill"><div class="mp-val">${p.adoption}</div><div class="mp-label">Adoption</div></div>
     </div>
@@ -823,19 +782,19 @@ function renderTeam() {
   const view = document.getElementById('team-view-toggle').value;
   const container = document.getElementById('team-container');
 
+  const roleKeys = ['safety-manager','security-manager','quality-manager','quality-consultant','safety-consultant'];
+  const roleLabels = {'safety-manager':'Safety Mgr','security-manager':'Sec Mgr','quality-manager':'Quality Mgr','quality-consultant':'Quality Con','safety-consultant':'Safety Con'};
+
   /* Build per-product summary from data.js TEAM */
   const summary = PRODUCTS.map(p => {
     const members = TEAM[p.id] || [];
-    const pm     = members.filter(m=>m.type==='pm').length;
-    const eng    = members.filter(m=>m.type==='eng').length;
-    const design = members.filter(m=>m.type==='design').length;
-    const qa     = members.filter(m=>m.type==='qa').length;
-    const ops    = members.filter(m=>m.type==='ops').length;
+    const counts = {};
+    roleKeys.forEach(k=>{ counts[k]=members.filter(m=>m.type===k).length; });
     const total  = members.length;
     const totAlloc = members.reduce((s,m)=>s+(m.allocation||0),0);
     const totAsk   = members.reduce((s,m)=>s+(m.askAllocation||0),0);
     const gap      = totAsk - totAlloc;
-    return {name:p.name, id:p.id, color:p.color, pm, eng, design, qa, ops, total, totAlloc, totAsk, gap};
+    return {name:p.name, id:p.id, color:p.color, ...counts, total, totAlloc, totAsk, gap};
   });
 
   if(view === 'table') {
@@ -844,7 +803,7 @@ function renderTeam() {
       <table>
         <thead>
           <tr>
-            <th>Product</th><th>PM</th><th>Eng</th><th>Design</th><th>QA</th><th>Ops</th>
+            <th>Product</th>${roleKeys.map(k=>`<th>${roleLabels[k]}</th>`).join('')}
             <th>Total</th><th>Allocated %</th><th>Ask %</th><th>Gap</th><th></th>
           </tr>
         </thead>
@@ -852,11 +811,7 @@ function renderTeam() {
           const gapColor = t.gap>0?'#ef4444':t.gap<0?'#22c55e':'var(--muted)';
           return `<tr>
             <td><strong style="color:${t.color}">${t.name}</strong></td>
-            <td>${t.pm}</td>
-            <td>${t.eng}</td>
-            <td>${t.design}</td>
-            <td>${t.qa}</td>
-            <td>${t.ops}</td>
+            ${roleKeys.map(k=>`<td>${t[k]}</td>`).join('')}
             <td><strong>${t.total}</strong></td>
             <td>
               <div style="display:flex;align-items:center;gap:8px">
@@ -881,12 +836,12 @@ function renderTeam() {
     container.innerHTML = `
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Product</th><th>PM</th><th>Eng</th><th>Design</th><th>QA</th><th>Ops</th><th>Total</th><th>Ask% Gap</th></tr></thead>
+        <thead><tr><th>Product</th>${roleKeys.map(k=>`<th>${roleLabels[k]}</th>`).join('')}<th>Total</th><th>Ask% Gap</th></tr></thead>
         <tbody>${summary.map(t=>{
           const gapColor = t.gap>0?'#ef4444':t.gap<0?'#22c55e':'var(--muted)';
           return `<tr>
             <td><strong style="color:${t.color}">${t.name}</strong></td>
-            ${['pm','eng','design','qa','ops'].map(k=>`<td><div class="heatmap-cell ${heatClass(t[k])}">${t[k]}</div></td>`).join('')}
+            ${roleKeys.map(k=>`<td><div class="heatmap-cell ${heatClass(t[k])}">${t[k]}</div></td>`).join('')}
             <td><strong>${t.total}</strong></td>
             <td style="font-weight:700;color:${gapColor}">${t.gap>0?'+':''}${t.gap}%</td>
           </tr>`;
@@ -904,33 +859,6 @@ function renderTeam() {
   }
 }
 
-/* ════════════════════════════════════════════════════════════
-   RENDER: FINANCIAL
-════════════════════════════════════════════════════════════ */
-function renderFinancial() {
-  const tbody = document.getElementById('financial-tbody');
-  tbody.innerHTML = PRODUCTS.map(p => {
-    const variance = p.forecast - p.budget;
-    const pct = Math.round(p.actual/p.budget*100);
-    const overBudget = p.forecast > p.budget;
-    return `<tr>
-      <td><strong>${p.name}</strong></td>
-      <td>$${p.budget}K</td>
-      <td>$${p.actual}K</td>
-      <td>$${p.forecast}K</td>
-      <td style="color:${overBudget?'#ef4444':'#22c55e'};font-weight:600">${overBudget?'+':''}$${variance}K ${overBudget?'⚠':''}</td>
-      <td>$${p.fteCost}K</td>
-      <td>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div class="fin-bar-wrap" style="width:80px;height:8px;flex-shrink:0">
-            <div class="fin-bar-actual ${pct>100?'fin-over':'fin-ok'}" style="width:${Math.min(pct,100)}%"></div>
-          </div>
-          <span style="font-size:12px;font-weight:600;color:${pct>95?'#ef4444':pct>80?'#f59e0b':'#22c55e'}">${pct}%</span>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-}
 
 /* ════════════════════════════════════════════════════════════
    RENDER: RISKS  (uses data.js RISKS object via allRisksFlat())
@@ -1042,12 +970,7 @@ function switchDepTab(name, btn) {
    RENDER: INSIGHTS
 ════════════════════════════════════════════════════════════ */
 function renderInsights() {
-  /* Merge static ALERTS with dynamic auto-generated ones */
-  const autoAlerts = [];
-  PRODUCTS.forEach(p=>{
-    if(p.forecast > p.budget) autoAlerts.push({type:'warning',icon:'💸',title:`${p.name} — Budget Overrun`,desc:`Forecast $${p.forecast}K exceeds budget $${p.budget}K (+$${p.forecast-p.budget}K)`,product:p.name});
-  });
-  const allAlerts = [...ALERTS, ...autoAlerts];
+  const allAlerts = [...ALERTS];
 
   const alertsGrid = document.getElementById('alerts-grid');
   alertsGrid.innerHTML = allAlerts.map(a=>`
@@ -1150,12 +1073,8 @@ function openProductModal(id) {
         </div>
         <div class="detail-field"><label>Completion %</label><input type="number" min="0" max="100" value="${p.completion}" onchange="updateProduct('${p.id}','completion',+this.value)"/></div>
         <div class="detail-field"><label>Last Updated</label><input type="date" value="${p.updated}" onchange="updateProduct('${p.id}','updated',this.value)"/></div>
-        <div class="detail-field"><label>Revenue</label><input value="${p.revenue}" onchange="updateProduct('${p.id}','revenue',this.value)"/></div>
         <div class="detail-field"><label>Users</label><input value="${p.users}" onchange="updateProduct('${p.id}','users',this.value)"/></div>
         <div class="detail-field"><label>Adoption</label><input value="${p.adoption}" onchange="updateProduct('${p.id}','adoption',this.value)"/></div>
-        <div class="detail-field"><label>Budget ($K)</label><input type="number" value="${p.budget}" onchange="updateProduct('${p.id}','budget',+this.value)"/></div>
-        <div class="detail-field"><label>Actual Spend ($K)</label><input type="number" value="${p.actual}" onchange="updateProduct('${p.id}','actual',+this.value)"/></div>
-        <div class="detail-field"><label>Forecast ($K)</label><input type="number" value="${p.forecast}" onchange="updateProduct('${p.id}','forecast',+this.value)"/></div>
       </div>
     </div>
     <div>
@@ -1184,7 +1103,6 @@ function openNewProductModal(){
         <div class="detail-field"><label>Product Manager</label><input placeholder="Full name" id="np-pm"/></div>
         <div class="detail-field"><label>Status</label><select id="np-status"><option>on-track</option><option>at-risk</option><option>delayed</option></select></div>
         <div class="detail-field"><label>Phase</label><select id="np-phase"><option>Development</option><option>POC</option><option>Assessment</option></select></div>
-        <div class="detail-field"><label>Budget ($K)</label><input type="number" id="np-budget" placeholder="0"/></div>
         <div class="detail-field"><label>FTEs</label><input type="number" id="np-fte" placeholder="0"/></div>
       </div>
     </div>`;
@@ -1199,7 +1117,6 @@ function updateProduct(id, field, value) {
 function saveModal() {
   renderCards('products-grid');
   renderCards('overview-cards');
-  renderFinancial();
   renderCharts();
   closeModalDirect();
 }
@@ -1232,55 +1149,14 @@ function renderCharts() {
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}}}
   });
 
-  if(charts.budget) charts.budget.destroy();
-  charts.budget = new Chart(document.getElementById('budgetChart'), {
-    type:'bar',
-    data:{
-      labels:PRODUCTS.map(p=>p.name.split(' ')[0]),
-      datasets:[
-        {label:'Budget',data:PRODUCTS.map(p=>p.budget),backgroundColor:'#E8E8E8',borderRadius:4},
-        {label:'Actual',data:PRODUCTS.map(p=>p.actual),backgroundColor:QX,borderRadius:4}
-      ]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#f1f5f9'}}}}
-  });
-
   if(charts.fte) charts.fte.destroy();
   charts.fte = new Chart(document.getElementById('fteChart'), {
     type:'doughnut',
     data:{
       labels:PRODUCTS.map(p=>p.name.split(' ')[0]),
-      datasets:[{data:PRODUCTS.map(p=>p.fte),backgroundColor:QX,borderWidth:0}]
+      datasets:[{data:PRODUCTS.map(p=>(TEAM[p.id]||[]).length),backgroundColor:QX,borderWidth:0}]
     },
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}}}
-  });
-
-  if(charts.finBar) charts.finBar.destroy();
-  charts.finBar = new Chart(document.getElementById('financialBarChart'), {
-    type:'bar',
-    data:{
-      labels:PRODUCTS.map(p=>p.name.split(' ')[0]),
-      datasets:[
-        {label:'Budget ($K)',data:PRODUCTS.map(p=>p.budget),backgroundColor:'#E8E8E8',borderRadius:4},
-        {label:'Actual ($K)',data:PRODUCTS.map(p=>p.actual),backgroundColor:QX,borderRadius:4},
-        {label:'Forecast ($K)',data:PRODUCTS.map(p=>p.forecast),backgroundColor:QX.map(c=>c+'55'),borderRadius:4,borderDash:[4,4]}
-      ]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#f1f5f9'}}}}
-  });
-
-  if(charts.forecast) charts.forecast.destroy();
-  charts.forecast = new Chart(document.getElementById('forecastLineChart'), {
-    type:'line',
-    data:{
-      labels:['Jan','Feb','Mar','Apr','May','Jun'],
-      datasets:PRODUCTS.map((p,i)=>({
-        label:p.name.split(' ')[0],
-        data:[p.actual*0.3,p.actual*0.45,p.actual*0.6,p.actual*0.75,p.actual,p.forecast].map(v=>Math.round(v)),
-        borderColor:QX[i],backgroundColor:'transparent',tension:.4,pointRadius:3
-      }))
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#f1f5f9'}}}}
   });
 }
 
@@ -1289,8 +1165,13 @@ function renderCharts() {
 ════════════════════════════════════════════════════════════ */
 function exportReport() {
   const rows = [
-    ['Product','PM','Status','Phase','Completion','Revenue','Users','Adoption','Budget($K)','Actual($K)','Forecast($K)','FTEs'],
-    ...PRODUCTS.map(p=>[p.name,p.pm,p.status,p.phase,p.completion+'%',p.revenue,p.users,p.adoption,p.budget,p.actual,p.forecast,p.fte])
+    ['Product','PM','Status','Phase','Completion','Users','Adoption','FTEs','Open Risks'],
+    ...PRODUCTS.map(p=>[
+      p.name, p.pm, p.status, p.phase, p.completion+'%',
+      p.users, p.adoption,
+      (TEAM[p.id]||[]).length,
+      (RISKS[p.id]||[]).filter(r=>r.status!=='Closed').length
+    ])
   ];
   const csv = rows.map(r=>r.join(',')).join('\n');
   const blob = new Blob([csv],{type:'text/csv'});
@@ -1309,7 +1190,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCards('products-grid');
   renderRoadmap();
   renderTeam();
-  renderFinancial();
   renderRisks();
   renderCompliance();
   renderDependencies();

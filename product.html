@@ -431,7 +431,7 @@
 
       <!-- Column mapping hint -->
       <div style="margin-bottom:14px;padding:10px 12px;background:#eff6ff;border-radius:8px;border:1px solid #bfdbfe;font-size:12px;color:#1d4ed8">
-        <strong>Expected columns:</strong> Name · Initials · Role · Type (pm/eng/design/qa/ops) · Allocation% · Ask% · Shared (Yes/No)
+        <strong>Expected columns:</strong> Name · Initials · Role · Type (safety-manager/security-manager/quality-manager/quality-consultant/safety-consultant) · Allocation% · Ask% · Shared (Yes/No)
         <br/>Column headers are auto-detected — order doesn't matter.
       </div>
 
@@ -551,14 +551,11 @@ function activateTab(id){
 function renderOverview(){
   // KPIs
   const riskCount = (RISKS[PID]||[]).filter(r=>r.status!=='Closed').length;
-  const overBudget = P.forecast > P.budget;
   const kpis=[
-    {val:P.revenue,  label:'Revenue',    accent:P.color},
-    {val:P.mrr,      label:'MRR',        accent:QX.sky},
     {val:P.users,    label:'Users',      accent:QX.green},
     {val:P.adoption, label:'Adoption',   accent:QX.purple},
     {val:P.nps+'',   label:'NPS Score',  accent:QX.orange},
-    {val:P.fte+' FTE',label:'Team Size', accent:QX.steelBlue}
+    {val:productFTE(PID)+' FTE',label:'Team Size', accent:QX.steel}
   ];
   document.getElementById('kpi-strip').innerHTML=kpis.map(k=>`
     <div class="ks-card">
@@ -567,42 +564,12 @@ function renderOverview(){
       <div class="kl">${k.label}</div>
     </div>`).join('');
 
-  // Financial bar chart
-  setTimeout(()=>{
-    new Chart(document.getElementById('finBarChart'),{
-      type:'bar',
-      data:{
-        labels:['Budget','Actual','Forecast'],
-        datasets:[{data:[P.budget,P.actual,P.forecast],backgroundColor:[QX.gray,P.color,P.color+'66'],borderRadius:6}]
-      },
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'#f1f5f9'}}}}
-    });
-  },100);
-
-  // Financial summary
-  const variance=P.forecast-P.budget;
-  const usedPct=Math.round(P.actual/P.budget*100);
-  document.getElementById('fin-summary').innerHTML=`
-    <div class="fin-row"><span class="fin-label">Budget</span><div class="fin-bar-r"><div class="fin-bar-f" style="width:100%;background:var(--qx-gray)"></div></div><span class="fin-val">$${P.budget}K</span></div>
-    <div class="fin-row"><span class="fin-label">Actual Spend</span><div class="fin-bar-r"><div class="fin-bar-f" style="width:${usedPct}%;background:${P.color}"></div></div><span class="fin-val">$${P.actual}K <span style="font-size:11px;color:var(--muted)">(${usedPct}%)</span></span></div>
-    <div class="fin-row"><span class="fin-label">Forecast</span><div class="fin-bar-r"><div class="fin-bar-f" style="width:${Math.min(P.forecast/P.budget*100,100)}%;background:${overBudget?'#ef4444':P.color}88"></div></div><span class="fin-val" style="color:${overBudget?'#ef4444':'var(--heading)'}">$${P.forecast}K</span></div>
-    <div class="fin-row"><span class="fin-label">FTE Cost</span><div class="fin-bar-r"><div class="fin-bar-f" style="width:${Math.round(P.fteCost/P.budget*100)}%;background:${QX.purple}"></div></div><span class="fin-val">$${P.fteCost}K</span></div>`;
-  document.getElementById('variance-bar').innerHTML=`
-    <div style="padding:10px;border-radius:8px;background:${overBudget?'#fff5f5':'#f0fdf4'};border:1px solid ${overBudget?'#fca5a5':'#bbf7d0'}">
-      <div style="font-size:12px;font-weight:700;color:${overBudget?'#991b1b':'#15803d'}">
-        ${overBudget?'⚠ Budget Overrun':'✅ Within Budget'}: ${overBudget?'+':''}$${variance}K variance
-      </div>
-      <div style="font-size:11px;color:var(--muted);margin-top:3px">${overBudget?'Forecast exceeds budget — review scope or request additional funding':'Forecast is within approved budget'}
-      </div>
-    </div>`;
-
   // Alerts
   const riskAlerts = (RISKS[PID]||[]).filter(r=>r.status!=='Closed'&&r.sev==='High');
   const compAlerts = (COMPLIANCE[PID]||[]).filter(c=>c.status==='fail');
   const alerts = [
     ...riskAlerts.map(r=>({type:'danger',icon:'⚠️',title:'High Risk: '+r.title,desc:r.mitigation})),
-    ...compAlerts.map(c=>({type:'warning',icon:'🛡️',title:'Compliance Gap: '+c.name,desc:c.desc})),
-    ...(P.forecast>P.budget?[{type:'warning',icon:'💸',title:'Budget Overrun Forecast',desc:`Forecast $${P.forecast}K exceeds budget $${P.budget}K by $${P.forecast-P.budget}K`}]:[])
+    ...compAlerts.map(c=>({type:'warning',icon:'🛡️',title:'Compliance Gap: '+c.name,desc:c.desc}))
   ];
   document.getElementById('overview-alerts').innerHTML = alerts.length ? `
     <div class="section-hdr"><h3>Product Flags</h3></div>
@@ -636,21 +603,21 @@ function renderRoadmap(){
 
 /* ── Team ─────────────────────────────────────────────────────── */
 /* ── type colour map ──────────────────────────────────────────── */
-const TC = {pm:QX.blue, eng:QX.sky, design:QX.purple, qa:QX.green, ops:QX.orange};
-const TYPE_LABEL = {pm:'PM', eng:'Eng', design:'Design', qa:'QA', ops:'Ops'};
-const TYPE_BG    = {pm:'#ede9fe', eng:'#dbeafe', design:'#fdf4ff', qa:'#dcfce7', ops:'#fff7ed'};
-const TYPE_TXT   = {pm:'#6d28d9', eng:'#1d4ed8', design:'#7e22ce', qa:'#15803d', ops:'#c2410c'};
+const TC = {'safety-manager':'#dc2626','security-manager':'#1d4ed8','quality-manager':'#15803d','quality-consultant':'#7e22ce','safety-consultant':'#c2410c'};
+const TYPE_LABEL = {'safety-manager':'Safety Mgr','security-manager':'Security Mgr','quality-manager':'Quality Mgr','quality-consultant':'Quality Con','safety-consultant':'Safety Con'};
+const TYPE_BG    = {'safety-manager':'#fee2e2','security-manager':'#dbeafe','quality-manager':'#dcfce7','quality-consultant':'#ede9fe','safety-consultant':'#fff7ed'};
+const TYPE_TXT   = {'safety-manager':'#991b1b','security-manager':'#1d4ed8','quality-manager':'#15803d','quality-consultant':'#6d28d9','safety-consultant':'#9a3412'};
 
 function renderTeam(){
   const members = (TEAM[PID]||[]).map((m,i)=>({...m,_idx:i}));
 
   /* ── Role summary strip ───────────────────────────────────── */
   const roleDefs = [
-    {key:'pm',label:'Product Manager',color:QX.blue},
-    {key:'eng',label:'Engineering',color:QX.sky},
-    {key:'design',label:'Design',color:QX.purple},
-    {key:'qa',label:'QA',color:QX.green},
-    {key:'ops',label:'Ops',color:QX.orange}
+    {key:'safety-manager',   label:'Safety Manager',    color:'#dc2626'},
+    {key:'security-manager', label:'Security Manager',  color:'#1d4ed8'},
+    {key:'quality-manager',  label:'Quality Manager',   color:'#15803d'},
+    {key:'quality-consultant',label:'Quality Consultant',color:'#7e22ce'},
+    {key:'safety-consultant',label:'Safety Consultant', color:'#c2410c'}
   ];
   document.getElementById('role-summary').innerHTML = roleDefs.map(r=>{
     const cnt = members.filter(m=>m.type===r.key).length;
@@ -927,9 +894,14 @@ function applyRiskEdit(i){
 
 /* ── type options HTML helper ─────────────────────────────────── */
 function _typeOpts(sel){
-  return ['pm','eng','design','qa','ops'].map(t=>
-    `<option value="${t}"${t===sel?' selected':''}>${{pm:'PM — Product Manager',eng:'Eng — Engineering',design:'Design — Designer',qa:'QA — Quality Assurance',ops:'Ops — DevOps / Infra'}[t]}</option>`
-  ).join('');
+  const opts = [
+    {v:'safety-manager',   l:'Safety Manager'},
+    {v:'security-manager', l:'Security Manager'},
+    {v:'quality-manager',  l:'Quality Manager'},
+    {v:'quality-consultant',l:'Quality Consultant'},
+    {v:'safety-consultant',l:'Safety Consultant'}
+  ];
+  return opts.map(o=>`<option value="${o.v}"${o.v===sel?' selected':''}>${o.l}</option>`).join('');
 }
 
 /* ── Add new member (new person OR new role for existing) ─────── */
@@ -1323,13 +1295,11 @@ function closeExcelModal(){
 function downloadExcelTemplate(){
   const header = 'Name,Initials,Role,Type,Allocation%,Ask%,Shared';
   const rows = [
-    'Aisha Rahman,AR,Product Manager,pm,100,100,No',
-    'Dev Team Alpha,DA,Engineering Lead,eng,100,100,No',
-    'Lena Kovacs,LK,Senior Engineer,eng,100,100,No',
-    'Sam Torres,ST,Engineer,eng,80,100,Yes',
-    'Mia Patel,MP,UX Designer,design,80,100,No',
-    'Nour Al-Rashid,NA,QA Lead,qa,100,100,No',
-    'Leo Petrov,LP,DevOps Engineer,ops,100,100,No'
+    'Aisha Rahman,AR,Safety Manager,safety-manager,100,100,No',
+    'Bjorn Svendsen,BS,Security Manager,security-manager,100,100,No',
+    'Clara Weiss,CW,Quality Manager,quality-manager,100,100,No',
+    'David Osei,DO,Quality Consultant,quality-consultant,80,100,Yes',
+    'Elena Moris,EM,Safety Consultant,safety-consultant,80,100,No'
   ];
   const csv = [header, ...rows].join('\n');
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
@@ -1386,11 +1356,17 @@ function parseExcelCSV(text){
 }
 
 const TYPE_MAP = {
-  'pm':'pm','product manager':'pm','product':'pm',
-  'eng':'eng','engineer':'eng','engineering':'eng','developer':'eng','dev':'eng','backend':'eng','frontend':'eng','fullstack':'eng',
-  'design':'design','designer':'design','ux':'design','ui':'design',
-  'qa':'qa','quality':'qa','test':'qa','testing':'qa','qe':'qa',
-  'ops':'ops','devops':'ops','sre':'ops','infrastructure':'ops','infra':'ops'
+  'safety-manager':'safety-manager','safety manager':'safety-manager','sm':'safety-manager',
+  'security-manager':'security-manager','security manager':'security-manager','sec':'security-manager',
+  'quality-manager':'quality-manager','quality manager':'quality-manager','qm':'quality-manager',
+  'quality-consultant':'quality-consultant','quality consultant':'quality-consultant','qc':'quality-consultant',
+  'safety-consultant':'safety-consultant','safety consultant':'safety-consultant','sc':'safety-consultant',
+  // backward compat
+  'pm':'quality-manager','product manager':'quality-manager',
+  'eng':'safety-manager','engineer':'safety-manager','engineering':'safety-manager',
+  'design':'safety-consultant','designer':'safety-consultant',
+  'qa':'quality-consultant','quality':'quality-consultant',
+  'ops':'security-manager','devops':'security-manager','sre':'security-manager'
 };
 
 function _processExcelRows(rows){
@@ -1414,8 +1390,8 @@ function _processExcelRows(rows){
       const name = r[cols.name]?.toString().trim() || '';
       const rawInit = cols.initials >= 0 ? r[cols.initials]?.toString().trim() : '';
       const initials = rawInit || name.split(/\s+/).map(w=>w[0]||'').join('').toUpperCase().slice(0,2) || 'XX';
-      const rawType = cols.type >= 0 ? r[cols.type]?.toString().toLowerCase().trim() : 'eng';
-      const type = TYPE_MAP[rawType] || 'eng';
+      const rawType = cols.type >= 0 ? r[cols.type]?.toString().toLowerCase().trim() : 'safety-manager';
+      const type = TYPE_MAP[rawType] || 'safety-manager';
       const rawAlloc = cols.alloc >= 0 ? r[cols.alloc]?.toString().replace(/[^0-9]/g,'') : '100';
       const allocation = Math.min(100, Math.max(1, parseInt(rawAlloc) || 100));
       const rawAsk = cols.ask >= 0 ? r[cols.ask]?.toString().replace(/[^0-9]/g,'') : '';
@@ -1435,7 +1411,7 @@ function _processExcelRows(rows){
 
 function _renderExcelPreview(){
   const preview = document.getElementById('excel-preview');
-  const typeColor = {pm:'#3C00FF',eng:'#0F9ED5',design:'#A02B93',qa:'#22c55e',ops:'#E97132'};
+  const typeColor = {'safety-manager':'#dc2626','security-manager':'#1d4ed8','quality-manager':'#15803d','quality-consultant':'#7e22ce','safety-consultant':'#c2410c'};
   preview.innerHTML = `
     <div style="margin-bottom:10px;display:flex;align-items:center;gap:8px">
       <span style="font-size:13px;font-weight:700;color:var(--heading)">${_parsedMembers.length} members parsed</span>

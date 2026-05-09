@@ -59,7 +59,7 @@
 .p-card-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .p-card-progress{margin-bottom:10px}
 .p-card-progress .pct{font-size:12px;font-weight:700;color:var(--heading);text-align:right;margin-bottom:3px}
-.p-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 20px;background:var(--bg);border-top:1px solid var(--border)}
+.p-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 20px;background:var(--bg);border-top:1px solid var(--border)}
 .p-metric .mv{font-size:13px;font-weight:700;color:var(--heading)}
 .p-metric .ml{font-size:10px;color:var(--muted);margin-top:1px}
 .p-card-foot{padding:10px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
@@ -172,11 +172,7 @@
   </div>
 
   <!-- CHARTS ROW -->
-  <div class="charts-row">
-    <div class="chart-card">
-      <h4>Budget vs Actual vs Forecast ($K)</h4>
-      <div class="chart-h"><canvas id="finChart"></canvas></div>
-    </div>
+  <div class="charts-row" style="grid-template-columns:1fr 1fr">
     <div class="chart-card">
       <h4>Portfolio Status</h4>
       <div class="chart-h"><canvas id="statusChart"></canvas></div>
@@ -258,8 +254,7 @@ const ALERTS_DATA=[
   {icon:'🚩',border:'#ef4444',msg:'Qorix Process Definition has no assigned Product Manager — blocked',product:'Qorix Process Definition'},
   {icon:'⚠️',border:'#ef4444',msg:'Qorix Developer API Design Freeze delayed — escalated to CTO',product:'Qorix Developer'},
   {icon:'⚠️',border:'#f59e0b',msg:'Qorix Adaptive go/no-go stakeholder review — scope reduction on table',product:'Qorix Adaptive'},
-  {icon:'🛠️',border:'#f59e0b',msg:'Qorix Light weight memory target may slip — optimisation in progress',product:'Qorix Light weight'},
-  {icon:'💸',border:'#f59e0b',msg:'Qorix Adaptive forecast exceeds budget by $55K',product:'Qorix Adaptive'}
+  {icon:'🛠️',border:'#f59e0b',msg:'Qorix Light weight memory target may slip — optimisation in progress',product:'Qorix Light weight'}
 ];
 function renderAlerts(){
   document.getElementById('alert-strip').innerHTML=ALERTS_DATA.map(a=>`
@@ -281,7 +276,6 @@ function renderCards(){
   const allRisksForProduct = id => (RISKS[id]||[]).filter(r=>r.status!=='Closed');
   grid.innerHTML = filtered.map(p => {
     const pr = allRisksForProduct(p.id);
-    const overBudget = p.forecast > p.budget;
     return `
     <div class="p-card" data-status="${p.status}" data-phase="${p.phase}">
       <div class="p-card-stripe" style="background:${p.color}"></div>
@@ -297,7 +291,6 @@ function renderCards(){
           <span class="badge badge-${p.status}">${statusLabel(p.status)}</span>
           <span class="badge-phase" style="background:${phaseBg(p.phase)};color:${phaseText(p.phase)}">${p.phase}</span>
           ${pr.length?`<span style="background:#fee2e2;color:#991b1b;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700">⚠ ${pr.length} Risk${pr.length>1?'s':''}</span>`:''}
-          ${overBudget?`<span style="background:#fff7ed;color:#c2410c;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700">💸 Over Budget</span>`:''}
         </div>
         <div class="p-card-progress">
           <div class="pct">${p.completion}% complete</div>
@@ -310,7 +303,6 @@ function renderCards(){
         </div>
       </div>
       <div class="p-metrics">
-        <div class="p-metric"><div class="mv">${p.revenue}</div><div class="ml">Revenue</div></div>
         <div class="p-metric"><div class="mv">${p.users}</div><div class="ml">Users</div></div>
         <div class="p-metric"><div class="mv">${p.adoption}</div><div class="ml">Adoption</div></div>
       </div>
@@ -343,7 +335,13 @@ function filterCards(){ state.search=document.getElementById('search-input').val
 
 /* ── Team quick view ──────────────────────────────────────────── */
 function renderTeam(){
-  const roles = [{key:'pm',label:'PM',color:'#3C00FF'},{key:'eng',label:'Eng',color:'#0F9ED5'},{key:'design',label:'Design',color:'#A02B93'},{key:'qa',label:'QA',color:'#22c55e'},{key:'ops',label:'Ops',color:'#E97132'}];
+  const roles = [
+    {key:'safety-manager',   label:'Safety Mgr',  color:'#dc2626'},
+    {key:'security-manager', label:'Sec Mgr',     color:'#1d4ed8'},
+    {key:'quality-manager',  label:'Quality Mgr', color:'#15803d'},
+    {key:'quality-consultant',label:'Quality Con', color:'#7e22ce'},
+    {key:'safety-consultant',label:'Safety Con',  color:'#c2410c'}
+  ];
   document.getElementById('team-row').innerHTML = PRODUCTS.map(p=>{
     const members = TEAM[p.id]||[];
     const counts = {};
@@ -402,18 +400,6 @@ function renderRisks(){
 /* ── Charts ───────────────────────────────────────────────────── */
 function renderCharts(){
   const QXC=PRODUCTS.map(p=>p.color);
-  new Chart(document.getElementById('finChart'),{
-    type:'bar',
-    data:{
-      labels:PRODUCTS.map(p=>p.name.split(' ')[0]),
-      datasets:[
-        {label:'Budget',data:PRODUCTS.map(p=>p.budget),backgroundColor:'#E8E8E8',borderRadius:4},
-        {label:'Actual',data:PRODUCTS.map(p=>p.actual),backgroundColor:QXC,borderRadius:4},
-        {label:'Forecast',data:PRODUCTS.map(p=>p.forecast),backgroundColor:QXC.map(c=>c+'44'),borderRadius:4}
-      ]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#f1f5f9'}}}}
-  });
   new Chart(document.getElementById('statusChart'),{
     type:'doughnut',
     data:{
