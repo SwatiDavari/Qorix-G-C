@@ -50,14 +50,20 @@
 .rm-next .rm-col-hdr{color:var(--qx-orange);border-color:var(--qx-orange)}
 .rm-later .rm-col-hdr{color:var(--muted);border-color:var(--border)}
 
-/* Team member card */
-.member-card{background:var(--card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border);display:flex;align-items:center;gap:12px}
-.member-info{flex:1}
-.member-name{font-weight:600;font-size:13px;color:var(--heading)}
-.member-role{font-size:11px;color:var(--muted);margin-top:2px}
-.member-alloc{text-align:right}
-.alloc-pct{font-size:14px;font-weight:800}
-.alloc-label{font-size:10px;color:var(--muted)}
+/* Team member grouped card */
+.member-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+.member-card-hdr{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg);border-bottom:1px solid var(--border)}
+.member-name{font-weight:700;font-size:13px;color:var(--heading)}
+.member-total{font-size:11px;margin-top:1px}
+.member-role-row{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border);transition:background .1s}
+.member-role-row:hover{background:#fafbff}
+.role-row-label{font-size:12px;font-weight:600;color:var(--heading);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.alloc-input{width:46px;border:1.5px solid var(--border);border-radius:6px;padding:3px 4px;font-size:12px;font-weight:700;text-align:center;outline:none;color:var(--heading);background:#fff;transition:border-color .15s}
+.alloc-input:focus{border-color:var(--qx-blue);box-shadow:0 0 0 2px rgba(60,0,255,.1)}
+.member-footer{padding:8px 14px 10px;background:var(--bg)}
+.icon-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s;flex-shrink:0;line-height:1}
+.icon-btn:hover{border-color:var(--qx-blue);background:#eff6ff}
+.icon-btn.danger:hover{border-color:#ef4444;background:#fff5f5;color:#ef4444}
 
 /* Risk card (product view) */
 .risk-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
@@ -249,7 +255,7 @@
       <div class="section-hdr" style="margin-top:4px"><h3>Full Roster</h3></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Name</th><th>Role</th><th>Type</th><th>Allocation</th><th>Shared</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Name</th><th>Role</th><th>Type</th><th>Allocation %</th><th>Shared</th><th>Actions</th></tr></thead>
           <tbody id="team-table"></tbody>
         </table>
       </div>
@@ -640,55 +646,143 @@ function renderRoadmap(){
 }
 
 /* ── Team ─────────────────────────────────────────────────────── */
-function renderTeam(){
-  const members=TEAM[PID]||[];
-  const roles=[{key:'pm',label:'Product Manager',color:QX.blue},{key:'eng',label:'Engineering',color:QX.sky},{key:'design',label:'Design',color:QX.purple},{key:'qa',label:'QA',color:QX.green},{key:'ops',label:'Ops',color:QX.orange}];
+/* ── type colour map ──────────────────────────────────────────── */
+const TC = {pm:QX.blue, eng:QX.sky, design:QX.purple, qa:QX.green, ops:QX.orange};
+const TYPE_LABEL = {pm:'PM', eng:'Eng', design:'Design', qa:'QA', ops:'Ops'};
+const TYPE_BG    = {pm:'#ede9fe', eng:'#dbeafe', design:'#fdf4ff', qa:'#dcfce7', ops:'#fff7ed'};
+const TYPE_TXT   = {pm:'#6d28d9', eng:'#1d4ed8', design:'#7e22ce', qa:'#15803d', ops:'#c2410c'};
 
-  // Role summary chips
-  document.getElementById('role-summary').innerHTML=roles.map(r=>{
-    const cnt=members.filter(m=>m.type===r.key).length;
+function renderTeam(){
+  const members = (TEAM[PID]||[]).map((m,i)=>({...m,_idx:i}));
+
+  /* ── Role summary strip ───────────────────────────────────── */
+  const roleDefs = [
+    {key:'pm',label:'Product Manager',color:QX.blue},
+    {key:'eng',label:'Engineering',color:QX.sky},
+    {key:'design',label:'Design',color:QX.purple},
+    {key:'qa',label:'QA',color:QX.green},
+    {key:'ops',label:'Ops',color:QX.orange}
+  ];
+  document.getElementById('role-summary').innerHTML = roleDefs.map(r=>{
+    const cnt = members.filter(m=>m.type===r.key).length;
     return `<div class="ks-card"><div class="ks-accent" style="background:${r.color}"></div><div class="kv">${cnt}</div><div class="kl">${r.label}</div></div>`;
   }).join('');
 
-  // Member cards
-  const memberCard=m=>{
-    const over=m.allocation>=100&&m.shared;
-    return `<div class="member-card">
-      <div class="avatar avatar-md" style="background:${{'pm':QX.blue,'eng':QX.sky,'design':QX.purple,'qa':QX.green,'ops':QX.orange}[m.type]||QX.blue}">${m.initials}</div>
-      <div class="member-info">
-        <div class="member-name">${m.name} ${m.shared?'<span class="shared-tag">Shared</span>':''}</div>
-        <div class="member-role">${m.role}</div>
-        <div style="margin-top:5px;display:flex;align-items:center;gap:6px">
-          <div class="progress-wrap" style="width:80px;height:4px"><div class="progress-fill" style="width:${m.allocation}%;background:${m.allocation>=90&&m.shared?'#ef4444':{'pm':QX.blue,'eng':QX.sky,'design':QX.purple,'qa':QX.green,'ops':QX.orange}[m.type]||QX.blue}"></div></div>
-          <span style="font-size:11px;font-weight:700;color:${m.allocation>=90&&m.shared?'#ef4444':'var(--heading)'}">@${m.allocation}%</span>
+  /* ── Group by name (case-insensitive) ────────────────────── */
+  const groupMap = {};
+  members.forEach(m => {
+    const key = m.name.trim().toLowerCase();
+    if(!groupMap[key]) groupMap[key] = {name:m.name, initials:m.initials, entries:[]};
+    groupMap[key].entries.push(m);
+  });
+  const groups = Object.values(groupMap);
+
+  /* ── Grouped member cards ────────────────────────────────── */
+  document.getElementById('team-grid').innerHTML = groups.map(g => {
+    const total   = g.entries.reduce((s,e)=>s+e.allocation, 0);
+    const isOver  = total > 100;
+    const isShared= g.entries.some(e=>e.shared);
+    const mainType= g.entries[0].type;
+    const allocColor = isOver ? '#ef4444' : total===100 ? '#22c55e' : '#f59e0b';
+
+    const roleRows = g.entries.map(e => {
+      const tColor = TC[e.type]||QX.blue;
+      return `
+      <div class="member-role-row">
+        <span style="width:7px;height:7px;border-radius:50%;background:${tColor};flex-shrink:0"></span>
+        <div style="flex:1;min-width:0">
+          <div class="role-row-label" title="${e.role}">${e.role}</div>
+          <div style="display:flex;align-items:center;gap:5px;margin-top:2px">
+            <span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;background:${TYPE_BG[e.type]};color:${TYPE_TXT[e.type]}">${TYPE_LABEL[e.type]}</span>
+            ${e.shared ? '<span class="shared-tag" style="font-size:9px;padding:1px 5px">Shared</span>' : ''}
+          </div>
+        </div>
+        <!-- Allocation % editable column -->
+        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
+          <div class="progress-wrap" style="width:40px;height:4px"><div class="progress-fill" style="width:${Math.min(e.allocation,100)}%;background:${tColor}"></div></div>
+          <input class="alloc-input" type="number" min="1" max="100" value="${e.allocation}"
+            title="Edit allocation %"
+            onchange="updateMemberAlloc(${e._idx},this.value)"
+            oninput="this.style.borderColor=''"/>
+          <span style="font-size:11px;color:var(--muted);font-weight:600">%</span>
+        </div>
+        <!-- Actions -->
+        <button class="icon-btn" title="Edit role" onclick="editMember(${e._idx})">✏</button>
+        <button class="icon-btn danger" title="Remove this role" onclick="removeMemberDirect(${e._idx})">✕</button>
+      </div>`;
+    }).join('');
+
+    return `
+    <div class="member-card">
+      <div class="member-card-hdr">
+        <div class="avatar avatar-md" style="background:${TC[mainType]||QX.blue}">${g.initials}</div>
+        <div style="flex:1;min-width:0">
+          <div class="member-name truncate">${g.name}</div>
+          <div class="member-total" style="color:${allocColor}">
+            ${g.entries.length > 1 ? g.entries.length+' roles · ' : ''}Total: <strong>${total}%</strong>
+            ${isOver ? ' ⚠ Over-allocated' : total===100 ? ' ✅' : ''}
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" style="font-size:11px;padding:4px 10px;flex-shrink:0"
+          onclick="addRoleFor(${JSON.stringify(g.name)},${JSON.stringify(g.initials)})">+ Role</button>
+      </div>
+      ${roleRows}
+      <div class="member-footer">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Allocation</span>
+          <span style="font-size:12px;font-weight:800;color:${allocColor}">${total}%</span>
+        </div>
+        <div class="progress-wrap" style="height:5px">
+          <div class="progress-fill" style="width:${Math.min(total,100)}%;background:${isOver?'#ef4444':allocColor}"></div>
         </div>
       </div>
     </div>`;
-  };
-  document.getElementById('team-grid').innerHTML=members.map(memberCard).join('');
+  }).join('');
 
-  // Shared callout
-  const shared=members.filter(m=>m.shared);
-  if(shared.length){
-    document.getElementById('shared-callout').innerHTML=`
-      <div class="alert alert-warning mt-12"><div class="alert-icon">⚠️</div>
-      <div class="alert-body"><div class="at">${shared.length} Shared Resource${shared.length>1?'s':''}</div>
-      <div class="ad">${shared.map(m=>m.name+' @'+m.allocation+'%').join(', ')} — verify no overallocation across products</div></div></div>`;
-  }
+  /* ── Shared resources callout ────────────────────────────── */
+  const sharedMembers = members.filter(m=>m.shared);
+  const callout = document.getElementById('shared-callout');
+  if(callout) callout.innerHTML = sharedMembers.length ? `
+    <div class="alert alert-warning mt-12">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-body">
+        <div class="at">${sharedMembers.length} Shared Allocation${sharedMembers.length>1?'s':''}</div>
+        <div class="ad">${sharedMembers.map(m=>`${m.name} (${m.role}) @${m.allocation}%`).join(' · ')} — verify no cross-product overallocation</div>
+      </div>
+    </div>` : '';
 
-  // Table
-  document.getElementById('team-table').innerHTML=members.map((m,i)=>`<tr>
-    <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar avatar-sm">${m.initials}</div><span class="text-bold">${m.name}</span></div></td>
-    <td contenteditable="true" class="editable-field" onblur="markChanged()">${m.role}</td>
-    <td><span class="badge-phase" style="background:${{pm:'#ede9fe',eng:'#dbeafe',design:'#fdf4ff',qa:'#dcfce7',ops:'#fff7ed'}[m.type]};color:${{pm:'#6d28d9',eng:'#1d4ed8',design:'#7e22ce',qa:'#15803d',ops:'#c2410c'}[m.type]}">${m.type.toUpperCase()}</span></td>
+  /* ── Full roster table ───────────────────────────────────── */
+  document.getElementById('team-table').innerHTML = members.map(m => `<tr>
     <td>
       <div style="display:flex;align-items:center;gap:8px">
-        <div class="progress-wrap" style="width:60px"><div class="progress-fill" style="width:${m.allocation}%;background:${m.allocation>=90&&m.shared?'#ef4444':QX.blue}"></div></div>
-        <span class="text-bold" style="color:${m.allocation>=90&&m.shared?'#ef4444':'var(--heading)'}">${m.allocation}%</span>
+        <div class="avatar avatar-sm" style="background:${TC[m.type]||QX.blue}">${m.initials}</div>
+        <span class="text-bold">${m.name}</span>
+        ${members.filter(x=>x.name.toLowerCase()===m.name.toLowerCase()).length>1
+          ? '<span style="font-size:10px;font-weight:600;background:#eff6ff;color:#1d4ed8;padding:1px 6px;border-radius:4px;margin-left:2px">multi-role</span>' : ''}
+      </div>
+    </td>
+    <td contenteditable="true" class="editable-field"
+        onblur="TEAM[PID][${m._idx}].role=this.textContent;persistData();markChanged()">${m.role}</td>
+    <td><span class="badge-phase" style="background:${TYPE_BG[m.type]};color:${TYPE_TXT[m.type]}">${m.type.toUpperCase()}</span></td>
+    <td>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="progress-wrap" style="width:50px">
+          <div class="progress-fill" style="width:${Math.min(m.allocation,100)}%;background:${TC[m.type]||QX.blue}"></div>
+        </div>
+        <input class="alloc-input" type="number" min="1" max="100" value="${m.allocation}"
+          title="Edit allocation %"
+          onchange="updateMemberAlloc(${m._idx},this.value)"/>
+        <span style="font-size:11px;color:var(--muted)">%</span>
       </div>
     </td>
     <td>${m.shared?'<span class="shared-tag">Shared</span>':'<span style="color:var(--muted);font-size:12px">—</span>'}</td>
-    <td><button class="btn btn-outline btn-sm" onclick="editMember(${i})">Edit</button></td>
+    <td>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-outline btn-sm" onclick="editMember(${m._idx})">✏ Edit</button>
+        <button class="btn btn-sm" style="background:#fff5f5;color:#ef4444;border:1px solid #fca5a5"
+          onclick="removeMemberDirect(${m._idx})">✕ Remove</button>
+      </div>
+    </td>
   </tr>`).join('');
 }
 
@@ -831,52 +925,288 @@ function applyRiskEdit(i){
   closeModal(); persistData(); renderRisksPane(); showToast('Risk updated');
 }
 
+/* ── type options HTML helper ─────────────────────────────────── */
+function _typeOpts(sel){
+  return ['pm','eng','design','qa','ops'].map(t=>
+    `<option value="${t}"${t===sel?' selected':''}>${{pm:'PM — Product Manager',eng:'Eng — Engineering',design:'Design — Designer',qa:'QA — Quality Assurance',ops:'Ops — DevOps / Infra'}[t]}</option>`
+  ).join('');
+}
+
+/* ── Add new member (new person OR new role for existing) ─────── */
 function addMember(){
-  openModal('Add Team Member',`
-    <div class="form-row"><div class="form-field"><label>Full Name</label><input id="nm-name" placeholder="Name"/></div>
-    <div class="form-field"><label>Initials</label><input id="nm-init" placeholder="AB" maxlength="2"/></div></div>
-    <div class="form-row"><div class="form-field"><label>Role</label><input id="nm-role" placeholder="e.g. Senior Engineer"/></div>
-    <div class="form-field"><label>Type</label><select id="nm-type"><option value="pm">PM</option><option value="eng" selected>Engineering</option><option value="design">Design</option><option value="qa">QA</option><option value="ops">Ops</option></select></div></div>
-    <div class="form-row"><div class="form-field"><label>Allocation %</label><input type="number" id="nm-alloc" min="1" max="100" value="100"/></div>
-    <div class="form-field"><label>Shared?</label><select id="nm-shared"><option value="">No</option><option value="1">Yes</option></select></div></div>
+  const existingNames = [...new Set((TEAM[PID]||[]).map(m=>m.name))];
+  const existingOpts = existingNames.length
+    ? `<option value="">— Select person —</option>`+existingNames.map(n=>`<option value="${n}">${n}</option>`).join('')
+    : '<option value="">No existing members</option>';
+
+  openModal('Add Team Member', `
+    <!-- Mode toggle -->
+    <div style="display:flex;gap:0;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px">
+      <button id="mode-new" onclick="toggleAddMode('new')"
+        style="flex:1;padding:8px;border:none;background:var(--qx-blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer">
+        ＋ New Person
+      </button>
+      <button id="mode-role" onclick="toggleAddMode('role')"
+        style="flex:1;padding:8px;border:none;background:#fff;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer">
+        ＋ Role for Existing Person
+      </button>
+    </div>
+
+    <!-- New person fields -->
+    <div id="new-person-fields">
+      <div class="form-row">
+        <div class="form-field"><label>Full Name</label><input id="nm-name" placeholder="e.g. Jordan Lee"/></div>
+        <div class="form-field"><label>Initials (2 chars)</label><input id="nm-init" placeholder="JL" maxlength="2"
+          style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Role / Job Title</label><input id="nm-role" placeholder="e.g. Senior Engineer"/></div>
+        <div class="form-field"><label>Type</label><select id="nm-type">${_typeOpts('eng')}</select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Allocation %</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" id="nm-alloc" min="1" max="100" value="100"
+              style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+            <span style="font-size:12px;color:var(--muted);white-space:nowrap">/ 100%</span>
+          </div>
+        </div>
+        <div class="form-field"><label>Shared Resource?</label>
+          <select id="nm-shared">
+            <option value="">No — dedicated to this product</option>
+            <option value="1">Yes — shared across products</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add role for existing person -->
+    <div id="existing-person-fields" style="display:none">
+      <div class="form-field"><label>Select Existing Person</label>
+        <select id="ep-name" onchange="prefillExistingInitials(this.value)">${existingOpts}</select>
+      </div>
+      <input type="hidden" id="ep-init" value=""/>
+      <div class="form-row">
+        <div class="form-field"><label>New Role / Job Title</label><input id="ep-role" placeholder="e.g. Tech Lead"/></div>
+        <div class="form-field"><label>Type</label><select id="ep-type">${_typeOpts('eng')}</select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Allocation %</label>
+          <div id="ep-alloc-wrap">
+            <div style="display:flex;align-items:center;gap:8px">
+              <input type="number" id="ep-alloc" min="1" max="100" value="20"
+                style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+              <span style="font-size:12px;color:var(--muted);white-space:nowrap">/ 100%</span>
+            </div>
+            <div id="ep-alloc-hint" style="font-size:11px;color:var(--muted);margin-top:4px"></div>
+          </div>
+        </div>
+        <div class="form-field"><label>Shared Resource?</label>
+          <select id="ep-shared">
+            <option value="">No</option><option value="1">Yes</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
       <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveMember()">Add Member</button>
+      <button class="btn btn-primary" id="add-member-submit" onclick="saveMember()">Add Member</button>
     </div>`);
 }
+
+function toggleAddMode(mode){
+  const isNew = mode === 'new';
+  document.getElementById('new-person-fields').style.display      = isNew ? '' : 'none';
+  document.getElementById('existing-person-fields').style.display = isNew ? 'none' : '';
+  document.getElementById('mode-new').style.background  = isNew ? 'var(--qx-blue)' : '#fff';
+  document.getElementById('mode-new').style.color       = isNew ? '#fff' : 'var(--muted)';
+  document.getElementById('mode-role').style.background = isNew ? '#fff' : 'var(--qx-blue)';
+  document.getElementById('mode-role').style.color      = isNew ? 'var(--muted)' : '#fff';
+  document.getElementById('add-member-submit').textContent = isNew ? 'Add Member' : 'Add Role';
+}
+
+function prefillExistingInitials(name){
+  const match = (TEAM[PID]||[]).find(m=>m.name===name);
+  if(match) document.getElementById('ep-init').value = match.initials;
+  // Show current total allocation for this person
+  const total = (TEAM[PID]||[]).filter(m=>m.name===name).reduce((s,m)=>s+m.allocation,0);
+  const hint  = document.getElementById('ep-alloc-hint');
+  if(hint) hint.innerHTML = `Current total for <strong>${name}</strong>: <strong style="color:${total>=100?'#ef4444':'#15803d'}">${total}%</strong> used · <strong>${100-total}%</strong> remaining`;
+}
+
 function saveMember(){
   if(!TEAM[PID]) TEAM[PID]=[];
-  TEAM[PID].push({
-    name:document.getElementById('nm-name').value||'New Member',
-    initials:document.getElementById('nm-init').value||'NM',
-    role:document.getElementById('nm-role').value||'Team Member',
-    type:document.getElementById('nm-type').value,
-    allocation:+document.getElementById('nm-alloc').value,
-    shared:!!document.getElementById('nm-shared').value
-  });
-  closeModal(); persistData(); renderTeam(); showToast('Member added');
+  const isNew = document.getElementById('new-person-fields').style.display !== 'none';
+
+  if(isNew){
+    const name = document.getElementById('nm-name').value.trim() || 'New Member';
+    const raw  = document.getElementById('nm-init').value.trim().toUpperCase();
+    const initials = raw || name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase() || 'NM';
+    TEAM[PID].push({
+      name, initials,
+      role:       document.getElementById('nm-role').value.trim()  || 'Team Member',
+      type:       document.getElementById('nm-type').value,
+      allocation: Math.max(1,Math.min(100,+document.getElementById('nm-alloc').value||100)),
+      shared:     !!document.getElementById('nm-shared').value
+    });
+    showToast('✅ Member added');
+  } else {
+    const name     = document.getElementById('ep-name').value;
+    const initials = document.getElementById('ep-init').value || '??';
+    if(!name){ showToast('⚠️ Select a person first'); return; }
+    TEAM[PID].push({
+      name, initials,
+      role:       document.getElementById('ep-role').value.trim()  || 'Team Member',
+      type:       document.getElementById('ep-type').value,
+      allocation: Math.max(1,Math.min(100,+document.getElementById('ep-alloc').value||20)),
+      shared:     !!document.getElementById('ep-shared').value
+    });
+    showToast('✅ Role added for ' + name);
+  }
+  closeModal(); persistData(); renderTeam();
 }
-function editMember(i){
-  const m=TEAM[PID][i];
-  openModal('Edit Member',`
-    <div class="form-row"><div class="form-field"><label>Name</label><input id="em-name" value="${m.name}"/></div>
-    <div class="form-field"><label>Role</label><input id="em-role" value="${m.role}"/></div></div>
-    <div class="form-row"><div class="form-field"><label>Allocation %</label><input type="number" id="em-alloc" min="1" max="100" value="${m.allocation}"/></div>
-    <div class="form-field"><label>Shared?</label><select id="em-shared"><option value=""${!m.shared?' selected':''}>No</option><option value="1"${m.shared?' selected':''}>Yes</option></select></div></div>
+
+/* ── Add role directly from card "+ Role" button ──────────────── */
+function addRoleFor(name, initials){
+  const existing = (TEAM[PID]||[]).filter(m=>m.name===name);
+  const total    = existing.reduce((s,m)=>s+m.allocation, 0);
+  const remain   = Math.max(0, 100-total);
+
+  openModal(`Add Role for ${name}`, `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border-radius:8px;margin-bottom:14px;border:1px solid var(--border)">
+      <div class="avatar avatar-sm" style="background:${TC[existing[0]?.type]||QX.blue}">${initials}</div>
+      <div>
+        <div style="font-weight:700;font-size:13px">${name}</div>
+        <div style="font-size:11px;color:${total>=100?'#ef4444':'var(--muted)'}">
+          Current: <strong>${total}%</strong> allocated · <strong style="color:${remain>0?'#15803d':'#ef4444'}">${remain}%</strong> remaining
+        </div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Existing roles on this product:</div>
+    <div style="margin-bottom:14px">
+      ${existing.map(e=>`
+        <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:11px;font-weight:600;padding:1px 6px;border-radius:3px;background:${TYPE_BG[e.type]};color:${TYPE_TXT[e.type]}">${e.type.toUpperCase()}</span>
+          <span style="flex:1;font-size:12px">${e.role}</span>
+          <span style="font-size:12px;font-weight:700;color:${TC[e.type]||QX.blue}">${e.allocation}%</span>
+        </div>`).join('')}
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>New Role / Title</label><input id="ar-role" placeholder="e.g. Tech Lead, Scrum Master"/></div>
+      <div class="form-field"><label>Type</label><select id="ar-type">${_typeOpts('eng')}</select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>Allocation %</label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="number" id="ar-alloc" min="1" max="100" value="${Math.min(remain,20)||10}"
+            style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+          <span style="font-size:12px;color:var(--muted)">/100%</span>
+        </div>
+        ${total+20>100?`<div style="font-size:11px;color:#f59e0b;margin-top:3px">⚠ Total may exceed 100% — review carefully</div>`:''}
+      </div>
+      <div class="form-field"><label>Shared?</label>
+        <select id="ar-shared"><option value="">No</option><option value="1">Yes</option></select>
+      </div>
+    </div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
-      <button class="btn btn-danger btn-sm" onclick="removeMember(${i})">Remove</button>
       <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="applyMemberEdit(${i})">Save</button>
+      <button class="btn btn-primary" onclick="saveRoleFor(${JSON.stringify(name)},${JSON.stringify(initials)})">+ Add Role</button>
     </div>`);
 }
-function applyMemberEdit(i){
-  TEAM[PID][i].name=document.getElementById('em-name').value;
-  TEAM[PID][i].role=document.getElementById('em-role').value;
-  TEAM[PID][i].allocation=+document.getElementById('em-alloc').value;
-  TEAM[PID][i].shared=!!document.getElementById('em-shared').value;
-  closeModal(); persistData(); renderTeam(); showToast('Member updated');
+
+function saveRoleFor(name, initials){
+  if(!TEAM[PID]) TEAM[PID]=[];
+  TEAM[PID].push({
+    name, initials,
+    role:       document.getElementById('ar-role').value.trim()  || 'Additional Role',
+    type:       document.getElementById('ar-type').value,
+    allocation: Math.max(1,Math.min(100,+document.getElementById('ar-alloc').value||10)),
+    shared:     !!document.getElementById('ar-shared').value
+  });
+  closeModal(); persistData(); renderTeam();
+  showToast(`✅ New role added for ${name}`);
 }
-function removeMember(i){ TEAM[PID].splice(i,1); closeModal(); persistData(); renderTeam(); showToast('Member removed'); }
+
+/* ── Edit a single role entry ─────────────────────────────────── */
+function editMember(i){
+  const m = TEAM[PID][i];
+  const allForPerson = (TEAM[PID]||[]).filter(x=>x.name.toLowerCase()===m.name.toLowerCase());
+  const totalOthers  = allForPerson.reduce((s,x,ix)=>TEAM[PID].indexOf(x)!==i?s+x.allocation:s, 0);
+
+  openModal(`Edit — ${m.name}`, `
+    <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">
+      Editing role ${allForPerson.length>1?`(${allForPerson.findIndex(x=>TEAM[PID].indexOf(x)===i)+1} of ${allForPerson.length} roles)`:''} for <strong>${m.name}</strong>
+      ${allForPerson.length>1?`<span style="color:var(--muted)"> · other roles use ${totalOthers}%</span>`:''}
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Name</label><input id="em-name" value="${m.name}"/></div>
+      <div class="form-field"><label>Initials</label><input id="em-init" value="${m.initials}" maxlength="2"
+        style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Role / Title</label><input id="em-role" value="${m.role}"/></div>
+      <div class="form-field"><label>Type</label><select id="em-type">${_typeOpts(m.type)}</select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>Allocation %</label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="number" id="em-alloc" min="1" max="100" value="${m.allocation}"
+            style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+          <span style="font-size:12px;color:var(--muted)">/100%</span>
+        </div>
+        ${allForPerson.length>1?`<div style="font-size:11px;color:var(--muted);margin-top:3px">Other roles: ${totalOthers}% · this role: ${m.allocation}% · total: ${totalOthers+m.allocation}%</div>`:''}
+      </div>
+      <div class="form-field"><label>Shared?</label>
+        <select id="em-shared">
+          <option value=""${!m.shared?' selected':''}>No</option>
+          <option value="1"${m.shared?' selected':''}>Yes</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-sm" style="background:#fff5f5;color:#ef4444;border:1px solid #fca5a5;border-radius:7px;padding:6px 12px;cursor:pointer;font-weight:600"
+        onclick="removeMember(${i})">✕ Remove Role</button>
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="applyMemberEdit(${i})">Save Changes</button>
+    </div>`);
+}
+
+function applyMemberEdit(i){
+  TEAM[PID][i].name       = document.getElementById('em-name').value.trim()  || TEAM[PID][i].name;
+  TEAM[PID][i].initials   = document.getElementById('em-init').value.trim().toUpperCase() || TEAM[PID][i].initials;
+  TEAM[PID][i].role       = document.getElementById('em-role').value.trim()  || TEAM[PID][i].role;
+  TEAM[PID][i].type       = document.getElementById('em-type').value;
+  TEAM[PID][i].allocation = Math.max(1,Math.min(100,+document.getElementById('em-alloc').value||TEAM[PID][i].allocation));
+  TEAM[PID][i].shared     = !!document.getElementById('em-shared').value;
+  closeModal(); persistData(); renderTeam(); showToast('✅ Role updated');
+}
+
+/* ── Remove helpers ───────────────────────────────────────────── */
+function removeMember(i){
+  TEAM[PID].splice(i,1);
+  closeModal(); persistData(); renderTeam(); showToast('Role removed');
+}
+
+function removeMemberDirect(i){
+  const name = TEAM[PID][i]?.name;
+  TEAM[PID].splice(i,1);
+  persistData(); renderTeam();
+  showToast(`✕ Removed role for ${name||'member'}`);
+}
+
+/* ── Inline allocation update (card + table inputs) ───────────── */
+function updateMemberAlloc(i, val){
+  const v = Math.max(1, Math.min(100, parseInt(val)||1));
+  if(TEAM[PID][i]) TEAM[PID][i].allocation = v;
+  persistData(); markChanged();
+  // Re-render only the footer total on the card to avoid focus loss
+  renderTeam();
+}
 
 function addRoadmapItem(col){
   openModal('Add Roadmap Item',`
