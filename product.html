@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="assets/styles.css"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="assets/data.js"></script>
 <style>
 /* ── Product-page specific ────────────────────────────────────── */
@@ -72,6 +73,35 @@
 .editable-field{cursor:text;border-bottom:1px dashed transparent;border-radius:3px;padding:1px 3px;transition:border-color .15s,background .15s}
 .editable-field:hover{border-color:var(--qx-blue);background:rgba(60,0,255,.04)}
 .editable-field:focus{outline:none;border-color:var(--qx-blue);background:rgba(60,0,255,.06)}
+
+/* ── Excel import modal ─────────────────────────────────────── */
+.excel-overlay{position:fixed;inset:0;background:rgba(14,40,65,.55);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.excel-overlay.open{display:flex}
+.excel-modal{background:#fff;border-radius:14px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(14,40,65,.3)}
+.excel-hdr{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2}
+.excel-hdr h3{font-size:16px;font-weight:700}
+.dropzone{border:2px dashed var(--border);border-radius:10px;padding:32px 20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;position:relative}
+.dropzone:hover,.dropzone.drag-over{border-color:var(--qx-blue);background:rgba(60,0,255,.03)}
+.dropzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dropzone-icon{font-size:36px;margin-bottom:10px}
+.dropzone-text{font-size:14px;font-weight:600;color:var(--text)}
+.dropzone-sub{font-size:12px;color:var(--muted);margin-top:4px}
+
+/* ── JIRA tab ───────────────────────────────────────────────── */
+.jira-conn-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.jira-conn-ok{background:#dcfce7;color:#15803d}
+.jira-conn-fail{background:#fee2e2;color:#991b1b}
+.jira-conn-idle{background:#f1f5f9;color:#64748b}
+.jira-issue-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.jira-issue-row:last-child{border-bottom:none}
+.jira-key{font-size:11px;font-weight:700;color:var(--qx-blue);white-space:nowrap;min-width:70px}
+.jira-summary{font-size:12px;font-weight:500;flex:1}
+.jira-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px}
+.jira-status-pill{font-size:10px;font-weight:600;padding:1px 7px;border-radius:3px}
+.jira-priority-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.jira-sync-bar{background:#fff;border-radius:10px;border:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.jira-stat-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:7px;font-size:12px;font-weight:600;background:var(--bg)}
+.server-warn{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px 16px;font-size:13px;color:#92400e}
 
 /* add risk/member btn */
 .add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:2px dashed var(--border);border-radius:var(--radius);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;background:none;width:100%;transition:border-color .15s,color .15s}
@@ -195,8 +225,10 @@
     <div class="section-hdr">
       <h2>Team Allocation</h2>
       <div class="actions">
+        <button class="btn btn-outline btn-sm" onclick="openExcelImport()">📥 Import Excel</button>
+        <button class="btn btn-outline btn-sm" onclick="downloadExcelTemplate()">📄 Template</button>
         <button class="btn btn-primary btn-sm" onclick="addMember()">+ Add Member</button>
-        <button class="btn btn-outline btn-sm" onclick="exportTeam()">⬇ Export</button>
+        <button class="btn btn-outline btn-sm" onclick="exportTeam()">⬇ Export CSV</button>
       </div>
     </div>
 
@@ -253,7 +285,184 @@
     </div>
   </div>
 
+  <!-- ── TAB: JIRA SYNC ── -->
+  <div class="ptab-pane" id="pane-jira">
+
+    <!-- Server instructions (shown if server not running) -->
+    <div class="server-warn" id="jira-server-hint">
+      ⚠️ <strong>Start the local server first:</strong> <code style="background:#fde68a;padding:1px 6px;border-radius:4px">npm install && npm start</code> in the project folder, then refresh. The server proxies JIRA API calls to avoid browser CORS restrictions.
+    </div>
+
+    <!-- Config card -->
+    <div class="card">
+      <div class="card-hdr">
+        <h3>🔗 JIRA Cloud Configuration</h3>
+        <span class="jira-conn-badge jira-conn-idle" id="jira-conn-status">Not connected</span>
+      </div>
+      <div class="card-body">
+        <div class="form-row">
+          <div class="form-field">
+            <label>JIRA Domain</label>
+            <input id="jira-domain" placeholder="your-org.atlassian.net" autocomplete="off"/>
+          </div>
+          <div class="form-field">
+            <label>Email</label>
+            <input id="jira-email" type="email" placeholder="you@company.com" autocomplete="off"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>API Token &nbsp;<a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" style="font-size:10px;color:var(--qx-blue)">Generate ↗</a></label>
+            <input id="jira-token" type="password" placeholder="Atlassian API token" autocomplete="off"/>
+          </div>
+          <div class="form-field">
+            <label>Project Key</label>
+            <input id="jira-project" placeholder="e.g. NX, PULSE, DS" style="text-transform:uppercase"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Risk Issue Type</label>
+            <input id="jira-risk-type" placeholder="Risk" value="Risk"/>
+          </div>
+          <div class="form-field">
+            <label>NC / Non-Conformance Issue Type</label>
+            <input id="jira-nc-type" placeholder="Non-Conformance" value="Non-Conformance"/>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <button class="btn btn-outline" onclick="testJira(this)">🔌 Test Connection</button>
+          <button class="btn btn-primary" onclick="saveJiraSettings()">💾 Save Config</button>
+          <button class="btn btn-lime" onclick="syncJira(this)">🔄 Sync Now</button>
+          <button class="btn btn-outline btn-sm" style="margin-left:auto;color:#ef4444;border-color:#fca5a5" onclick="clearJira()">🗑 Clear Data</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sync status bar -->
+    <div id="jira-sync-bar"></div>
+
+    <!-- Stats row -->
+    <div id="jira-stats-row"></div>
+
+    <!-- Issues split: Risks | NCs -->
+    <div class="grid-2" style="align-items:start">
+
+      <!-- Risks from JIRA -->
+      <div class="card">
+        <div class="card-hdr">
+          <h3>⚠️ Risks from JIRA</h3>
+          <div style="display:flex;gap:6px;align-items:center">
+            <span id="jira-risk-badge" style="display:none" class="badge" style="background:#fee2e2;color:#991b1b;border-radius:20px;padding:2px 8px;font-size:11px"></span>
+            <select id="jira-risk-filter" class="filter-select" style="padding:4px 8px;font-size:11px" onchange="renderJiraIssues()">
+              <option value="">All Statuses</option>
+              <option value="To Do">To Do</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Done">Done</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0 16px 8px" id="jira-risks-list">
+          <div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">Configure and sync JIRA to see risks here.</div>
+        </div>
+      </div>
+
+      <!-- NCs from JIRA -->
+      <div class="card">
+        <div class="card-hdr">
+          <h3>🔴 Non-Conformances from JIRA</h3>
+          <div style="display:flex;gap:6px;align-items:center">
+            <span id="jira-nc-badge" style="display:none" class="badge" style="background:#fee2e2;color:#991b1b;border-radius:20px;padding:2px 8px;font-size:11px"></span>
+            <select id="jira-nc-filter" class="filter-select" style="padding:4px 8px;font-size:11px" onchange="renderJiraIssues()">
+              <option value="">All Statuses</option>
+              <option value="To Do">To Do</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Done">Done</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0 16px 8px" id="jira-ncs-list">
+          <div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">Configure and sync JIRA to see NCs here.</div>
+        </div>
+      </div>
+
+    </div><!-- /grid-2 -->
+
+    <!-- Import JIRA risks into local risk register -->
+    <div class="card">
+      <div class="card-hdr"><h3>📥 Import JIRA Risks into Local Register</h3></div>
+      <div class="card-body">
+        <p style="font-size:13px;margin-bottom:12px">Automatically import synced JIRA risks into this product's local risk register. Existing risks are not overwritten.</p>
+        <button class="btn btn-primary btn-sm" onclick="importJiraRisksToRegister()">Import JIRA Risks → Risk Register</button>
+        <button class="btn btn-outline btn-sm" style="margin-left:8px" onclick="importJiraNcsToCompliance()">Import JIRA NCs → Compliance</button>
+      </div>
+    </div>
+
+  </div><!-- /pane-jira -->
+
 </div><!-- /product-body -->
+
+<!-- ── Excel Import Overlay ───────────────────────────────────────── -->
+<div class="excel-overlay" id="excel-overlay" onclick="if(event.target===this)closeExcelModal()">
+  <div class="excel-modal">
+    <div class="excel-hdr">
+      <h3>📥 Import Team from Excel / CSV</h3>
+      <button class="modal-close" onclick="closeExcelModal()">✕</button>
+    </div>
+    <div style="padding:20px">
+
+      <!-- Step 1: Upload zone -->
+      <div style="margin-bottom:16px">
+        <div class="dropzone" id="dropzone"
+          ondragover="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="this.classList.remove('drag-over')"
+          ondrop="this.classList.remove('drag-over');handleExcelDrop(event)">
+          <div class="dropzone-icon">📊</div>
+          <div class="dropzone-text">Drop your Excel or CSV file here</div>
+          <div class="dropzone-sub">Supports .xlsx, .xls, .csv — or click to browse</div>
+          <input type="file" accept=".xlsx,.xls,.csv" onchange="handleExcelFile(this.files[0])"/>
+        </div>
+      </div>
+
+      <!-- Template download row -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:10px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
+        <span style="font-size:18px">📄</span>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">Need a template?</div>
+          <div style="font-size:11px;color:var(--muted)">Download a pre-formatted CSV with correct column headers</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="downloadExcelTemplate()">⬇ Template</button>
+      </div>
+
+      <!-- Column mapping hint -->
+      <div style="margin-bottom:14px;padding:10px 12px;background:#eff6ff;border-radius:8px;border:1px solid #bfdbfe;font-size:12px;color:#1d4ed8">
+        <strong>Expected columns:</strong> Name · Initials · Role · Type (pm/eng/design/qa/ops) · Allocation% · Shared (Yes/No)
+        <br/>Column headers are auto-detected — order doesn't matter.
+      </div>
+
+      <!-- Preview area (populated after file load) -->
+      <div id="excel-preview" style="margin-bottom:12px"></div>
+
+      <!-- Import options (shown after file parsed) -->
+      <div id="excel-import-options" style="display:none;margin-bottom:14px;padding:12px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
+        <div class="form-field" style="margin:0">
+          <label>Import mode</label>
+          <select id="excel-import-mode" style="border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:13px;width:100%;outline:none">
+            <option value="merge">Merge — add to existing team (skip duplicates by name)</option>
+            <option value="replace">Replace — remove current team and use imported data</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn btn-outline" onclick="closeExcelModal()">Cancel</button>
+        <button class="btn btn-primary" id="excel-import-btn" style="display:none" onclick="importExcelMembers()">✅ Import Members</button>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <!-- MODALS -->
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
@@ -287,9 +496,12 @@ function init(){
   renderRisksPane();
   renderCompliance();
   renderActivity();
+  renderJiraPane();
   // activate tab from hash
   const hash = location.hash.replace('#','');
   if(hash) activateTab(hash);
+  // check server health silently
+  checkServerHealth();
 }
 
 function switchProduct(id){ if(id) location.href='product.html?id='+id; }
@@ -323,12 +535,13 @@ function renderHero(){
 
 /* ── Tabs ─────────────────────────────────────────────────────── */
 const TABS=[
-  {id:'overview', label:'Overview'},
-  {id:'roadmap',  label:'🗺 Roadmap'},
-  {id:'team',     label:'👥 Team'},
-  {id:'risks',    label:'⚠ Risks'},
-  {id:'compliance',label:'🛡 Compliance'},
-  {id:'activity', label:'📋 Activity'}
+  {id:'overview',    label:'Overview'},
+  {id:'roadmap',     label:'🗺 Roadmap'},
+  {id:'team',        label:'👥 Team'},
+  {id:'risks',       label:'⚠ Risks'},
+  {id:'compliance',  label:'🛡 Compliance'},
+  {id:'activity',    label:'📋 Activity'},
+  {id:'jira',        label:'🔗 JIRA Sync'}
 ];
 function renderTabs(){
   document.getElementById('ptabs').innerHTML = TABS.map(t=>`<button class="ptab${t.id==='overview'?' active':''}" onclick="activateTab('${t.id}')">${t.label}</button>`).join('');
@@ -593,7 +806,7 @@ function saveRisk(){
     mitigation:document.getElementById('nr-mit').value||'No mitigation defined',
     status:'Open', created:new Date().toISOString().split('T')[0]
   });
-  closeModal(); renderRisksPane(); showToast('Risk logged');
+  closeModal(); persistData(); renderRisksPane(); showToast('Risk logged');
 }
 
 function editRisk(i){
@@ -615,7 +828,7 @@ function applyRiskEdit(i){
   RISKS[PID][i].score=+document.getElementById('er-score').value;
   RISKS[PID][i].mitigation=document.getElementById('er-mit').value;
   RISKS[PID][i].status=document.getElementById('er-status').value;
-  closeModal(); renderRisksPane(); showToast('Risk updated');
+  closeModal(); persistData(); renderRisksPane(); showToast('Risk updated');
 }
 
 function addMember(){
@@ -641,7 +854,7 @@ function saveMember(){
     allocation:+document.getElementById('nm-alloc').value,
     shared:!!document.getElementById('nm-shared').value
   });
-  closeModal(); renderTeam(); showToast('Member added');
+  closeModal(); persistData(); renderTeam(); showToast('Member added');
 }
 function editMember(i){
   const m=TEAM[PID][i];
@@ -661,9 +874,9 @@ function applyMemberEdit(i){
   TEAM[PID][i].role=document.getElementById('em-role').value;
   TEAM[PID][i].allocation=+document.getElementById('em-alloc').value;
   TEAM[PID][i].shared=!!document.getElementById('em-shared').value;
-  closeModal(); renderTeam(); showToast('Member updated');
+  closeModal(); persistData(); renderTeam(); showToast('Member updated');
 }
-function removeMember(i){ TEAM[PID].splice(i,1); closeModal(); renderTeam(); showToast('Member removed'); }
+function removeMember(i){ TEAM[PID].splice(i,1); closeModal(); persistData(); renderTeam(); showToast('Member removed'); }
 
 function addRoadmapItem(col){
   openModal('Add Roadmap Item',`
@@ -692,13 +905,13 @@ function saveRoadmapItem(){
     date:document.getElementById('ri-date').value,
     dep:document.getElementById('ri-dep').value||null
   });
-  closeModal(); renderRoadmap(); showToast('Roadmap item added');
+  closeModal(); persistData(); renderRoadmap(); showToast('Roadmap item added');
 }
 
 /* ── Save / Export ────────────────────────────────────────────── */
 let _changed=false;
 function markChanged(){ _changed=true; document.title='• '+P.name+' — Qorix Portal'; }
-function saveChanges(){ _changed=false; document.title=P.name+' — Qorix Portal'; showToast('✅ Changes saved'); }
+function saveChanges(){ _changed=false; persistData(); document.title=P.name+' — Qorix Portal'; showToast('✅ Changes saved'); }
 function exportProduct(){
   const rows=[['Name','Role','Type','Allocation%','Shared'],...(TEAM[PID]||[]).map(m=>[m.name,m.role,m.type,m.allocation,m.shared?'Yes':'No'])];
   const csv=rows.map(r=>r.join(',')).join('\n');
@@ -713,7 +926,489 @@ function exportTeam(){ exportProduct(); }
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3000);
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   EXCEL IMPORT
+   ════════════════════════════════════════════════════════════════ */
+let _parsedMembers = [];
+
+function openExcelImport(){
+  _parsedMembers = [];
+  document.getElementById('excel-overlay').classList.add('open');
+  document.getElementById('excel-preview').innerHTML = '';
+  document.getElementById('excel-import-btn').style.display = 'none';
+  document.getElementById('excel-import-options').style.display = 'none';
+}
+function closeExcelModal(){
+  document.getElementById('excel-overlay').classList.remove('open');
+}
+
+function downloadExcelTemplate(){
+  const header = 'Name,Initials,Role,Type,Allocation%,Shared';
+  const rows = [
+    'Aisha Rahman,AR,Product Manager,pm,100,No',
+    'Dev Team Alpha,DA,Engineering Lead,eng,100,No',
+    'Lena Kovacs,LK,Senior Engineer,eng,100,No',
+    'Sam Torres,ST,Engineer,eng,80,Yes',
+    'Mia Patel,MP,UX Designer,design,80,No',
+    'Nour Al-Rashid,NA,QA Lead,qa,100,No',
+    'Leo Petrov,LP,DevOps Engineer,ops,100,No'
+  ];
+  const csv = [header, ...rows].join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'qorix-team-template.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('📄 Template downloaded');
+}
+
+function handleExcelDrop(e){
+  e.preventDefault();
+  const file = e.dataTransfer?.files?.[0];
+  if(file) handleExcelFile(file);
+}
+
+function handleExcelFile(file){
+  if(!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  if(!['xlsx','xls','csv'].includes(ext)){
+    showToast('❌ Please upload .xlsx, .xls or .csv');
+    return;
+  }
+  const reader = new FileReader();
+  if(ext === 'csv'){
+    reader.onload = e => parseExcelCSV(e.target.result);
+    reader.readAsText(file);
+  } else {
+    reader.onload = e => {
+      if(!window.XLSX){ showToast('❌ Excel parser not loaded — use CSV instead'); return; }
+      const wb = XLSX.read(e.target.result, {type:'binary'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+      _processExcelRows(rows);
+    };
+    reader.readAsBinaryString(file);
+  }
+}
+
+function parseExcelCSV(text){
+  const lines = text.trim().split(/\r?\n/);
+  const rows = lines.map(l => {
+    // Handle quoted CSV fields
+    const result = []; let cur = ''; let inQ = false;
+    for(let i=0; i<l.length; i++){
+      if(l[i]==='"') inQ=!inQ;
+      else if(l[i]===','&&!inQ){ result.push(cur.trim()); cur=''; }
+      else cur+=l[i];
+    }
+    result.push(cur.trim());
+    return result;
+  });
+  _processExcelRows(rows);
+}
+
+const TYPE_MAP = {
+  'pm':'pm','product manager':'pm','product':'pm',
+  'eng':'eng','engineer':'eng','engineering':'eng','developer':'eng','dev':'eng','backend':'eng','frontend':'eng','fullstack':'eng',
+  'design':'design','designer':'design','ux':'design','ui':'design',
+  'qa':'qa','quality':'qa','test':'qa','testing':'qa','qe':'qa',
+  'ops':'ops','devops':'ops','sre':'ops','infrastructure':'ops','infra':'ops'
+};
+
+function _processExcelRows(rows){
+  if(!rows||rows.length < 2){ showToast('❌ File appears empty'); return; }
+  const headers = rows[0].map(h => String(h).toLowerCase().trim());
+  const idx = k => headers.findIndex(h => h.includes(k));
+
+  const cols = {
+    name:     [idx('name')].find(i=>i>=0) ?? 0,
+    initials: idx('initial'),
+    role:     [idx('role'),idx('position'),idx('title')].find(i=>i>=0),
+    type:     [idx('type'),idx('department'),idx('team')].find(i=>i>=0),
+    alloc:    [idx('alloc'),idx('%'),idx('percent'),idx('capacity')].find(i=>i>=0),
+    shared:   [idx('shared'),idx('cross')].find(i=>i>=0)
+  };
+
+  _parsedMembers = rows.slice(1)
+    .filter(r => r[cols.name]?.toString().trim())
+    .map(r => {
+      const name = r[cols.name]?.toString().trim() || '';
+      const rawInit = cols.initials >= 0 ? r[cols.initials]?.toString().trim() : '';
+      const initials = rawInit || name.split(/\s+/).map(w=>w[0]||'').join('').toUpperCase().slice(0,2) || 'XX';
+      const rawType = cols.type >= 0 ? r[cols.type]?.toString().toLowerCase().trim() : 'eng';
+      const type = TYPE_MAP[rawType] || 'eng';
+      const rawAlloc = cols.alloc >= 0 ? r[cols.alloc]?.toString().replace(/[^0-9]/g,'') : '100';
+      const allocation = Math.min(100, Math.max(1, parseInt(rawAlloc) || 100));
+      const rawShared = cols.shared >= 0 ? r[cols.shared]?.toString().toLowerCase() : '';
+      const shared = rawShared.includes('yes') || rawShared.includes('true') || rawShared === '1';
+      return {
+        name, initials,
+        role: cols.role >= 0 ? r[cols.role]?.toString().trim() || 'Team Member' : 'Team Member',
+        type, allocation, shared
+      };
+    });
+
+  if(!_parsedMembers.length){ showToast('❌ No valid rows found'); return; }
+  _renderExcelPreview();
+}
+
+function _renderExcelPreview(){
+  const preview = document.getElementById('excel-preview');
+  const typeColor = {pm:'#3C00FF',eng:'#0F9ED5',design:'#A02B93',qa:'#22c55e',ops:'#E97132'};
+  preview.innerHTML = `
+    <div style="margin-bottom:10px;display:flex;align-items:center;gap:8px">
+      <span style="font-size:13px;font-weight:700;color:var(--heading)">${_parsedMembers.length} members parsed</span>
+      <span style="font-size:11px;color:var(--muted)">Preview (first 8 rows)</span>
+    </div>
+    <div style="overflow-x:auto;border-radius:8px;border:1px solid var(--border)">
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+    <thead><tr style="background:var(--bg)">
+      ${['Name','Initials','Role','Type','Alloc%','Shared'].map(h=>`<th style="padding:7px 12px;text-align:left;font-weight:600;color:var(--muted);font-size:11px;border-bottom:1px solid var(--border);white-space:nowrap">${h}</th>`).join('')}
+    </tr></thead>
+    <tbody>
+    ${_parsedMembers.slice(0,8).map(m=>`<tr>
+      <td style="padding:7px 12px;border-bottom:1px solid var(--border);font-weight:500">${m.name}</td>
+      <td style="padding:7px 12px;border-bottom:1px solid var(--border)">
+        <div style="width:26px;height:26px;border-radius:50%;background:${typeColor[m.type]||'#3C00FF'};color:#fff;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">${m.initials}</div>
+      </td>
+      <td style="padding:7px 12px;border-bottom:1px solid var(--border);color:var(--muted)">${m.role}</td>
+      <td style="padding:7px 12px;border-bottom:1px solid var(--border)">
+        <span style="background:${typeColor[m.type]}20;color:${typeColor[m.type]};border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;text-transform:uppercase">${m.type}</span>
+      </td>
+      <td style="padding:7px 12px;border-bottom:1px solid var(--border);font-weight:700;color:${m.allocation<50?'#ef4444':'var(--heading)'}">${m.allocation}%</td>
+      <td style="padding:7px 12px;border-bottom:1px solid var(--border)">${m.shared?'<span style="color:#7e22ce;font-size:11px;font-weight:600">Yes</span>':'<span style="color:var(--muted);font-size:11px">No</span>'}</td>
+    </tr>`).join('')}
+    ${_parsedMembers.length>8?`<tr><td colspan="6" style="padding:8px 12px;color:var(--muted);font-size:11px;font-style:italic">…and ${_parsedMembers.length-8} more rows</td></tr>`:''}
+    </tbody></table></div>`;
+
+  document.getElementById('excel-import-options').style.display = 'block';
+  document.getElementById('excel-import-btn').style.display = 'inline-flex';
+  document.getElementById('excel-import-btn').textContent = `✅ Import ${_parsedMembers.length} Members`;
+}
+
+function importExcelMembers(){
+  const mode = document.getElementById('excel-import-mode').value;
+  if(mode === 'replace'){
+    TEAM[PID] = _parsedMembers;
+  } else {
+    const existing = TEAM[PID] || [];
+    const existingNames = new Set(existing.map(m=>m.name.toLowerCase()));
+    const newOnes = _parsedMembers.filter(m => !existingNames.has(m.name.toLowerCase()));
+    TEAM[PID] = [...existing, ...newOnes];
+    if(_parsedMembers.length - newOnes.length > 0)
+      showToast(`ℹ️ Skipped ${_parsedMembers.length - newOnes.length} duplicate names`);
+  }
+  persistData();
+  markChanged();
+  closeExcelModal();
+  renderTeam();
+  showToast(`✅ ${_parsedMembers.length} members imported successfully`);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   JIRA CLOUD SYNC
+   ════════════════════════════════════════════════════════════════ */
+const JIRA_SERVER = 'http://localhost:3000';
+let _serverAlive = false;
+
+async function checkServerHealth(){
+  try {
+    const r = await fetch(JIRA_SERVER + '/api/health', {signal: AbortSignal.timeout(2000)});
+    if(r.ok){
+      _serverAlive = true;
+      const hint = document.getElementById('jira-server-hint');
+      if(hint) hint.style.display = 'none';
+    }
+  } catch(e){ _serverAlive = false; }
+}
+
+function getJiraFormValues(){
+  return {
+    domain:    document.getElementById('jira-domain')?.value.trim().replace(/^https?:\/\//,'') || '',
+    email:     document.getElementById('jira-email')?.value.trim() || '',
+    token:     document.getElementById('jira-token')?.value.trim() || '',
+    project:   document.getElementById('jira-project')?.value.trim().toUpperCase() || '',
+    riskType:  document.getElementById('jira-risk-type')?.value.trim() || 'Risk',
+    ncType:    document.getElementById('jira-nc-type')?.value.trim() || 'Non-Conformance'
+  };
+}
+
+function setJiraConnStatus(state, msg){
+  const el = document.getElementById('jira-conn-status');
+  if(!el) return;
+  el.className = 'jira-conn-badge jira-conn-' + state;
+  el.textContent = msg;
+}
+
+function renderJiraPane(){
+  // Load saved config into form
+  const cfg = getJiraConfig(PID);
+  if(cfg){
+    const set = (id, val) => { const el=document.getElementById(id); if(el&&val) el.value=val; };
+    set('jira-domain',    cfg.domain);
+    set('jira-email',     cfg.email);
+    set('jira-token',     cfg.token);
+    set('jira-project',   cfg.project);
+    set('jira-risk-type', cfg.riskType || 'Risk');
+    set('jira-nc-type',   cfg.ncType   || 'Non-Conformance');
+  }
+  // Render previously synced data
+  renderJiraSyncBar();
+  renderJiraIssues();
+}
+
+function renderJiraSyncBar(){
+  const data = getJiraData(PID);
+  const bar  = document.getElementById('jira-sync-bar');
+  if(!bar) return;
+  if(!data){ bar.innerHTML = ''; return; }
+  const ts = data.syncedAt ? new Date(data.syncedAt).toLocaleString() : 'Unknown';
+  const rCount = (data.risks||[]).length;
+  const nCount = (data.ncs||[]).length;
+  const openR  = (data.risks||[]).filter(i => i._statusCat !== 'Done' && i._statusCat !== 'Closed').length;
+  const openN  = (data.ncs||[]).filter(i => i._statusCat  !== 'Done' && i._statusCat  !== 'Closed').length;
+
+  bar.innerHTML = `
+    <div class="jira-sync-bar">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <span style="font-size:12px;color:var(--muted)">Last synced: <strong>${ts}</strong></span>
+        <span class="jira-stat-chip">⚠️ ${rCount} Risk${rCount!==1?'s':''} <span style="color:${openR>0?'#ef4444':'#22c55e'};margin-left:2px">(${openR} open)</span></span>
+        <span class="jira-stat-chip">🔴 ${nCount} NC${nCount!==1?'s':''} <span style="color:${openN>0?'#ef4444':'#22c55e'};margin-left:2px">(${openN} open)</span></span>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="syncJira(this)">🔄 Sync Now</button>
+    </div>`;
+}
+
+function renderJiraIssues(){
+  const data = getJiraData(PID);
+  const rFilter = document.getElementById('jira-risk-filter')?.value || '';
+  const nFilter = document.getElementById('jira-nc-filter')?.value  || '';
+
+  function renderList(issues, elId, emptyMsg){
+    const el = document.getElementById(elId);
+    if(!el) return;
+    if(!issues||!issues.length){
+      el.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">${emptyMsg}</div>`;
+      return;
+    }
+    const filtered = issues.filter(i => !rFilter || i._statusCat === rFilter || i._status === rFilter);
+    if(!filtered.length){
+      el.innerHTML = `<div style="padding:16px;text-align:center;color:var(--muted);font-size:12px">No issues match this filter.</div>`;
+      return;
+    }
+    el.innerHTML = filtered.map(i => {
+      const pr = jiraPriority(i._priority);
+      const stColor = jiraStatusColor(i._statusCat);
+      const stBg    = jiraStatusBg(i._statusCat);
+      const cfg = getJiraConfig(PID);
+      const jiraUrl = cfg ? `https://${cfg.domain}/browse/${i.key}` : '#';
+      return `
+      <div class="jira-issue-row">
+        <div class="jira-priority-dot" style="background:${pr.color}"></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:flex-start;gap:6px">
+            <a href="${jiraUrl}" target="_blank" class="jira-key">${i.key}</a>
+            <span class="jira-summary">${i._summary}</span>
+          </div>
+          <div class="jira-meta">
+            <span class="jira-status-pill" style="background:${stBg};color:${stColor}">${i._status}</span>
+            <span class="jira-status-pill" style="background:${pr.bg};color:${pr.color}">${pr.label}</span>
+            ${i._assignee ? `<span style="font-size:10px;color:var(--muted)">👤 ${i._assignee}</span>` : ''}
+            ${i._duedate  ? `<span style="font-size:10px;color:${new Date(i._duedate)<new Date()?'#ef4444':'var(--muted)'}">📅 ${i._duedate}</span>` : ''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  if(!data){
+    renderList(null, 'jira-risks-list', 'Configure and sync JIRA to see risks here.');
+    renderList(null, 'jira-ncs-list',   'Configure and sync JIRA to see NCs here.');
+    return;
+  }
+
+  const risks = (data.risks||[]).filter(i => !rFilter || i._statusCat===rFilter || i._status===rFilter);
+  const ncs   = (data.ncs||[]).filter(i   => !nFilter || i._statusCat===nFilter || i._status===nFilter);
+
+  renderList(data.risks||[], 'jira-risks-list', 'No risks found in JIRA for this project.');
+  renderList(data.ncs||[],   'jira-ncs-list',   'No NCs found in JIRA for this project.');
+
+  // Update badges
+  const rb = document.getElementById('jira-risk-badge');
+  const nb = document.getElementById('jira-nc-badge');
+  if(rb){ rb.textContent=(data.risks||[]).length; rb.style.display=(data.risks||[]).length?'':'none'; rb.style.cssText='background:#fee2e2;color:#991b1b;border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700'; }
+  if(nb){ nb.textContent=(data.ncs||[]).length;   nb.style.display=(data.ncs||[]).length?'':'none';   nb.style.cssText='background:#fee2e2;color:#991b1b;border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700'; }
+}
+
+function _normaliseIssue(issue){
+  const f = issue.fields || {};
+  return {
+    key:        issue.key,
+    id:         issue.id,
+    _summary:   f.summary || '(no summary)',
+    _status:    f.status?.name     || '—',
+    _statusCat: f.status?.statusCategory?.name || f.status?.name || '—',
+    _priority:  f.priority?.name   || null,
+    _assignee:  f.assignee?.displayName || null,
+    _created:   (f.created||'').slice(0,10),
+    _updated:   (f.updated||'').slice(0,10),
+    _duedate:   f.duedate || null,
+    _labels:    f.labels || [],
+    _type:      f.issuetype?.name || '—',
+    _desc:      f.description || null
+  };
+}
+
+async function testJira(btn){
+  const cfg = getJiraFormValues();
+  if(!cfg.domain||!cfg.email||!cfg.token){
+    showToast('⚠️ Fill in domain, email and API token first');
+    return;
+  }
+  const origText = btn.textContent;
+  btn.textContent = '⏳ Testing…'; btn.disabled = true;
+  setJiraConnStatus('idle','Connecting…');
+
+  try {
+    const r = await fetch(JIRA_SERVER + '/api/jira/test', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({domain:cfg.domain, email:cfg.email, token:cfg.token})
+    });
+    const data = await r.json();
+    if(data.ok){
+      setJiraConnStatus('ok', `✅ ${data.user}`);
+      showToast(`✅ Connected as ${data.user}`);
+    } else {
+      setJiraConnStatus('fail', '❌ Auth failed');
+      showToast('❌ ' + (data.error || 'Authentication failed'));
+    }
+  } catch(e){
+    setJiraConnStatus('fail', '❌ Server offline');
+    showToast('❌ Server not running — run: npm start');
+  } finally {
+    btn.textContent = origText; btn.disabled = false;
+  }
+}
+
+function saveJiraSettings(){
+  const cfg = getJiraFormValues();
+  if(!cfg.domain||!cfg.email||!cfg.token){
+    showToast('⚠️ Domain, email and token are required');
+    return;
+  }
+  saveJiraConfig(PID, cfg);
+  showToast('✅ JIRA configuration saved');
+}
+
+async function syncJira(btn){
+  const cfg = getJiraFormValues();
+  if(!cfg.domain||!cfg.email||!cfg.token||!cfg.project){
+    showToast('⚠️ Complete all JIRA config fields first');
+    return;
+  }
+  saveJiraConfig(PID, cfg);
+
+  const origText = btn?.textContent || '🔄 Sync Now';
+  if(btn){ btn.textContent='⏳ Syncing…'; btn.disabled=true; }
+  setJiraConnStatus('idle','Syncing…');
+
+  const results = { risks:[], ncs:[], errors:[], syncedAt:new Date().toISOString() };
+
+  async function fetchIssues(jql){
+    const r = await fetch(JIRA_SERVER + '/api/jira/search', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({domain:cfg.domain, email:cfg.email, token:cfg.token, jql, maxResults:200})
+    });
+    const data = await r.json();
+    if(data.error) throw new Error(data.error);
+    return (data.issues || []).map(_normaliseIssue);
+  }
+
+  try {
+    const [risks, ncs] = await Promise.all([
+      fetchIssues(`project = "${cfg.project}" AND issuetype = "${cfg.riskType}" ORDER BY priority ASC`),
+      fetchIssues(`project = "${cfg.project}" AND issuetype = "${cfg.ncType}" ORDER BY priority ASC`)
+    ]);
+    results.risks = risks;
+    results.ncs   = ncs;
+    saveJiraData(PID, results);
+    setJiraConnStatus('ok', `✅ Connected · Synced`);
+    renderJiraSyncBar();
+    renderJiraIssues();
+    showToast(`✅ Synced — ${risks.length} risks, ${ncs.length} NCs from JIRA`);
+  } catch(e){
+    setJiraConnStatus('fail', '❌ Sync failed');
+    const isNetwork = e.message.includes('fetch') || e.message.includes('Failed');
+    showToast(isNetwork ? '❌ Cannot reach server — run: npm start' : '❌ JIRA error: ' + e.message);
+  } finally {
+    if(btn){ btn.textContent=origText; btn.disabled=false; }
+  }
+}
+
+function clearJira(){
+  if(!confirm('Clear all synced JIRA data for this product?')) return;
+  clearJiraData(PID);
+  renderJiraSyncBar();
+  renderJiraIssues();
+  showToast('🗑 JIRA data cleared');
+}
+
+function importJiraRisksToRegister(){
+  const data = getJiraData(PID);
+  if(!data?.risks?.length){ showToast('⚠️ No JIRA risks to import — sync first'); return; }
+  if(!RISKS[PID]) RISKS[PID] = [];
+  const existingKeys = new Set(RISKS[PID].map(r => r.jiraKey).filter(Boolean));
+  let added = 0;
+  data.risks.forEach(issue => {
+    if(existingKeys.has(issue.key)) return;
+    const score = {Highest:9,High:7,Medium:5,Low:3,Lowest:1}[issue._priority] || 5;
+    RISKS[PID].unshift({
+      id: 'jira-' + issue.key,
+      title: issue._summary,
+      jiraKey: issue.key,
+      sev: score >= 7 ? 'High' : score >= 4 ? 'Medium' : 'Low',
+      impact: 'Delivery',
+      owner: issue._assignee || P.pm,
+      mitigation: 'See JIRA: ' + issue.key,
+      status: issue._statusCat === 'Done' || issue._statusCat === 'Closed' ? 'Closed' : 'Open',
+      score,
+      created: issue._created
+    });
+    added++;
+  });
+  persistData();
+  renderRisksPane();
+  activateTab('risks');
+  showToast(`✅ ${added} JIRA risks imported to Risk Register`);
+}
+
+function importJiraNcsToCompliance(){
+  const data = getJiraData(PID);
+  if(!data?.ncs?.length){ showToast('⚠️ No JIRA NCs to import — sync first'); return; }
+  if(!COMPLIANCE[PID]) COMPLIANCE[PID] = [];
+  const existingKeys = new Set(COMPLIANCE[PID].map(c=>c.jiraKey).filter(Boolean));
+  let added = 0;
+  data.ncs.forEach(issue => {
+    if(existingKeys.has(issue.key)) return;
+    const isDone = issue._statusCat==='Done'||issue._statusCat==='Closed';
+    COMPLIANCE[PID].push({
+      jiraKey: issue.key,
+      name: issue._summary,
+      area: 'Non-Conformance',
+      status: isDone ? 'pass' : 'fail',
+      desc: `JIRA ${issue.key} · ${issue._status} · ${issue._assignee||'Unassigned'}`,
+      deadline: issue._duedate || '—'
+    });
+    added++;
+  });
+  renderCompliance();
+  activateTab('compliance');
+  showToast(`✅ ${added} NCs imported to Compliance`);
 }
 
 /* ── Boot ─────────────────────────────────────────────────────── */

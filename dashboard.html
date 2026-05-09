@@ -611,6 +611,15 @@ tr:hover td{background:rgba(60,0,255,.02)}
     <div class="alert-grid" id="alerts-grid"></div>
     <div class="section-hdr" style="margin-top:8px"><h2>Missing Data Flags</h2></div>
     <div class="alert-grid" id="flags-grid"></div>
+
+    <!-- JIRA sync status strip -->
+    <div class="section-hdr" style="margin-top:8px">
+      <h2>🔗 JIRA Cloud Sync Status</h2>
+      <div class="hdr-actions">
+        <button class="btn btn-outline btn-sm" onclick="syncAllJira(this)">🔄 Sync All Products</button>
+      </div>
+    </div>
+    <div id="jira-dashboard-strip" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px"></div>
   </section>
 
   <!-- ═══════ SECTION: ACTIVITY ═══════ -->
@@ -1392,7 +1401,128 @@ document.addEventListener('DOMContentLoaded', () => {
   renderInsights();
   renderActivity();
   setTimeout(renderCharts, 100);
+  renderJiraDashboard();
 });
+
+/* ════════════════════════════════════════════════════════════════
+   JIRA DASHBOARD STRIP
+════════════════════════════════════════════════════════════════ */
+const PRODUCTS_IDS = ['nexus','pulse','datasphere','coreapi','ehub'];
+const PRODUCTS_NAMES = {nexus:'Nexus Platform',pulse:'Pulse Mobile',datasphere:'DataSphere Analytics',coreapi:'CoreAPI Gateway',ehub:'EnterpriseHub'};
+const PRODUCTS_COLORS = {nexus:'#3C00FF',pulse:'#E97132',datasphere:'#0F9ED5',coreapi:'#ef4444',ehub:'#A02B93'};
+
+function getJiraConfig(pid){
+  try{ return JSON.parse(localStorage.getItem('qx_jira_cfg_'+pid)||'null'); }catch(e){return null;}
+}
+function getJiraData(pid){
+  try{ return JSON.parse(localStorage.getItem('qx_jira_data_'+pid)||'null'); }catch(e){return null;}
+}
+
+function renderJiraDashboard(){
+  const strip = document.getElementById('jira-dashboard-strip');
+  if(!strip) return;
+
+  strip.innerHTML = PRODUCTS_IDS.map(pid => {
+    const cfg  = getJiraConfig(pid);
+    const data = getJiraData(pid);
+    const color = PRODUCTS_COLORS[pid];
+    const name  = PRODUCTS_NAMES[pid];
+
+    if(!cfg){
+      return `<div style="background:#fff;border-radius:10px;border:1px solid #E2E8F0;padding:16px;box-shadow:0 1px 4px rgba(14,40,65,.08)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div style="width:8px;height:8px;border-radius:50%;background:#E2E8F0"></div>
+          <span style="font-weight:700;font-size:13px">${name}</span>
+        </div>
+        <div style="font-size:12px;color:#64748b">JIRA not configured</div>
+        <a href="product.html?id=${pid}#jira" style="font-size:11px;color:#3C00FF;font-weight:600;margin-top:6px;display:inline-block">Configure →</a>
+      </div>`;
+    }
+
+    if(!data){
+      return `<div style="background:#fff;border-radius:10px;border:1px solid #E2E8F0;padding:16px;box-shadow:0 1px 4px rgba(14,40,65,.08)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div style="width:8px;height:8px;border-radius:50%;background:${color}"></div>
+          <span style="font-weight:700;font-size:13px">${name}</span>
+          <span style="font-size:10px;background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:auto">Never synced</span>
+        </div>
+        <div style="font-size:12px;color:#64748b">Project: <strong>${cfg.project}</strong></div>
+        <a href="product.html?id=${pid}#jira" style="font-size:11px;color:#3C00FF;font-weight:600;margin-top:6px;display:inline-block">Sync Now →</a>
+      </div>`;
+    }
+
+    const openRisks = (data.risks||[]).filter(i=>i._statusCat!=='Done'&&i._statusCat!=='Closed').length;
+    const openNCs   = (data.ncs  ||[]).filter(i=>i._statusCat!=='Done'&&i._statusCat!=='Closed').length;
+    const ts        = data.syncedAt ? new Date(data.syncedAt).toLocaleDateString() : '—';
+    const hasIssues = openRisks > 0 || openNCs > 0;
+
+    return `<div style="background:#fff;border-radius:10px;border:1px solid ${hasIssues?'#fca5a5':'#E2E8F0'};padding:16px;box-shadow:0 1px 4px rgba(14,40,65,.08)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <div style="width:8px;height:8px;border-radius:50%;background:${color}"></div>
+        <span style="font-weight:700;font-size:13px">${name}</span>
+        <span style="font-size:10px;background:#dcfce7;color:#15803d;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:auto">Synced ${ts}</span>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:8px">
+        <div style="flex:1;background:${openRisks>0?'#fff5f5':'#f0fdf4'};border-radius:7px;padding:8px;text-align:center">
+          <div style="font-size:18px;font-weight:800;color:${openRisks>0?'#ef4444':'#22c55e'}">${openRisks}</div>
+          <div style="font-size:10px;color:#64748b;margin-top:1px">Open Risks</div>
+        </div>
+        <div style="flex:1;background:${openNCs>0?'#fff5f5':'#f0fdf4'};border-radius:7px;padding:8px;text-align:center">
+          <div style="font-size:18px;font-weight:800;color:${openNCs>0?'#ef4444':'#22c55e'}">${openNCs}</div>
+          <div style="font-size:10px;color:#64748b;margin-top:1px">Open NCs</div>
+        </div>
+        <div style="flex:1;background:#f1f5f9;border-radius:7px;padding:8px;text-align:center">
+          <div style="font-size:18px;font-weight:800;color:#64748b">${(data.risks||[]).length+((data.ncs||[]).length)}</div>
+          <div style="font-size:10px;color:#64748b;margin-top:1px">Total</div>
+        </div>
+      </div>
+      <a href="product.html?id=${pid}#jira" style="font-size:11px;color:#3C00FF;font-weight:600">View in ${name.split(' ')[0]} →</a>
+    </div>`;
+  }).join('');
+}
+
+async function syncAllJira(btn){
+  const origText = btn.textContent;
+  btn.textContent = '⏳ Syncing all…'; btn.disabled = true;
+
+  const results = [];
+  for(const pid of PRODUCTS_IDS){
+    const cfg = getJiraConfig(pid);
+    if(!cfg?.domain||!cfg?.email||!cfg?.token||!cfg?.project){
+      results.push(`${PRODUCTS_NAMES[pid]}: not configured`);
+      continue;
+    }
+    try {
+      const [rr, nr] = await Promise.all([
+        fetch('http://localhost:3000/api/jira/search',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({domain:cfg.domain,email:cfg.email,token:cfg.token,
+            jql:`project = "${cfg.project}" AND issuetype = "${cfg.riskType||'Risk'}" ORDER BY priority ASC`})}),
+        fetch('http://localhost:3000/api/jira/search',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({domain:cfg.domain,email:cfg.email,token:cfg.token,
+            jql:`project = "${cfg.project}" AND issuetype = "${cfg.ncType||'Non-Conformance'}" ORDER BY priority ASC`})})
+      ]);
+      const rd = await rr.json(), nd = await nr.json();
+      const normalise = arr => (arr.issues||[]).map(i=>{
+        const f=i.fields||{};
+        return {key:i.key,id:i.id,_summary:f.summary||'(no summary)',_status:f.status?.name||'—',
+          _statusCat:f.status?.statusCategory?.name||'—',_priority:f.priority?.name||null,
+          _assignee:f.assignee?.displayName||null,_created:(f.created||'').slice(0,10),
+          _duedate:f.duedate||null,_type:f.issuetype?.name||'—'};
+      });
+      localStorage.setItem('qx_jira_data_'+pid, JSON.stringify({
+        risks:normalise(rd), ncs:normalise(nd), syncedAt:new Date().toISOString()
+      }));
+      results.push(`${PRODUCTS_NAMES[pid]}: ✅ ${(rd.issues||[]).length}R ${(nd.issues||[]).length}NC`);
+    } catch(e){
+      results.push(`${PRODUCTS_NAMES[pid]}: ❌ ${e.message}`);
+    }
+  }
+
+  renderJiraDashboard();
+  btn.textContent = origText; btn.disabled = false;
+  const ok = results.filter(r=>r.includes('✅')).length;
+  alert(`Sync complete:\n\n${results.join('\n')}\n\n${ok} product(s) synced successfully.`);
+}
 </script>
 </body>
 </html>

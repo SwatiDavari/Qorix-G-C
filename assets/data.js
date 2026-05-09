@@ -282,3 +282,63 @@ function allRisks(){return Object.values(RISKS).flat()}
 function openRisks(){return allRisks().filter(r=>r.status!=='Closed')}
 function totalFTE(){return PRODUCTS.reduce((a,p)=>a+p.fte,0)}
 function getProduct(id){return PRODUCTS.find(p=>p.id===id)}
+
+/* ── Persistence layer (localStorage) ───────────────────────────────────── */
+const QX_STORAGE_KEY = 'qx_portal_v1';
+
+function persistData(){
+  try {
+    localStorage.setItem(QX_STORAGE_KEY, JSON.stringify({ team:TEAM, risks:RISKS, roadmap:ROADMAP }));
+  } catch(e){ console.warn('[Qorix] persistData failed:', e); }
+}
+
+(function _loadPersisted(){
+  try {
+    const saved = JSON.parse(localStorage.getItem(QX_STORAGE_KEY) || '{}');
+    if(saved.team)    Object.keys(saved.team).forEach(k => { TEAM[k]    = saved.team[k]; });
+    if(saved.risks)   Object.keys(saved.risks).forEach(k => { RISKS[k]  = saved.risks[k]; });
+    if(saved.roadmap) Object.keys(saved.roadmap).forEach(k => { ROADMAP[k] = saved.roadmap[k]; });
+  } catch(e){ console.warn('[Qorix] _loadPersisted failed:', e); }
+})();
+
+/* ── JIRA config helpers (per product) ─────────────────────────────────── */
+function getJiraConfig(pid){
+  try { return JSON.parse(localStorage.getItem('qx_jira_cfg_' + pid) || 'null'); }
+  catch(e){ return null; }
+}
+function saveJiraConfig(pid, cfg){
+  try { localStorage.setItem('qx_jira_cfg_' + pid, JSON.stringify(cfg)); }
+  catch(e){ console.warn('[Qorix] saveJiraConfig failed:', e); }
+}
+function getJiraData(pid){
+  try { return JSON.parse(localStorage.getItem('qx_jira_data_' + pid) || 'null'); }
+  catch(e){ return null; }
+}
+function saveJiraData(pid, data){
+  try { localStorage.setItem('qx_jira_data_' + pid, JSON.stringify(data)); }
+  catch(e){ console.warn('[Qorix] saveJiraData failed:', e); }
+}
+function clearJiraData(pid){
+  localStorage.removeItem('qx_jira_data_' + pid);
+}
+
+/* ── JIRA issue helpers ─────────────────────────────────────────────────── */
+function jiraPriority(p){
+  if(!p) return {label:'—',color:'#64748b',bg:'#f1f5f9'};
+  const map = {
+    Highest:{label:'Highest',color:'#7f1d1d',bg:'#fee2e2'},
+    High:   {label:'High',   color:'#991b1b',bg:'#fee2e2'},
+    Medium: {label:'Medium', color:'#92400e',bg:'#fef3c7'},
+    Low:    {label:'Low',    color:'#15803d',bg:'#dcfce7'},
+    Lowest: {label:'Lowest', color:'#15803d',bg:'#dcfce7'}
+  };
+  return map[p] || {label:p, color:'#64748b', bg:'#f1f5f9'};
+}
+function jiraStatusColor(cat){
+  const map = {'To Do':'#64748b','In Progress':'#1d4ed8','Done':'#15803d','Closed':'#15803d'};
+  return map[cat] || '#64748b';
+}
+function jiraStatusBg(cat){
+  const map = {'To Do':'#f1f5f9','In Progress':'#dbeafe','Done':'#dcfce7','Closed':'#dcfce7'};
+  return map[cat] || '#f1f5f9';
+}
