@@ -77,66 +77,66 @@ const PRODUCTS = [
 /* ── Team  (allocation = actual %, askAllocation = requested %) ─────────── */
 const TEAM = {
   classic:[
-    {name:'Aisha Rahman',   initials:'AR', role:'Product Manager',   type:'pm',     allocation:100, askAllocation:100, shared:false},
-    {name:'Dev Lead Classic',initials:'DL',role:'Engineering Lead',  type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Lena Kovacs',    initials:'LK', role:'Senior Engineer',   type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Sam Torres',     initials:'ST', role:'Engineer',          type:'eng',    allocation:80,  askAllocation:100, shared:true},
-    {name:'Yuki Tanaka',    initials:'YT', role:'Engineer',          type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Rin Okawa',      initials:'RO', role:'Engineer',          type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Obi Mensah',     initials:'OM', role:'Embedded Engineer', type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Cai Zheng',      initials:'CZ', role:'Engineer',          type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Mia Patel',      initials:'MP', role:'UX Designer',       type:'design', allocation:80,  askAllocation:100, shared:true},
-    {name:'Felix Brand',    initials:'FB', role:'UI Designer',       type:'design', allocation:60,  askAllocation:60,  shared:true},
-    {name:'Nour Al-Rashid', initials:'NA', role:'QA Lead',           type:'qa',     allocation:100, askAllocation:100, shared:false},
-    {name:'Tomas Varga',    initials:'TV', role:'QA Engineer',       type:'qa',     allocation:100, askAllocation:100, shared:false},
-    {name:'Leo Petrov',     initials:'LP', role:'DevOps Engineer',   type:'ops',    allocation:100, askAllocation:100, shared:false},
-    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'ops',    allocation:60,  askAllocation:80,  shared:true}
+    {name:'Aisha Rahman',   initials:'AR', role:'Product Manager',   type:'quality-manager',     allocation:100, askAllocation:100, shared:false},
+    {name:'Dev Lead Classic',initials:'DL',role:'Engineering Lead',  type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Lena Kovacs',    initials:'LK', role:'Senior Engineer',   type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Sam Torres',     initials:'ST', role:'Engineer',          type:'safety-manager',    allocation:80,  askAllocation:100, shared:true},
+    {name:'Yuki Tanaka',    initials:'YT', role:'Engineer',          type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Rin Okawa',      initials:'RO', role:'Engineer',          type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Obi Mensah',     initials:'OM', role:'Embedded Engineer', type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Cai Zheng',      initials:'CZ', role:'Engineer',          type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Mia Patel',      initials:'MP', role:'UX Designer',       type:'safety-consultant', allocation:80,  askAllocation:100, shared:true},
+    {name:'Felix Brand',    initials:'FB', role:'UI Designer',       type:'safety-consultant', allocation:60,  askAllocation:60,  shared:true},
+    {name:'Nour Al-Rashid', initials:'NA', role:'QA Lead',           type:'quality-consultant',     allocation:100, askAllocation:100, shared:false},
+    {name:'Tomas Varga',    initials:'TV', role:'QA Engineer',       type:'quality-consultant',     allocation:100, askAllocation:100, shared:false},
+    {name:'Leo Petrov',     initials:'LP', role:'DevOps Engineer',   type:'security-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'security-manager',    allocation:60,  askAllocation:80,  shared:true}
   ],
   adaptive:[
-    {name:'Jordan Lee',     initials:'JL', role:'Product Manager',   type:'pm',     allocation:100, askAllocation:100, shared:false},
-    {name:'Chris Park',     initials:'CP', role:'Engineering Lead',  type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Amara Diop',     initials:'AD', role:'ML Engineer',       type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Kai Sorensen',   initials:'KS', role:'Backend Engineer',  type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Tess Ricci',     initials:'TR', role:'Engineer',          type:'eng',    allocation:80,  askAllocation:100, shared:true},
-    {name:'Felix Brand',    initials:'FB', role:'UI Designer',       type:'design', allocation:40,  askAllocation:60,  shared:true},
-    {name:'Mei Lin',        initials:'ML', role:'QA Engineer',       type:'qa',     allocation:100, askAllocation:100, shared:false},
-    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'ops',    allocation:40,  askAllocation:60,  shared:true}
+    {name:'Jordan Lee',     initials:'JL', role:'Product Manager',   type:'quality-manager',     allocation:100, askAllocation:100, shared:false},
+    {name:'Chris Park',     initials:'CP', role:'Engineering Lead',  type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Amara Diop',     initials:'AD', role:'ML Engineer',       type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Kai Sorensen',   initials:'KS', role:'Backend Engineer',  type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Tess Ricci',     initials:'TR', role:'Engineer',          type:'safety-manager',    allocation:80,  askAllocation:100, shared:true},
+    {name:'Felix Brand',    initials:'FB', role:'UI Designer',       type:'safety-consultant', allocation:40,  askAllocation:60,  shared:true},
+    {name:'Mei Lin',        initials:'ML', role:'QA Engineer',       type:'quality-consultant',     allocation:100, askAllocation:100, shared:false},
+    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'security-manager',    allocation:40,  askAllocation:60,  shared:true}
   ],
   bootloader:[
-    {name:'Priya Nair',     initials:'PN', role:'Product Manager',   type:'pm',     allocation:100, askAllocation:100, shared:false},
-    {name:'Dex Anand',      initials:'DA', role:'Firmware Engineer', type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Ren Nakamura',   initials:'RN', role:'Security Engineer', type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Sam Torres',     initials:'ST', role:'Embedded Engineer', type:'eng',    allocation:20,  askAllocation:50,  shared:true},
-    {name:'Zara Osei',      initials:'ZO', role:'QA Engineer',       type:'qa',     allocation:60,  askAllocation:80,  shared:true},
-    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'ops',    allocation:20,  askAllocation:40,  shared:true}
+    {name:'Priya Nair',     initials:'PN', role:'Product Manager',   type:'quality-manager',     allocation:100, askAllocation:100, shared:false},
+    {name:'Dex Anand',      initials:'DA', role:'Firmware Engineer', type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Ren Nakamura',   initials:'RN', role:'Security Engineer', type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Sam Torres',     initials:'ST', role:'Embedded Engineer', type:'safety-manager',    allocation:20,  askAllocation:50,  shared:true},
+    {name:'Zara Osei',      initials:'ZO', role:'QA Engineer',       type:'quality-consultant',     allocation:60,  askAllocation:80,  shared:true},
+    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'security-manager',    allocation:20,  askAllocation:40,  shared:true}
   ],
   developer:[
-    {name:'Marcus Webb',    initials:'MW', role:'Product Manager',   type:'pm',     allocation:100, askAllocation:100, shared:false},
-    {name:'Vera Morin',     initials:'VM', role:'SDK Lead',          type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Hugo Ferreira',  initials:'HF', role:'Toolchain Engineer',type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Nadia Cohn',     initials:'NC', role:'IDE Plugin Dev',    type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Sam Torres',     initials:'ST', role:'API Integration',   type:'eng',    allocation:20,  askAllocation:40,  shared:true},
-    {name:'Mia Patel',      initials:'MP', role:'UX / DX Designer',  type:'design', allocation:20,  askAllocation:40,  shared:true},
-    {name:'Zara Osei',      initials:'ZO', role:'QA Engineer',       type:'qa',     allocation:40,  askAllocation:60,  shared:true},
-    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'ops',    allocation:20,  askAllocation:20,  shared:true}
+    {name:'Marcus Webb',    initials:'MW', role:'Product Manager',   type:'quality-manager',     allocation:100, askAllocation:100, shared:false},
+    {name:'Vera Morin',     initials:'VM', role:'SDK Lead',          type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Hugo Ferreira',  initials:'HF', role:'Toolchain Engineer',type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Nadia Cohn',     initials:'NC', role:'IDE Plugin Dev',    type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Sam Torres',     initials:'ST', role:'API Integration',   type:'safety-manager',    allocation:20,  askAllocation:40,  shared:true},
+    {name:'Mia Patel',      initials:'MP', role:'UX / DX Designer',  type:'safety-consultant', allocation:20,  askAllocation:40,  shared:true},
+    {name:'Zara Osei',      initials:'ZO', role:'QA Engineer',       type:'quality-consultant',     allocation:40,  askAllocation:60,  shared:true},
+    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'security-manager',    allocation:20,  askAllocation:20,  shared:true}
   ],
   performance:[
-    {name:'Sofia Chen',     initials:'SC', role:'Product Manager',   type:'pm',     allocation:100, askAllocation:100, shared:false},
-    {name:'Ivan Popov',     initials:'IP', role:'Perf Engineer',     type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Zhen Wu',        initials:'ZW', role:'Analyst',           type:'eng',    allocation:60,  askAllocation:100, shared:true}
+    {name:'Sofia Chen',     initials:'SC', role:'Product Manager',   type:'quality-manager',     allocation:100, askAllocation:100, shared:false},
+    {name:'Ivan Popov',     initials:'IP', role:'Perf Engineer',     type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Zhen Wu',        initials:'ZW', role:'Analyst',           type:'safety-manager',    allocation:60,  askAllocation:100, shared:true}
   ],
   lightweight:[
-    {name:'Raj Iyer',       initials:'RI', role:'Product Manager',   type:'pm',     allocation:100, askAllocation:100, shared:false},
-    {name:'Ana Sousa',      initials:'AS', role:'Firmware Engineer', type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Carlos Ruiz',    initials:'CR', role:'Systems Engineer',  type:'eng',    allocation:100, askAllocation:100, shared:false},
-    {name:'Layla Hassan',   initials:'LH', role:'Engineer',          type:'eng',    allocation:80,  askAllocation:100, shared:false},
-    {name:'Felix Brand',    initials:'FB', role:'UI Designer',       type:'design', allocation:20,  askAllocation:20,  shared:true},
-    {name:'Bram Visser',    initials:'BV', role:'QA Engineer',       type:'qa',     allocation:80,  askAllocation:100, shared:false},
-    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'ops',    allocation:20,  askAllocation:20,  shared:true}
+    {name:'Raj Iyer',       initials:'RI', role:'Product Manager',   type:'quality-manager',     allocation:100, askAllocation:100, shared:false},
+    {name:'Ana Sousa',      initials:'AS', role:'Firmware Engineer', type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Carlos Ruiz',    initials:'CR', role:'Systems Engineer',  type:'safety-manager',    allocation:100, askAllocation:100, shared:false},
+    {name:'Layla Hassan',   initials:'LH', role:'Engineer',          type:'safety-manager',    allocation:80,  askAllocation:100, shared:false},
+    {name:'Felix Brand',    initials:'FB', role:'UI Designer',       type:'safety-consultant', allocation:20,  askAllocation:20,  shared:true},
+    {name:'Bram Visser',    initials:'BV', role:'QA Engineer',       type:'quality-consultant',     allocation:80,  askAllocation:100, shared:false},
+    {name:'Priya Das',      initials:'PD', role:'DevOps',            type:'security-manager',    allocation:20,  askAllocation:20,  shared:true}
   ],
   processdef:[
-    {name:'— Unassigned —', initials:'??', role:'Product Manager',   type:'pm',     allocation:0,   askAllocation:100, shared:false},
-    {name:'Intern Eng A',   initials:'IA', role:'Engineer (Intern)', type:'eng',    allocation:100, askAllocation:100, shared:false}
+    {name:'— Unassigned —', initials:'??', role:'Product Manager',   type:'quality-manager',     allocation:0,   askAllocation:100, shared:false},
+    {name:'Intern Eng A',   initials:'IA', role:'Engineer (Intern)', type:'safety-manager',    allocation:100, askAllocation:100, shared:false}
   ]
 };
 
@@ -195,65 +195,12 @@ const ROADMAP = {
 
 /* ── Risks ───────────────────────────────────────────────────────────────── */
 const RISKS = {
-  classic:[
-    {id:'r1',title:'ISO 26262 Compliance Gap',   sev:'High',  impact:'Delivery', owner:'Aisha Rahman', mitigation:'Safety audit booked for Jun 12; gap list under remediation', status:'Open',        score:8, created:'2026-05-01'},
-    {id:'r2',title:'Hardware CI Flakiness',       sev:'Medium',impact:'Technical',owner:'Dev Lead',     mitigation:'Target farm being upgraded; ETA May 18',                   status:'In Progress', score:5, created:'2026-04-20'}
-  ],
-  adaptive:[
-    {id:'r3',title:'Algorithm Complexity Risk',   sev:'High',  impact:'Delivery', owner:'Jordan Lee',   mitigation:'Go/no-go review May 20 — scope reduction option on table',  status:'Open',        score:9, created:'2026-05-03'},
-    {id:'r4',title:'Budget Overrun',              sev:'Medium',impact:'Financial', owner:'Jordan Lee',   mitigation:'Forecast revised; leadership aware',                       status:'Open',        score:6, created:'2026-04-28'}
-  ],
-  bootloader:[
-    {id:'r5',title:'HSM Vendor Availability',     sev:'Medium',impact:'Technical',owner:'Priya Nair',   mitigation:'3 vendors evaluated; decision by Jun 1',                   status:'Open',        score:5, created:'2026-05-05'}
-  ],
-  developer:[
-    {id:'r6',title:'API Design Freeze Delay',     sev:'High',  impact:'Delivery', owner:'Marcus Webb',  mitigation:'Escalated to CTO; sprint replanned',                       status:'Open',        score:9, created:'2026-05-04'},
-    {id:'r7',title:'Low Developer Adoption Risk', sev:'Medium',impact:'Financial', owner:'Marcus Webb',  mitigation:'Early-access program to 20 pilot developers',             status:'Open',        score:6, created:'2026-05-01'}
-  ],
-  performance:[
-    {id:'r8',title:'Business Case Not Approved',  sev:'High',  impact:'Delivery', owner:'Sofia Chen',   mitigation:'Competitive analysis strengthening the case',              status:'Open',        score:7, created:'2026-05-04'}
-  ],
-  lightweight:[
-    {id:'r9',title:'Memory Target May Slip',      sev:'High',  impact:'Technical',owner:'Raj Iyer',     mitigation:'Exploring compiler optimisation flags + RTOS swap',        status:'Open',        score:8, created:'2026-05-06'},
-    {id:'r10',title:'Toolchain Dependency',       sev:'Medium',impact:'Delivery', owner:'Raj Iyer',     mitigation:'Monitoring Developer SDK progress closely',               status:'Open',        score:5, created:'2026-05-02'}
-  ],
-  processdef:[
-    {id:'r11',title:'No PM Assigned',             sev:'High',  impact:'Delivery', owner:'— Leadership —',mitigation:'⚠ No mitigation plan defined',                           status:'Open',        score:9, created:'2026-05-03'},
-    {id:'r12',title:'Scope Undefined',            sev:'High',  impact:'Delivery', owner:'— Leadership —',mitigation:'Cannot proceed without PM and stakeholder alignment',     status:'Open',        score:8, created:'2026-05-03'}
-  ]
+  classic:[], adaptive:[], bootloader:[], developer:[], performance:[], lightweight:[], processdef:[]
 };
 
 /* ── Compliance ──────────────────────────────────────────────────────────── */
 const COMPLIANCE = {
-  classic:[
-    {name:'ISO 26262 Functional Safety', area:'Safety',   status:'warn', desc:'Audit scheduled Jun 12 — 4 gaps identified', deadline:'2026-06-30'},
-    {name:'MISRA C:2012',               area:'Technical', status:'pass', desc:'Static analysis passing — 0 violations',     deadline:'—'},
-    {name:'AUTOSAR Compliance',         area:'Technical', status:'warn', desc:'Partial — migration in progress',            deadline:'2026-09-30'}
-  ],
-  adaptive:[
-    {name:'Model Validation',           area:'Technical', status:'warn', desc:'ML model not yet formally validated',        deadline:'2026-07-01'},
-    {name:'GDPR Data Processing',       area:'Data',      status:'pass', desc:'No personal data in scope',                 deadline:'—'}
-  ],
-  bootloader:[
-    {name:'FIPS 140-2 Cryptography',    area:'Security',  status:'warn', desc:'Pending HSM selection — not certifiable yet',deadline:'2026-08-01'},
-    {name:'Secure Boot Standard',       area:'Security',  status:'pass', desc:'Reference implementation compliant',        deadline:'—'}
-  ],
-  developer:[
-    {name:'Open Source Licence Audit',  area:'Legal',     status:'warn', desc:'7 dependencies under GPL review',           deadline:'2026-06-30'},
-    {name:'GDPR (telemetry)',           area:'Data',      status:'fail', desc:'Opt-out telemetry not implemented yet',     deadline:'2026-05-31'},
-    {name:'Security Scan',             area:'Security',  status:'warn', desc:'3 medium CVEs in SDK dependencies',          deadline:'2026-05-31'}
-  ],
-  performance:[
-    {name:'Assessment Governance',      area:'Compliance',status:'pass', desc:'Assessment framework followed',             deadline:'—'}
-  ],
-  lightweight:[
-    {name:'Memory Safety Analysis',     area:'Technical', status:'warn', desc:'Formal analysis not yet run',              deadline:'2026-07-01'},
-    {name:'MISRA C:2012',              area:'Technical',  status:'pass', desc:'Passing — subset profile applied',          deadline:'—'}
-  ],
-  processdef:[
-    {name:'Process Governance',         area:'Compliance',status:'fail', desc:'Not started — no PM to own this',          deadline:'2026-06-01'},
-    {name:'Data Audit',                area:'Data',       status:'fail', desc:'N/A at current stage',                     deadline:'TBD'}
-  ]
+  classic:[], adaptive:[], bootloader:[], developer:[], performance:[], lightweight:[], processdef:[]
 };
 
 /* ── Activity log ────────────────────────────────────────────────────────── */
@@ -285,7 +232,9 @@ function compLabel(s){return{pass:'Compliant',warn:'Action Needed',fail:'Non-Com
 function compColor(s){return{pass:'#15803d',warn:'#92400e',fail:'#991b1b'}[s]}
 function allRisks(){return Object.values(RISKS).flat()}
 function openRisks(){return allRisks().filter(r=>r.status!=='Closed')}
-function totalFTE(){return PRODUCTS.reduce((a,p)=>a+p.fte,0)}
+function totalFTE(){return Object.values(TEAM).reduce((s,arr)=>s+arr.length,0)}
+function productFTE(id){return (TEAM[id]||[]).length}
+function productAllocPct(id){const m=TEAM[id]||[];return m.length?Math.round(m.reduce((s,x)=>s+(x.allocation||0),0)/m.length):0}
 function getProduct(id){return PRODUCTS.find(p=>p.id===id)}
 function askGap(m){return (m.askAllocation||0)-(m.allocation||0)}
 
@@ -293,16 +242,17 @@ function askGap(m){return (m.askAllocation||0)-(m.allocation||0)}
 const QX_KEY = 'qx_portal_v2';
 
 function persistData(){
-  try{ localStorage.setItem(QX_KEY, JSON.stringify({team:TEAM,risks:RISKS,roadmap:ROADMAP})); }
+  try{ localStorage.setItem(QX_KEY, JSON.stringify({team:TEAM,risks:RISKS,roadmap:ROADMAP,compliance:COMPLIANCE})); }
   catch(e){ console.warn('[Qorix] persist failed',e); }
 }
 
 (function _load(){
   try{
     const d = JSON.parse(localStorage.getItem(QX_KEY)||'{}');
-    if(d.team)    Object.keys(d.team).forEach(k=>{ TEAM[k]=d.team[k]; });
-    if(d.risks)   Object.keys(d.risks).forEach(k=>{ RISKS[k]=d.risks[k]; });
-    if(d.roadmap) Object.keys(d.roadmap).forEach(k=>{ ROADMAP[k]=d.roadmap[k]; });
+    if(d.team)       Object.keys(d.team).forEach(k=>{ TEAM[k]=d.team[k]; });
+    if(d.risks)      Object.keys(d.risks).forEach(k=>{ RISKS[k]=d.risks[k]; });
+    if(d.roadmap)    Object.keys(d.roadmap).forEach(k=>{ ROADMAP[k]=d.roadmap[k]; });
+    if(d.compliance) Object.keys(d.compliance).forEach(k=>{ COMPLIANCE[k]=d.compliance[k]; });
   }catch(e){ console.warn('[Qorix] load failed',e); }
 })();
 
