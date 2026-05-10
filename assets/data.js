@@ -6,8 +6,8 @@
 ─────────────────────────────────────────────────────────────────────────── */
 const JIRA_CFG = {
   domain : 'qorix.atlassian.net',
-  email  : 'swati.davari@qorix.ai',     // ← replace with your Atlassian email
-  token  : 'ATATT3xFfGF0OSSMuBJE08SnCCeQWC81R8hTlV1yN3AeOd6k4gBQUI3q-XDzb7N3aqJEQ6j1nYbwf94ToWkGYDtVObEzsRBQoWByCgbPem5IgslcJyIszjFoyk4Pjj8f-nru_HMnb2Ap7Z_5jfDAjmMHvhB-NrZ-_MO7cFl-rL_xPkzWElaXpoY=221E9E97',      // ← replace with your Atlassian API token
+  email  : '',     // ← replace with your Atlassian email
+  token  : '',      // ← replace with your Atlassian API token
   projects: {
     classic    : 'CP',
     adaptive   : 'AP',
