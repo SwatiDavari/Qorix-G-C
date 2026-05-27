@@ -1,276 +1,1402 @@
-import React, { useState, useEffect } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Assistant - Enterprise AI Chatbot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Product — Qorix Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="assets/styles.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="assets/data.js"></script>
+<style>
+/* ── Product-page specific ────────────────────────────────────── */
+.product-hero{
+  padding:32px 40px 0;
+  background:linear-gradient(135deg,var(--qx-navy),#1a0a6e 80%);
+  position:relative;overflow:hidden;
+}
+.product-hero::before{
+  content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,255,255,.1),transparent 70%);pointer-events:none;
+}
+.hero-top{display:flex;align-items:flex-start;gap:20px;position:relative;z-index:1;max-width:1300px;margin:0 auto}
+.product-badge-large{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:20px;flex-shrink:0}
+.hero-info{flex:1}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.hero-name{font-size:clamp(20px,3vw,30px);font-weight:800;color:#fff;margin-bottom:4px}
+.hero-desc{font-size:13px;color:rgba(255,255,255,.65);max-width:560px;margin-bottom:12px}
+.hero-actions-row{display:flex;gap:8px;flex-wrap:wrap}
 
-export default function QorixGCDashboard() {
+/* nav tabs inside hero */
+.product-tabs{max-width:1300px;margin:20px auto 0;position:relative;z-index:1;display:flex;gap:0;border-bottom:none}
+.ptab{padding:11px 20px;border:none;background:none;font-size:13px;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;border-bottom:3px solid transparent;transition:all .15s}
+.ptab:hover{color:rgba(255,255,255,.85)}
+.ptab.active{color:var(--qx-lime);border-bottom-color:var(--qx-lime)}
+.ptab-pane{display:none}.ptab-pane.active{display:flex;flex-direction:column;gap:20px}
 
-  // ================= DATA MODEL =================
-  /*
-  interface Member {
-    name: string;
-    role: string;
-    function: "Safety" | "Security" | "Quality";
-    allocations: { [product: string]: number };
-    reportsTo: string;
-    status: "Active" | "Inactive";
-  }
-  */
+/* Product body */
+.product-body{padding:28px 40px;max-width:1300px;margin:0 auto}
 
-  const PRODUCTS = ["AP", "CP", "QD_AP", "QD_CP", "QD_BL", "BL", "PER", "CMP"];
+/* KPI strip */
+.kpi-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.ks-card{background:var(--card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border);position:relative;overflow:hidden}
+.ks-card .kv{font-size:22px;font-weight:800;color:var(--heading);line-height:1}
+.ks-card .kl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.ks-accent{position:absolute;top:0;left:0;right:0;height:3px}
 
-  const DEFAULT_DATA = {
-    head: "Swati Davari",
-    members: [
-      {
-        name: "Chetan Baragi",
-        role: "Safety Manager",
-        function: "Safety",
-        allocations: { AP: 50, CP: 25, BL: 25 },
-        reportsTo: "Swati Davari",
-        status: "Active",
-      },
-      {
-        name: "Nikita Nikhade",
-        role: "Quality Manager",
-        function: "Quality",
-        allocations: { AP: 50, CP: 50 },
-        reportsTo: "Swati Davari",
-        status: "Active",
-      },
-      {
-        name: "Rakshith CS",
-        role: "Security Consultant",
-        function: "Security",
-        allocations: { BL: 50, QD_BL: 50 },
-        reportsTo: "Swati Davari",
-        status: "Active",
-      },
-    ],
-  };
+/* Roadmap */
+.rm-now .rm-col-hdr{color:var(--qx-blue);border-color:var(--qx-blue)}
+.rm-next .rm-col-hdr{color:var(--qx-orange);border-color:var(--qx-orange)}
+.rm-later .rm-col-hdr{color:var(--muted);border-color:var(--border)}
 
-  const STORAGE_KEY = "qorix_gc_dashboard_v1";
+/* Team member grouped card */
+.member-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+.member-card-hdr{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg);border-bottom:1px solid var(--border)}
+.member-name{font-weight:700;font-size:13px;color:var(--heading)}
+.member-total{font-size:11px;margin-top:1px}
+.member-role-row{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border);transition:background .1s}
+.member-role-row:hover{background:#fafbff}
+.role-row-label{font-size:12px;font-weight:600;color:var(--heading);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.alloc-input{width:46px;border:1.5px solid var(--border);border-radius:6px;padding:3px 4px;font-size:12px;font-weight:700;text-align:center;outline:none;color:var(--heading);background:#fff;transition:border-color .15s}
+.alloc-input:focus{border-color:var(--qx-blue);box-shadow:0 0 0 2px rgba(60,0,255,.1)}
+.member-footer{padding:8px 14px 10px;background:var(--bg)}
+.icon-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s;flex-shrink:0;line-height:1}
+.icon-btn:hover{border-color:var(--qx-blue);background:#eff6ff}
+.icon-btn.danger:hover{border-color:#ef4444;background:#fff5f5;color:#ef4444}
 
-  const loadData = () => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : DEFAULT_DATA;
-  };
+/* Risk card (product view) */
+.risk-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+.risk-card-top{padding:14px 16px;display:flex;align-items:flex-start;gap:10px}
+.risk-card-body{padding:0 16px 14px}
+.risk-card-foot{padding:10px 16px;background:var(--bg);border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;justify-content:space-between}
 
-  const saveData = (data) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  };
+/* Compliance card */
+.comp-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);padding:16px}
+.comp-card-title{font-weight:700;font-size:13px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
 
-  const [data, setData] = useState(loadData());
-  const [search, setSearch] = useState("");
-  const [filterFunc, setFilterFunc] = useState("All");
+/* Editable highlight */
+.editable-field{cursor:text;border-bottom:1px dashed transparent;border-radius:3px;padding:1px 3px;transition:border-color .15s,background .15s}
+.editable-field:hover{border-color:var(--qx-blue);background:rgba(60,0,255,.04)}
+.editable-field:focus{outline:none;border-color:var(--qx-blue);background:rgba(60,0,255,.06)}
 
-  useEffect(() => {
-    saveData(data);
-  }, [data]);
+/* ── Excel import modal ─────────────────────────────────────── */
+.excel-overlay{position:fixed;inset:0;background:rgba(14,40,65,.55);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.excel-overlay.open{display:flex}
+.excel-modal{background:#fff;border-radius:14px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(14,40,65,.3)}
+.excel-hdr{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2}
+.excel-hdr h3{font-size:16px;font-weight:700}
+.dropzone{border:2px dashed var(--border);border-radius:10px;padding:32px 20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;position:relative}
+.dropzone:hover,.dropzone.drag-over{border-color:var(--qx-blue);background:rgba(60,0,255,.03)}
+.dropzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dropzone-icon{font-size:36px;margin-bottom:10px}
+.dropzone-text{font-size:14px;font-weight:600;color:var(--text)}
+.dropzone-sub{font-size:12px;color:var(--muted);margin-top:4px}
 
-  // ================= CRUD =================
-  const addMember = () => {
-    const newMember = {
-      name: "New Member",
-      role: "Quality Consultant",
-      function: "Quality",
-      allocations: {},
-      reportsTo: data.head,
-      status: "Active",
-    };
-    setData({ ...data, members: [...data.members, newMember] });
-  };
+/* ── JIRA tab ───────────────────────────────────────────────── */
+.jira-conn-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.jira-conn-ok{background:#dcfce7;color:#15803d}
+.jira-conn-fail{background:#fee2e2;color:#991b1b}
+.jira-conn-idle{background:#f1f5f9;color:#64748b}
+.jira-issue-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.jira-issue-row:last-child{border-bottom:none}
+.jira-key{font-size:11px;font-weight:700;color:var(--qx-blue);white-space:nowrap;min-width:70px}
+.jira-summary{font-size:12px;font-weight:500;flex:1}
+.jira-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px}
+.jira-status-pill{font-size:10px;font-weight:600;padding:1px 7px;border-radius:3px}
+.jira-priority-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.jira-sync-bar{background:#fff;border-radius:10px;border:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.jira-stat-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:7px;font-size:12px;font-weight:600;background:var(--bg)}
+.server-warn{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px 16px;font-size:13px;color:#92400e}
 
-  const deleteMember = (index) => {
-    const updated = data.members.filter((_, i) => i !== index);
-    setData({ ...data, members: updated });
-  };
+/* add risk/member btn */
+.add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:2px dashed var(--border);border-radius:var(--radius);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;background:none;width:100%;transition:border-color .15s,color .15s}
+.add-btn:hover{border-color:var(--qx-blue);color:var(--qx-blue)}
 
-  const updateMember = (index, field, value) => {
-    const updated = [...data.members];
-    updated[index][field] = value;
-    setData({ ...data, members: updated });
-  };
+/* Summary chart strip */
+.summary-charts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.sc-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);padding:16px}
+.sc-card h4{font-size:13px;font-weight:700;margin-bottom:14px}
+.chart-sm{position:relative;height:160px}
 
-  // ================= HELPERS =================
-  const getTotal = (allocations) =>
-    Object.values(allocations).reduce((a, b) => a + b, 0);
-
-  const getColor = (total) => {
-    if (total < 100) return "text-red-400";
-    if (total > 100) return "text-yellow-400";
-    return "text-green-400";
-  };
-
-  // ================= EXPORT =================
-  const exportData = () => {
-    const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "gc_dashboard.json";
-    a.click();
-  };
-
-  const importData = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = () => setData(JSON.parse(reader.result));
-    reader.readAsText(file);
-  };
-
-  // ================= UI =================
-  return (
-    <div className="bg-gray-900 text-white min-h-screen p-6">
-
-      {/* HERO */}
-      <div className="bg-gradient-to-r from-purple-700 to-blue-700 p-6 rounded-xl shadow-lg mb-6">
-        <h1 className="text-3xl font-bold">G&C Dashboard</h1>
-        <p>Governance & Compliance – Allocation & Org View</p>
-        <div className="mt-4 flex gap-6">
-          <div>Members: {data.members.length}</div>
-          <div>Products: {PRODUCTS.length}</div>
-          <div>
-            Complete:
-            {
-              data.members.filter((m) => getTotal(m.allocations) === 100).length
-            }
-          </div>
+/* Fin table */
+.fin-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.fin-row:last-child{border-bottom:none}
+.fin-label{font-size:12px;color:var(--muted);font-weight:500}
+.fin-val{font-size:14px;font-weight:700;color:var(--heading)}
+.fin-bar-r{flex:1;margin:0 16px;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.fin-bar-f{height:100%;border-radius:3px}
+</style>
+</head>
+<body>
+    
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">Knowledge Assistant</div>
+            <ul class="nav-menu">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#benefits">Benefits</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="/app" class="nav-button">Open App</a></li>
+            </ul>
         </div>
-      </div>
+    </nav>
 
-      {/* FILTERS */}
-      <div className="flex gap-4 mb-4">
-        <input
-          className="p-2 rounded bg-gray-800"
-          placeholder="Search"
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <select
-          className="p-2 bg-gray-800"
-          onChange={(e) => setFilterFunc(e.target.value)}
-        >
-          <option>All</option>
-          <option>Safety</option>
-          <option>Security</option>
-          <option>Quality</option>
-        </select>
-      </div>
-
-      {/* MEMBERS TABLE */}
-      <div className="bg-gray-800 p-4 rounded-xl mb-6">
-        <h2 className="text-xl mb-4">Members</h2>
-        <button onClick={addMember} className="bg-blue-600 px-3 py-1 rounded">
-          + Add Member
-        </button>
-
-        {data.members
-          .filter(
-            (m) =>
-              m.name.toLowerCase().includes(search.toLowerCase()) &&
-              (filterFunc === "All" || m.function === filterFunc)
-          )
-          .map((m, i) => (
-            <div key={i} className="flex gap-4 mt-2 items-center">
-              <input
-                value={m.name}
-                onChange={(e) => updateMember(i, "name", e.target.value)}
-                className="bg-gray-700 p-1"
-              />
-              <select
-                value={m.function}
-                onChange={(e) => updateMember(i, "function", e.target.value)}
-                className="bg-gray-700"
-              >
-                <option>Safety</option>
-                <option>Security</option>
-                <option>Quality</option>
-              </select>
-              <button
-                onClick={() => deleteMember(i)}
-                className="text-red-400"
-              >
-                Delete
-              </button>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="badge">ENTERPRISE AI ASSISTANT</div>
+            <h1>Knowledge Assistant</h1>
+            <p class="tagline">Get instant answers about company policies, benefits, and procedures</p>
+            <div class="hero-buttons">
+                <a href="/app" class="btn btn-primary">Get Started</a>
+                <a href="#features" class="btn btn-secondary">Learn More</a>
             </div>
-          ))}
-      </div>
 
-      {/* ALLOCATION MATRIX */}
-      <div className="bg-gray-800 p-4 rounded-xl mb-6">
-        <h2 className="text-xl mb-4">Allocation Matrix (%)</h2>
-        <table className="w-full">
-          <thead>
-            <tr>
-              <th>Name</th>
-              {PRODUCTS.map((p) => (
-                <th key={p}>{p}</th>
-              ))}
-              <th>Total</th>
-            </tr>
-          </thead>
+<!-- NAV -->
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark">Q</div>
+    <div class="nav-logo-text">Qorix</div>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Portal Home</a>
+    <a href="dashboard.html" class="nav-link">Portfolio Dashboard</a>
+    <a href="product.html" class="nav-link active">Products</a>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;margin-left:auto">
+    <!-- Product switcher -->
+    <select id="product-switcher" class="filter-select" onchange="switchProduct(this.value)" style="border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;border-radius:7px;padding:6px 12px;font-size:13px;cursor:pointer">
+      <option value="">Switch product…</option>
+    </select>
+    <a href="dashboard.html" class="nav-cta">Full Dashboard →</a>
+  </div>
+</nav>
 
-          <tbody>
-            {data.members.map((m, i) => {
-              const total = getTotal(m.allocations);
-              return (
-                <tr key={i}>
-                  <td>{m.name}</td>
-
-                  {PRODUCTS.map((p) => (
-                    <td key={p}>
-                      <input
-                        type="number"
-                        value={m.allocations[p] || ""}
-                        onChange={(e) => {
-                          const updated = [...data.members];
-                          updated[i].allocations[p] =
-                            Number(e.target.value) || 0;
-                          setData({ ...data, members: updated });
-                        }}
-                        className="bg-gray-700 w-16"
-                      />
-                    </td>
-                  ))}
-
-                  <td className={getColor(total)}>{total}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {/* ORG VIEW */}
-      <div className="bg-gray-800 p-4 rounded-xl mb-6">
-        <h2 className="text-xl">Org Structure</h2>
-        <div className="mt-4">
-          <div className="text-lg font-bold">{data.head}</div>
-          <div className="flex gap-10 mt-4">
-            {["Safety", "Security", "Quality"].map((group) => (
-              <div key={group}>
-                <h3 className="font-semibold">{group}</h3>
-                {data.members
-                  .filter((m) => m.function === group)
-                  .map((m, i) => (
-                    <div key={i}>{m.name}</div>
-                  ))}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ACTIONS */}
-      <div className="flex gap-4">
-        <button onClick={exportData} className="bg-green-600 p-2 rounded">
-          Export JSON
-        </button>
-        <input type="file" onChange={importData} />
-        <button
-          onClick={() => setData(DEFAULT_DATA)}
-          className="bg-red-600 p-2 rounded"
-        >
-          Reset
-        </button>
+<!-- PRODUCT HERO -->
+<div class="product-hero" id="product-hero">
+  <div class="hero-top">
+    <div class="product-badge-large" id="hero-badge"></div>
+    <div class="hero-info">
+      <div class="hero-meta" id="hero-meta"></div>
+      <div class="hero-name" id="hero-name"></div>
+      <div class="hero-desc" id="hero-desc"></div>
+      <div class="hero-actions-row">
+        <button class="btn btn-lime btn-sm" onclick="saveChanges()">💾 Save Changes</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportProduct()">⬇ Export</button>
+        <button class="btn btn-ghost btn-sm" onclick="addMember()">+ Add Team Member</button>
       </div>
     </div>
-  );
+    <!-- Completion ring -->
+    <div style="text-align:center;flex-shrink:0;position:relative">
+      <canvas id="ringChart" width="90" height="90"></canvas>
+      <div id="ring-pct" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;font-weight:800;color:#fff"></div>
+      <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:4px">Complete</div>
+    </div>
+  </div>
+  <!-- Tab bar -->
+  <div class="product-tabs" id="ptabs"></div>
+</div>
+
+<!-- BODY -->
+<div class="product-body">
+
+  <!-- ── TAB: OVERVIEW ── -->
+  <div class="ptab-pane active" id="pane-overview">
+
+    <!-- KPI strip -->
+    <div class="kpi-strip" id="kpi-strip"></div>
+
+
+
+    <!-- Alerts -->
+    <div id="overview-alerts"></div>
+
+  </div>
+
+  <!-- ── TAB: TEAM ── -->
+  <div class="ptab-pane" id="pane-team">
+    <div class="section-hdr">
+      <h2>Team Allocation</h2>
+      <div class="actions">
+        <button class="btn btn-outline btn-sm" onclick="openExcelImport()">📥 Import Excel</button>
+        <button class="btn btn-outline btn-sm" onclick="downloadExcelTemplate()">📄 Template</button>
+        <button class="btn btn-primary btn-sm" onclick="addMember()">+ Add Member</button>
+        <button class="btn btn-outline btn-sm" onclick="exportTeam()">⬇ Export CSV</button>
+      </div>
+    </div>
+
+    <!-- Role summary -->
+    <div id="role-summary" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px"></div>
+
+    <!-- Member grid -->
+    <div>
+      <div id="team-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:16px"></div>
+      <button class="add-btn" style="margin-top:12px" onclick="addMember()">+ Add Team Member</button>
+    </div>
+
+    <!-- Shared resources callout -->
+    <div id="shared-callout"></div>
+
+    <!-- Team table -->
+    <div>
+      <div class="section-hdr" style="margin-top:4px"><h3>Full Roster</h3></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Role</th><th>Type</th><th>Allocation %</th><th>Ask %</th><th>Gap</th><th>Shared</th><th>Actions</th></tr></thead>
+          <tbody id="team-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: ACTIVITY ── -->
+  <div class="ptab-pane" id="pane-activity">
+    <div class="section-hdr"><h2>Activity Log</h2></div>
+    <div class="card card-body">
+      <div class="timeline" id="activity-timeline"></div>
+    </div>
+  </div>
+
+  <!-- ── TAB: JIRA SYNC ── -->
+  <div class="ptab-pane" id="pane-jira">
+
+    <div class="section-hdr">
+      <h2>JIRA Integration</h2>
+      <div class="actions">
+        <span id="jira-status-pill" style="font-size:11px;padding:4px 10px;border-radius:20px;background:#f1f5f9;color:var(--muted)">Not connected</span>
+        <button class="btn btn-primary btn-sm" onclick="syncJira()">🔄 Sync from JIRA</button>
+      </div>
+    </div>
+    <div id="jira-project-info" style="margin-bottom:16px;font-size:12px;color:var(--muted)"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="card">
+        <div class="card-hdr"><h3>⚠️ Risks</h3><span id="risk-count-jira" style="font-size:11px;color:var(--muted)"></span></div>
+        <div id="jira-risks-list" style="padding:12px"></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><h3>🛡️ Non-Conformances</h3><span id="nc-count-jira" style="font-size:11px;color:var(--muted)"></span></div>
+        <div id="jira-nc-list" style="padding:12px"></div>
+      </div>
+    </div>
+
+  </div><!-- /pane-jira -->
+
+</div><!-- /product-body -->
+
+<!-- ── Excel Import Overlay ───────────────────────────────────────── -->
+<div class="excel-overlay" id="excel-overlay" onclick="if(event.target===this)closeExcelModal()">
+  <div class="excel-modal">
+    <div class="excel-hdr">
+      <h3>📥 Import Team from Excel / CSV</h3>
+      <button class="modal-close" onclick="closeExcelModal()">✕</button>
+    </div>
+    <div style="padding:20px">
+
+      <!-- Step 1: Upload zone -->
+      <div style="margin-bottom:16px">
+        <div class="dropzone" id="dropzone"
+          ondragover="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="this.classList.remove('drag-over')"
+          ondrop="this.classList.remove('drag-over');handleExcelDrop(event)">
+          <div class="dropzone-icon">📊</div>
+          <div class="dropzone-text">Drop your Excel or CSV file here</div>
+          <div class="dropzone-sub">Supports .xlsx, .xls, .csv — or click to browse</div>
+          <input type="file" accept=".xlsx,.xls,.csv" onchange="handleExcelFile(this.files[0])"/>
+        </div>
+        <div class="hero-visual">
+            <div class="gradient-blob"></div>
+        </div>
+    </section>
+
+    <!-- FEATURES GRID -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Powered By</h2>
+            <div class="features-grid">
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI Powered</h3>
+                    <p>Claude AI generates accurate, context-aware answers from your company knowledge base</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Lightning Fast</h3>
+                    <p>Get answers in 3-5 seconds. No waiting, no back-and-forth emails</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>Knowledge Base</h3>
+                    <p>Integrated with SharePoint policies and OneDrive documents</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3>Teams Integration</h3>
+                    <p>Access directly from Microsoft Teams. Same assistant, any platform</p>
+                </div>
+      </div>
+
+            </div>
+      <!-- Template download row -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:10px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
+        <span style="font-size:18px">📄</span>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">Need a template?</div>
+          <div style="font-size:11px;color:var(--muted)">Download a pre-formatted CSV with correct column headers</div>
+        </div>
+    </section>
+
+    <!-- BENEFITS SECTION -->
+    <section id="benefits" class="benefits">
+        <div class="container">
+            <h2>Why Knowledge Assistant</h2>
+            <div class="benefits-grid">
+                
+                <div class="benefit">
+                    <h3>⏱️ 3-5 Second Response</h3>
+                    <p>Instant answers without waiting for HR or support teams</p>
+                </div>
+
+                <div class="benefit">
+                    <h3>🔒 Enterprise Secure</h3>
+                    <p>Your data stays within your company. No external sharing</p>
+                </div>
+
+                <div class="benefit">
+                    <h3>📱 Multi-Platform</h3>
+                    <p>Web, Teams, or mobile. Same seamless experience everywhere</p>
+                </div>
+
+                <div class="benefit">
+                    <h3>🔄 Always Learning</h3>
+                    <p>Updates automatically when policies change in SharePoint</p>
+                </div>
+        <button class="btn btn-outline btn-sm" onclick="downloadExcelTemplate()">⬇ Template</button>
+      </div>
+
+            </div>
+      <!-- Column mapping hint -->
+      <div style="margin-bottom:14px;padding:10px 12px;background:#eff6ff;border-radius:8px;border:1px solid #bfdbfe;font-size:12px;color:#1d4ed8">
+        <strong>Expected columns:</strong> Name · Initials · Role · Type (safety-manager/security-manager/quality-manager/quality-consultant/safety-consultant) · Allocation% · Ask% · Shared (Yes/No)
+        <br/>Column headers are auto-detected — order doesn't matter.
+      </div>
+
+      <!-- Preview area (populated after file load) -->
+      <div id="excel-preview" style="margin-bottom:12px"></div>
+
+      <!-- Import options (shown after file parsed) -->
+      <div id="excel-import-options" style="display:none;margin-bottom:14px;padding:12px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
+        <div class="form-field" style="margin:0">
+          <label>Import mode</label>
+          <select id="excel-import-mode" style="border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:13px;width:100%;outline:none">
+            <option value="merge">Merge — add to existing team (skip duplicates by name)</option>
+            <option value="replace">Replace — remove current team and use imported data</option>
+          </select>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Get Started?</h2>
+            <p>Join 250+ employees already using Knowledge Assistant</p>
+            <a href="/app" class="btn btn-primary btn-large">Open Knowledge Assistant</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="/app">Open App</a></li>
+                        <li><a href="/docs">Documentation</a></li>
+                        <li><a href="/api">API</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="/help">Help Center</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+                        <li><a href="/feedback">Send Feedback</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/privacy">Privacy</a></li>
+                        <li><a href="/terms">Terms</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Knowledge Assistant. All rights reserved.</p>
+      </div>
+
+      <!-- Action buttons -->
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn btn-outline" onclick="closeExcelModal()">Cancel</button>
+        <button class="btn btn-primary" id="excel-import-btn" style="display:none" onclick="importExcelMembers()">✅ Import Members</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3 id="modal-title">Add Item</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── Init ─────────────────────────────────────────────────────── */
+const params = new URLSearchParams(location.search);
+let PID = params.get('id') || 'classic';
+let P = null;
+
+function init(){
+  P = getProduct(PID);
+  if(!P){ document.body.innerHTML='<div style="padding:60px;text-align:center;color:#64748b">Product not found. <a href="index.html">Go home</a></div>'; return; }
+  document.title = P.name + ' — Qorix Portal';
+  buildSwitcher();
+  renderHero();
+  renderTabs();
+  renderOverview();
+  renderTeam();
+  renderActivity();
+  _loadCachedJiraData();
+  // activate tab from hash
+  const hash = location.hash.replace('#','');
+  if(hash) activateTab(hash);
 }
+
+function switchProduct(id){ if(id) location.href='product.html?id='+id; }
+
+function buildSwitcher(){
+  const sel = document.getElementById('product-switcher');
+  sel.innerHTML = '<option value="">Switch product…</option>' + PRODUCTS.map(p=>`<option value="${p.id}"${p.id===PID?' selected':''}>${p.name}</option>`).join('');
+}
+
+/* ── Hero ─────────────────────────────────────────────────────── */
+function renderHero(){
+  document.getElementById('product-hero').style.background=`linear-gradient(135deg,${P.color}33 0%,var(--qx-navy) 40%,#1a0a6e 100%)`;
+  document.getElementById('hero-badge').style.background=P.color;
+  document.getElementById('hero-badge').textContent=P.abbr;
+  document.getElementById('hero-name').textContent=P.name;
+  document.getElementById('hero-desc').textContent=P.description||P.desc||'';
+  document.getElementById('hero-meta').innerHTML=`
+    <span class="badge badge-${P.status}">${statusLabel(P.status)}</span>
+    <span class="badge-phase" style="background:${phaseBg(P.phase)};color:${phaseText(P.phase)}">${P.phase}</span>
+    <span style="font-size:12px;color:rgba(255,255,255,.5)">PM: <strong style="color:rgba(255,255,255,.85)">${P.pm}</strong></span>
+    <span style="font-size:12px;color:rgba(255,255,255,.5)">Updated: <strong style="color:rgba(255,255,255,.85)">${P.updated}</strong></span>`;
+
+  // Completion ring
+  const ring = new Chart(document.getElementById('ringChart'),{
+    type:'doughnut',
+    data:{datasets:[{data:[P.completion,100-P.completion],backgroundColor:[P.color,'rgba(255,255,255,.1)'],borderWidth:0,borderRadius:4}]},
+    options:{responsive:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{enabled:false}}}
+  });
+  document.getElementById('ring-pct').textContent=P.completion+'%';
+}
+
+/* ── Tabs ─────────────────────────────────────────────────────── */
+const TABS=[
+  {id:'overview',  label:'📊 Overview'},
+  {id:'team',      label:'👥 Team'},
+  {id:'jira',      label:'🔗 JIRA'}
+];
+function renderTabs(){
+  document.getElementById('ptabs').innerHTML = TABS.map(t=>`<button class="ptab${t.id==='overview'?' active':''}" onclick="activateTab('${t.id}')">${t.label}</button>`).join('');
+}
+function activateTab(id){
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.toggle('active',b.textContent.includes(TABS.find(t=>t.id===id)?.label||id)));
+  document.querySelectorAll('.ptab-pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+id));
+  history.replaceState(null,'','product.html?id='+PID+'#'+id);
+}
+
+/* ── Overview ─────────────────────────────────────────────────── */
+function renderOverview(){
+  // KPIs
+  const kpis=[
+    {val:P.users,    label:'Users',      accent:QX.green},
+    {val:P.adoption, label:'Adoption',   accent:QX.purple},
+    {val:P.nps+'',   label:'NPS Score',  accent:QX.orange},
+    {val:productFTE(PID)+' FTE',label:'Team Size', accent:QX.steel}
+  ];
+  document.getElementById('kpi-strip').innerHTML=kpis.map(k=>`
+    <div class="ks-card">
+      <div class="ks-accent" style="background:${k.accent}"></div>
+      <div class="kv">${k.val}</div>
+      <div class="kl">${k.label}</div>
+    </div>`).join('');
+
+  // Alerts — sourced from JIRA cache
+  const riskAlerts = (_jiraData.risks||[]).filter(r=>r.status!=='Done'&&r.status!=='Closed').slice(0,3);
+  const ncAlerts   = (_jiraData.nc||[]).filter(c=>c.status!=='Done'&&c.status!=='Closed').slice(0,3);
+  const alerts = [
+    ...riskAlerts.map(r=>({type:'danger', icon:'⚠️', title:'Risk: '+r.title, desc:`${r.key} · ${r.priority} · ${r.assignee}`})),
+    ...ncAlerts.map(c=>({type:'warning', icon:'🛡️', title:'NC: '+c.title,   desc:`${c.key} · ${c.status}`}))
+  ];
+  document.getElementById('overview-alerts').innerHTML = alerts.length ? `
+    <div class="section-hdr"><h3>Product Flags</h3></div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${alerts.map(a=>`<div class="alert alert-${a.type}"><div class="alert-icon">${a.icon}</div><div class="alert-body"><div class="at">${a.title}</div><div class="ad">${a.desc}</div></div></div>`).join('')}
+    </div>` : '<div class="alert alert-info"><div class="alert-icon">✅</div><div class="alert-body"><div class="at">No critical flags</div><div class="ad">This product has no high-severity open issues.</div></div></div>';
+}
+
+/* ── Team ─────────────────────────────────────────────────────── */
+/* ── type colour map ──────────────────────────────────────────── */
+const TC = {'safety-manager':'#dc2626','security-manager':'#1d4ed8','quality-manager':'#15803d','quality-consultant':'#7e22ce','safety-consultant':'#c2410c'};
+const TYPE_LABEL = {'safety-manager':'Safety Mgr','security-manager':'Security Mgr','quality-manager':'Quality Mgr','quality-consultant':'Quality Con','safety-consultant':'Safety Con'};
+const TYPE_BG    = {'safety-manager':'#fee2e2','security-manager':'#dbeafe','quality-manager':'#dcfce7','quality-consultant':'#ede9fe','safety-consultant':'#fff7ed'};
+const TYPE_TXT   = {'safety-manager':'#991b1b','security-manager':'#1d4ed8','quality-manager':'#15803d','quality-consultant':'#6d28d9','safety-consultant':'#9a3412'};
+
+function renderTeam(){
+  const members = (TEAM[PID]||[]).map((m,i)=>({...m,_idx:i}));
+
+  /* ── Role summary strip ───────────────────────────────────── */
+  const roleDefs = [
+    {key:'safety-manager',   label:'Safety Manager',    color:'#dc2626'},
+    {key:'security-manager', label:'Security Manager',  color:'#1d4ed8'},
+    {key:'quality-manager',  label:'Quality Manager',   color:'#15803d'},
+    {key:'quality-consultant',label:'Quality Consultant',color:'#7e22ce'},
+    {key:'safety-consultant',label:'Safety Consultant', color:'#c2410c'}
+  ];
+  document.getElementById('role-summary').innerHTML = roleDefs.map(r=>{
+    const cnt = members.filter(m=>m.type===r.key).length;
+    return `<div class="ks-card"><div class="ks-accent" style="background:${r.color}"></div><div class="kv">${cnt}</div><div class="kl">${r.label}</div></div>`;
+  }).join('');
+
+  /* ── Group by name (case-insensitive) ────────────────────── */
+  const groupMap = {};
+  members.forEach(m => {
+    const key = m.name.trim().toLowerCase();
+    if(!groupMap[key]) groupMap[key] = {name:m.name, initials:m.initials, entries:[]};
+    groupMap[key].entries.push(m);
+  });
+  const groups = Object.values(groupMap);
+
+  /* ── Grouped member cards ────────────────────────────────── */
+  document.getElementById('team-grid').innerHTML = groups.map(g => {
+    const total   = g.entries.reduce((s,e)=>s+e.allocation, 0);
+    const isOver  = total > 100;
+    const isShared= g.entries.some(e=>e.shared);
+    const mainType= g.entries[0].type;
+    const allocColor = isOver ? '#ef4444' : total===100 ? '#22c55e' : '#f59e0b';
+
+    const roleRows = g.entries.map(e => {
+      const tColor = TC[e.type]||QX.blue;
+      return `
+      <div class="member-role-row">
+        <span style="width:7px;height:7px;border-radius:50%;background:${tColor};flex-shrink:0"></span>
+        <div style="flex:1;min-width:0">
+          <div class="role-row-label" title="${e.role}">${e.role}</div>
+          <div style="display:flex;align-items:center;gap:5px;margin-top:2px">
+            <span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;background:${TYPE_BG[e.type]};color:${TYPE_TXT[e.type]}">${TYPE_LABEL[e.type]}</span>
+            ${e.shared ? '<span class="shared-tag" style="font-size:9px;padding:1px 5px">Shared</span>' : ''}
+          </div>
+        </div>
+        <!-- Allocation % editable column -->
+        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
+          <div class="progress-wrap" style="width:40px;height:4px"><div class="progress-fill" style="width:${Math.min(e.allocation,100)}%;background:${tColor}"></div></div>
+          <input class="alloc-input" type="number" min="1" max="100" value="${e.allocation}"
+            title="Edit allocation %"
+            onchange="updateMemberAlloc(${e._idx},this.value)"
+            oninput="this.style.borderColor=''"/>
+          <span style="font-size:11px;color:var(--muted);font-weight:600">%</span>
+        </div>
+        <!-- Actions -->
+        <button class="icon-btn" title="Edit role" onclick="editMember(${e._idx})">✏</button>
+        <button class="icon-btn danger" title="Remove this role" onclick="removeMemberDirect(${e._idx})">✕</button>
+      </div>`;
+    }).join('');
+
+    return `
+    <div class="member-card">
+      <div class="member-card-hdr">
+        <div class="avatar avatar-md" style="background:${TC[mainType]||QX.blue}">${g.initials}</div>
+        <div style="flex:1;min-width:0">
+          <div class="member-name truncate">${g.name}</div>
+          <div class="member-total" style="color:${allocColor}">
+            ${g.entries.length > 1 ? g.entries.length+' roles · ' : ''}Total: <strong>${total}%</strong>
+            ${isOver ? ' ⚠ Over-allocated' : total===100 ? ' ✅' : ''}
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" style="font-size:11px;padding:4px 10px;flex-shrink:0"
+          onclick="addRoleFor(${JSON.stringify(g.name)},${JSON.stringify(g.initials)})">+ Role</button>
+      </div>
+      ${roleRows}
+      <div class="member-footer">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Allocation</span>
+          <span style="font-size:12px;font-weight:800;color:${allocColor}">${total}%</span>
+        </div>
+        <div class="progress-wrap" style="height:5px">
+          <div class="progress-fill" style="width:${Math.min(total,100)}%;background:${isOver?'#ef4444':allocColor}"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  /* ── Shared resources callout ────────────────────────────── */
+  const sharedMembers = members.filter(m=>m.shared);
+  const callout = document.getElementById('shared-callout');
+  if(callout) callout.innerHTML = sharedMembers.length ? `
+    <div class="alert alert-warning mt-12">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-body">
+        <div class="at">${sharedMembers.length} Shared Allocation${sharedMembers.length>1?'s':''}</div>
+        <div class="ad">${sharedMembers.map(m=>`${m.name} (${m.role}) @${m.allocation}%`).join(' · ')} — verify no cross-product overallocation</div>
+      </div>
+    </div>` : '';
+
+  /* ── Full roster table ───────────────────────────────────── */
+  document.getElementById('team-table').innerHTML = members.map(m => `<tr>
+    <td>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="avatar avatar-sm" style="background:${TC[m.type]||QX.blue}">${m.initials}</div>
+        <span class="text-bold">${m.name}</span>
+        ${members.filter(x=>x.name.toLowerCase()===m.name.toLowerCase()).length>1
+          ? '<span style="font-size:10px;font-weight:600;background:#eff6ff;color:#1d4ed8;padding:1px 6px;border-radius:4px;margin-left:2px">multi-role</span>' : ''}
+      </div>
+    </td>
+    <td contenteditable="true" class="editable-field"
+        onblur="TEAM[PID][${m._idx}].role=this.textContent;persistData();markChanged()">${m.role}</td>
+    <td><span class="badge-phase" style="background:${TYPE_BG[m.type]};color:${TYPE_TXT[m.type]}">${m.type.toUpperCase()}</span></td>
+    <td>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="progress-wrap" style="width:50px">
+          <div class="progress-fill" style="width:${Math.min(m.allocation,100)}%;background:${TC[m.type]||QX.blue}"></div>
+        </div>
+        <input class="alloc-input" type="number" min="1" max="100" value="${m.allocation}"
+          title="Edit allocation %"
+          onchange="updateMemberAlloc(${m._idx},this.value)"/>
+        <span style="font-size:11px;color:var(--muted)">%</span>
+      </div>
+    </td>
+    <td>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input class="alloc-input" type="number" min="0" max="100" value="${m.askAllocation||0}"
+          title="Edit ask allocation %"
+          onchange="updateMemberAskAlloc(${m._idx},this.value)"/>
+        <span style="font-size:11px;color:var(--muted)">%</span>
+      </div>
+    </td>
+    <td style="font-weight:700;color:${(m.askAllocation||0)>m.allocation?'#ef4444':(m.askAllocation||0)<m.allocation?'#22c55e':'var(--muted)'}">
+      ${(m.askAllocation||0)-m.allocation > 0 ? '+' : ''}${(m.askAllocation||0)-m.allocation}%
+    </td>
+    <td>${m.shared?'<span class="shared-tag">Shared</span>':'<span style="color:var(--muted);font-size:12px">—</span>'}</td>
+    <td>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-outline btn-sm" onclick="editMember(${m._idx})">✏ Edit</button>
+        <button class="btn btn-sm" style="background:#fff5f5;color:#ef4444;border:1px solid #fca5a5"
+          onclick="removeMemberDirect(${m._idx})">✕ Remove</button>
+      </div>
+    </td>
+  </tr>`).join('');
+}
+
+/* ── Activity ─────────────────────────────────────────────────── */
+function renderActivity(){
+  const items=ACTIVITY.filter(a=>a.product===PID);
+  const typeColor={risk:'#ef4444',roadmap:QX.blue,team:QX.sky,flag:'#f59e0b',financial:QX.orange,compliance:'#22c55e',milestone:QX.blue};
+  const typeIcon={risk:'⚠️',roadmap:'🗺️',team:'👥',flag:'🚩',financial:'💰',compliance:'🛡️',milestone:'🏁'};
+  document.getElementById('activity-timeline').innerHTML=items.length?items.map((a,i)=>`
+    <div class="tl-item">
+      <div class="tl-dot-wrap">
+        <div class="tl-dot" style="background:${typeColor[a.type]||QX.blue}"></div>
+      </div>
+      <div style="flex:1">
+        <div class="tl-ts">${typeIcon[a.type]||'📌'} ${a.ts}</div>
+        <div class="tl-msg">${a.msg}</div>
+      </div>
+    </div>`).join(''):
+    '<div style="padding:20px;text-align:center;color:var(--muted)">No recent activity for this product.</div>';
+}
+
+/* ── Modal helpers ────────────────────────────────────────────── */
+function openModal(title,html){
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-body').innerHTML=html;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); }
+
+/* ── type options HTML helper ─────────────────────────────────── */
+function _typeOpts(sel){
+  const opts = [
+    {v:'safety-manager',   l:'Safety Manager'},
+    {v:'security-manager', l:'Security Manager'},
+    {v:'quality-manager',  l:'Quality Manager'},
+    {v:'quality-consultant',l:'Quality Consultant'},
+    {v:'safety-consultant',l:'Safety Consultant'}
+  ];
+  return opts.map(o=>`<option value="${o.v}"${o.v===sel?' selected':''}>${o.l}</option>`).join('');
+}
+
+/* ── Add new member (new person OR new role for existing) ─────── */
+function addMember(){
+  const existingNames = [...new Set((TEAM[PID]||[]).map(m=>m.name))];
+  const existingOpts = existingNames.length
+    ? `<option value="">— Select person —</option>`+existingNames.map(n=>`<option value="${n}">${n}</option>`).join('')
+    : '<option value="">No existing members</option>';
+
+  openModal('Add Team Member', `
+    <!-- Mode toggle -->
+    <div style="display:flex;gap:0;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px">
+      <button id="mode-new" onclick="toggleAddMode('new')"
+        style="flex:1;padding:8px;border:none;background:var(--qx-blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer">
+        ＋ New Person
+      </button>
+      <button id="mode-role" onclick="toggleAddMode('role')"
+        style="flex:1;padding:8px;border:none;background:#fff;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer">
+        ＋ Role for Existing Person
+      </button>
+    </div>
+
+    <!-- New person fields -->
+    <div id="new-person-fields">
+      <div class="form-row">
+        <div class="form-field"><label>Full Name</label><input id="nm-name" placeholder="e.g. Jordan Lee"/></div>
+        <div class="form-field"><label>Initials (2 chars)</label><input id="nm-init" placeholder="JL" maxlength="2"
+          style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Role / Job Title</label><input id="nm-role" placeholder="e.g. Senior Engineer"/></div>
+        <div class="form-field"><label>Type</label><select id="nm-type">${_typeOpts('eng')}</select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Allocation % <span style="font-size:10px;color:var(--muted)">(actual)</span></label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" id="nm-alloc" min="1" max="100" value="100"
+              style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+            <span style="font-size:12px;color:var(--muted);white-space:nowrap">/ 100%</span>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Ask % <span style="font-size:10px;color:var(--muted)">(requested)</span></label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" id="nm-ask" min="0" max="100" value="100"
+              style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+            <span style="font-size:12px;color:var(--muted);white-space:nowrap">/ 100%</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-field"><label>Shared Resource?</label>
+        <select id="nm-shared">
+          <option value="">No — dedicated to this product</option>
+          <option value="1">Yes — shared across products</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Add role for existing person -->
+    <div id="existing-person-fields" style="display:none">
+      <div class="form-field"><label>Select Existing Person</label>
+        <select id="ep-name" onchange="prefillExistingInitials(this.value)">${existingOpts}</select>
+      </div>
+      <input type="hidden" id="ep-init" value=""/>
+      <div class="form-row">
+        <div class="form-field"><label>New Role / Job Title</label><input id="ep-role" placeholder="e.g. Tech Lead"/></div>
+        <div class="form-field"><label>Type</label><select id="ep-type">${_typeOpts('eng')}</select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Allocation % <span style="font-size:10px;color:var(--muted)">(actual)</span></label>
+          <div id="ep-alloc-wrap">
+            <div style="display:flex;align-items:center;gap:8px">
+              <input type="number" id="ep-alloc" min="1" max="100" value="20"
+                style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+              <span style="font-size:12px;color:var(--muted);white-space:nowrap">/ 100%</span>
+            </div>
+            <div id="ep-alloc-hint" style="font-size:11px;color:var(--muted);margin-top:4px"></div>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Ask % <span style="font-size:10px;color:var(--muted)">(requested)</span></label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" id="ep-ask" min="0" max="100" value="20"
+              style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+            <span style="font-size:12px;color:var(--muted);white-space:nowrap">/ 100%</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-field"><label>Shared Resource?</label>
+        <select id="ep-shared">
+          <option value="">No</option><option value="1">Yes</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" id="add-member-submit" onclick="saveMember()">Add Member</button>
+    </div>`);
+}
+
+function toggleAddMode(mode){
+  const isNew = mode === 'new';
+  document.getElementById('new-person-fields').style.display      = isNew ? '' : 'none';
+  document.getElementById('existing-person-fields').style.display = isNew ? 'none' : '';
+  document.getElementById('mode-new').style.background  = isNew ? 'var(--qx-blue)' : '#fff';
+  document.getElementById('mode-new').style.color       = isNew ? '#fff' : 'var(--muted)';
+  document.getElementById('mode-role').style.background = isNew ? '#fff' : 'var(--qx-blue)';
+  document.getElementById('mode-role').style.color      = isNew ? 'var(--muted)' : '#fff';
+  document.getElementById('add-member-submit').textContent = isNew ? 'Add Member' : 'Add Role';
+}
+
+function prefillExistingInitials(name){
+  const match = (TEAM[PID]||[]).find(m=>m.name===name);
+  if(match) document.getElementById('ep-init').value = match.initials;
+  // Show current total allocation for this person
+  const total = (TEAM[PID]||[]).filter(m=>m.name===name).reduce((s,m)=>s+m.allocation,0);
+  const hint  = document.getElementById('ep-alloc-hint');
+  if(hint) hint.innerHTML = `Current total for <strong>${name}</strong>: <strong style="color:${total>=100?'#ef4444':'#15803d'}">${total}%</strong> used · <strong>${100-total}%</strong> remaining`;
+}
+
+function saveMember(){
+  if(!TEAM[PID]) TEAM[PID]=[];
+  const isNew = document.getElementById('new-person-fields').style.display !== 'none';
+
+  if(isNew){
+    const name = document.getElementById('nm-name').value.trim() || 'New Member';
+    const raw  = document.getElementById('nm-init').value.trim().toUpperCase();
+    const initials = raw || name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase() || 'NM';
+    const allocation = Math.max(1,Math.min(100,+document.getElementById('nm-alloc').value||100));
+    TEAM[PID].push({
+      name, initials,
+      role:         document.getElementById('nm-role').value.trim()  || 'Team Member',
+      type:         document.getElementById('nm-type').value,
+      allocation,
+      askAllocation: Math.max(0,Math.min(100,+document.getElementById('nm-ask').value||allocation)),
+      shared:       !!document.getElementById('nm-shared').value
+    });
+    showToast('✅ Member added');
+  } else {
+    const name     = document.getElementById('ep-name').value;
+    const initials = document.getElementById('ep-init').value || '??';
+    if(!name){ showToast('⚠️ Select a person first'); return; }
+    const allocation = Math.max(1,Math.min(100,+document.getElementById('ep-alloc').value||20));
+    TEAM[PID].push({
+      name, initials,
+      role:         document.getElementById('ep-role').value.trim()  || 'Team Member',
+      type:         document.getElementById('ep-type').value,
+      allocation,
+      askAllocation: Math.max(0,Math.min(100,+document.getElementById('ep-ask').value||allocation)),
+      shared:       !!document.getElementById('ep-shared').value
+    });
+    showToast('✅ Role added for ' + name);
+  }
+  closeModal(); persistData(); renderTeam();
+}
+
+/* ── Add role directly from card "+ Role" button ──────────────── */
+function addRoleFor(name, initials){
+  const existing = (TEAM[PID]||[]).filter(m=>m.name===name);
+  const total    = existing.reduce((s,m)=>s+m.allocation, 0);
+  const remain   = Math.max(0, 100-total);
+
+  openModal(`Add Role for ${name}`, `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border-radius:8px;margin-bottom:14px;border:1px solid var(--border)">
+      <div class="avatar avatar-sm" style="background:${TC[existing[0]?.type]||QX.blue}">${initials}</div>
+      <div>
+        <div style="font-weight:700;font-size:13px">${name}</div>
+        <div style="font-size:11px;color:${total>=100?'#ef4444':'var(--muted)'}">
+          Current: <strong>${total}%</strong> allocated · <strong style="color:${remain>0?'#15803d':'#ef4444'}">${remain}%</strong> remaining
+        </div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Existing roles on this product:</div>
+    <div style="margin-bottom:14px">
+      ${existing.map(e=>`
+        <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:11px;font-weight:600;padding:1px 6px;border-radius:3px;background:${TYPE_BG[e.type]};color:${TYPE_TXT[e.type]}">${e.type.toUpperCase()}</span>
+          <span style="flex:1;font-size:12px">${e.role}</span>
+          <span style="font-size:12px;font-weight:700;color:${TC[e.type]||QX.blue}">${e.allocation}%</span>
+        </div>`).join('')}
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>New Role / Title</label><input id="ar-role" placeholder="e.g. Tech Lead, Scrum Master"/></div>
+      <div class="form-field"><label>Type</label><select id="ar-type">${_typeOpts('eng')}</select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>Allocation % <span style="font-size:10px;color:var(--muted)">(actual)</span></label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="number" id="ar-alloc" min="1" max="100" value="${Math.min(remain,20)||10}"
+            style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+          <span style="font-size:12px;color:var(--muted)">/100%</span>
+        </div>
+        ${total+20>100?`<div style="font-size:11px;color:#f59e0b;margin-top:3px">⚠ Total may exceed 100% — review carefully</div>`:''}
+      </div>
+      <div class="form-field">
+        <label>Ask % <span style="font-size:10px;color:var(--muted)">(requested)</span></label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="number" id="ar-ask" min="0" max="100" value="${Math.min(remain,20)||10}"
+            style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+          <span style="font-size:12px;color:var(--muted)">/100%</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-field"><label>Shared?</label>
+      <select id="ar-shared"><option value="">No</option><option value="1">Yes</option></select>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveRoleFor(${JSON.stringify(name)},${JSON.stringify(initials)})">+ Add Role</button>
+    </div>`);
+}
+
+function saveRoleFor(name, initials){
+  if(!TEAM[PID]) TEAM[PID]=[];
+  const allocation = Math.max(1,Math.min(100,+document.getElementById('ar-alloc').value||10));
+  TEAM[PID].push({
+    name, initials,
+    role:         document.getElementById('ar-role').value.trim()  || 'Additional Role',
+    type:         document.getElementById('ar-type').value,
+    allocation,
+    askAllocation: Math.max(0,Math.min(100,+document.getElementById('ar-ask').value||allocation)),
+    shared:       !!document.getElementById('ar-shared').value
+  });
+  closeModal(); persistData(); renderTeam();
+  showToast(`✅ New role added for ${name}`);
+}
+
+/* ── Edit a single role entry ─────────────────────────────────── */
+function editMember(i){
+  const m = TEAM[PID][i];
+  const allForPerson = (TEAM[PID]||[]).filter(x=>x.name.toLowerCase()===m.name.toLowerCase());
+  const totalOthers  = allForPerson.reduce((s,x,ix)=>TEAM[PID].indexOf(x)!==i?s+x.allocation:s, 0);
+
+  openModal(`Edit — ${m.name}`, `
+    <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">
+      Editing role ${allForPerson.length>1?`(${allForPerson.findIndex(x=>TEAM[PID].indexOf(x)===i)+1} of ${allForPerson.length} roles)`:''} for <strong>${m.name}</strong>
+      ${allForPerson.length>1?`<span style="color:var(--muted)"> · other roles use ${totalOthers}%</span>`:''}
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Name</label><input id="em-name" value="${m.name}"/></div>
+      <div class="form-field"><label>Initials</label><input id="em-init" value="${m.initials}" maxlength="2"
+        style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Role / Title</label><input id="em-role" value="${m.role}"/></div>
+      <div class="form-field"><label>Type</label><select id="em-type">${_typeOpts(m.type)}</select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>Allocation % <span style="font-size:10px;color:var(--muted)">(actual)</span></label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="number" id="em-alloc" min="1" max="100" value="${m.allocation}"
+            style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+          <span style="font-size:12px;color:var(--muted)">/100%</span>
+        </div>
+        ${allForPerson.length>1?`<div style="font-size:11px;color:var(--muted);margin-top:3px">Other roles: ${totalOthers}% · this role: ${m.allocation}% · total: ${totalOthers+m.allocation}%</div>`:''}
+      </div>
+      <div class="form-field">
+        <label>Ask % <span style="font-size:10px;color:var(--muted)">(requested)</span></label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="number" id="em-ask" min="0" max="100" value="${m.askAllocation||m.allocation}"
+            style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
+          <span style="font-size:12px;color:var(--muted)">/100%</span>
+        </div>
+    </footer>
+      </div>
+    </div>
+    <div class="form-field"><label>Shared?</label>
+      <select id="em-shared">
+        <option value=""${!m.shared?' selected':''}>No</option>
+        <option value="1"${m.shared?' selected':''}>Yes</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-sm" style="background:#fff5f5;color:#ef4444;border:1px solid #fca5a5;border-radius:7px;padding:6px 12px;cursor:pointer;font-weight:600"
+        onclick="removeMember(${i})">✕ Remove Role</button>
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="applyMemberEdit(${i})">Save Changes</button>
+    </div>`);
+}
+
+function applyMemberEdit(i){
+  TEAM[PID][i].name         = document.getElementById('em-name').value.trim()  || TEAM[PID][i].name;
+  TEAM[PID][i].initials     = document.getElementById('em-init').value.trim().toUpperCase() || TEAM[PID][i].initials;
+  TEAM[PID][i].role         = document.getElementById('em-role').value.trim()  || TEAM[PID][i].role;
+  TEAM[PID][i].type         = document.getElementById('em-type').value;
+  TEAM[PID][i].allocation   = Math.max(1,Math.min(100,+document.getElementById('em-alloc').value||TEAM[PID][i].allocation));
+  TEAM[PID][i].askAllocation= Math.max(0,Math.min(100,+document.getElementById('em-ask').value||TEAM[PID][i].askAllocation||TEAM[PID][i].allocation));
+  TEAM[PID][i].shared       = !!document.getElementById('em-shared').value;
+  closeModal(); persistData(); renderTeam(); showToast('✅ Role updated');
+}
+
+/* ── Remove helpers ───────────────────────────────────────────── */
+function removeMember(i){
+  TEAM[PID].splice(i,1);
+  closeModal(); persistData(); renderTeam(); showToast('Role removed');
+}
+
+function removeMemberDirect(i){
+  const name = TEAM[PID][i]?.name;
+  TEAM[PID].splice(i,1);
+  persistData(); renderTeam();
+  showToast(`✕ Removed role for ${name||'member'}`);
+}
+
+/* ── Inline allocation update (card + table inputs) ───────────── */
+function updateMemberAlloc(i, val){
+  const v = Math.max(1, Math.min(100, parseInt(val)||1));
+  if(TEAM[PID][i]) TEAM[PID][i].allocation = v;
+  persistData(); markChanged();
+  renderTeam();
+}
+
+function updateMemberAskAlloc(i, val){
+  const v = Math.max(0, Math.min(100, parseInt(val)||0));
+  if(TEAM[PID][i]) TEAM[PID][i].askAllocation = v;
+  persistData(); markChanged();
+  renderTeam();
+}
+
+/* ── Save / Export ────────────────────────────────────────────── */
+let _changed=false;
+function markChanged(){ _changed=true; document.title='• '+P.name+' — Qorix Portal'; }
+function saveChanges(){ _changed=false; persistData(); document.title=P.name+' — Qorix Portal'; showToast('✅ Changes saved'); }
+function exportProduct(){
+  const rows=[['Name','Role','Type','Allocation%','Ask%','Shared'],...(TEAM[PID]||[]).map(m=>[m.name,m.role,m.type,m.allocation,m.askAllocation||m.allocation,m.shared?'Yes':'No'])];
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=P.id+'-team.csv';a.click();URL.revokeObjectURL(url);
+  showToast('Team exported as CSV');
+}
+function exportTeam(){ exportProduct(); }
+
+/* ── Toast ────────────────────────────────────────────────────── */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   EXCEL IMPORT
+   ════════════════════════════════════════════════════════════════ */
+let _parsedMembers = [];
+
+function openExcelImport(){
+  _parsedMembers = [];
+  document.getElementById('excel-overlay').classList.add('open');
+  document.getElementById('excel-preview').innerHTML = '';
+  document.getElementById('excel-import-btn').style.display = 'none';
+  document.getElementById('excel-import-options').style.display = 'none';
+}
+function closeExcelModal(){
+  document.getElementById('excel-overlay').classList.remove('open');
+}
+
+function downloadExcelTemplate(){
+  const header = 'Name,Initials,Role,Type,Allocation%,Ask%,Shared';
+  const rows = [
+    'Aisha Rahman,AR,Safety Manager,safety-manager,100,100,No',
+    'Bjorn Svendsen,BS,Security Manager,security-manager,100,100,No',
+    'Clara Weiss,CW,Quality Manager,quality-manager,100,100,No',
+    'David Osei,DO,Quality Consultant,quality-consultant,80,100,Yes',
+    'Elena Moris,EM,Safety Consultant,safety-consultant,80,100,No'
+  ];
+  const csv = [header, ...rows].join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'qorix-team-template.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('📄 Template downloaded');
+}
+
+function handleExcelDrop(e){
+  e.preventDefault();
+  const file = e.dataTransfer?.files?.[0];
+  if(file) handleExcelFile(file);
+}
+
+function handleExcelFile(file){
+  if(!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  if(!['xlsx','xls','csv'].includes(ext)){
+    showToast('❌ Please upload .xlsx, .xls or .csv');
+    return;
+  }
+  const reader = new FileReader();
+  if(ext === 'csv'){
+    reader.onload = e => parseExcelCSV(e.target.result);
+    reader.readAsText(file);
+  } else {
+    reader.onload = e => {
+      if(!window.XLSX){ showToast('❌ Excel parser not loaded — use CSV instead'); return; }
+      const wb = XLSX.read(e.target.result, {type:'binary'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+      _processExcelRows(rows);
+    };
+    reader.readAsBinaryString(file);
+  }
+}
+
+function parseExcelCSV(text){
+  const lines = text.trim().split(/\r?\n/);
+  const rows = lines.map(l => {
+    // Handle quoted CSV fields
+    const result = []; let cur = ''; let inQ = false;
+    for(let i=0; i<l.length; i++){
+      if(l[i]==='"') inQ=!inQ;
+      else if(l[i]===','&&!inQ){ result.push(cur.trim()); cur=''; }
+      else cur+=l[i];
+    }
+    result.push(cur.trim());
+    return result;
+  });
+  _processExcelRows(rows);
+}
+
+const TYPE_MAP = {
+  'safety-manager':'safety-manager','safety manager':'safety-manager','sm':'safety-manager',
+  'security-manager':'security-manager','security manager':'security-manager','sec':'security-manager',
+  'quality-manager':'quality-manager','quality manager':'quality-manager','qm':'quality-manager',
+  'quality-consultant':'quality-consultant','quality consultant':'quality-consultant','qc':'quality-consultant',
+  'safety-consultant':'safety-consultant','safety consultant':'safety-consultant','sc':'safety-consultant',
+  // backward compat
+  'pm':'quality-manager','product manager':'quality-manager',
+  'eng':'safety-manager','engineer':'safety-manager','engineering':'safety-manager',
+  'design':'safety-consultant','designer':'safety-consultant',
+  'qa':'quality-consultant','quality':'quality-consultant',
+  'ops':'security-manager','devops':'security-manager','sre':'security-manager'
+};
+
+function _processExcelRows(rows){
+  if(!rows||rows.length < 2){ showToast('❌ File appears empty'); return; }
+  const headers = rows[0].map(h => String(h).toLowerCase().trim());
+  const idx = k => headers.findIndex(h => h.includes(k));
+
+  const cols = {
+    name:     [idx('name')].find(i=>i>=0) ?? 0,
+    initials: idx('initial'),
+    role:     [idx('role'),idx('position'),idx('title')].find(i=>i>=0),
+    type:     [idx('type'),idx('department'),idx('team')].find(i=>i>=0),
+    alloc:    [idx('alloc%'),idx('allocation'),idx('alloc'),idx('capacity')].find(i=>i>=0),
+    ask:      [idx('ask%'),idx('ask'),idx('request')].find(i=>i>=0),
+    shared:   [idx('shared'),idx('cross')].find(i=>i>=0)
+  };
+
+  _parsedMembers = rows.slice(1)
+    .filter(r => r[cols.name]?.toString().trim())
+    .map(r => {
+      const name = r[cols.name]?.toString().trim() || '';
+      const rawInit = cols.initials >= 0 ? r[cols.initials]?.toString().trim() : '';
+      const initials = rawInit || name.split(/\s+/).map(w=>w[0]||'').join('').toUpperCase().slice(0,2) || 'XX';
+      const rawType = cols.type >= 0 ? r[cols.type]?.toString().toLowerCase().trim() : 'safety-manager';
+      const type = TYPE_MAP[rawType] || 'safety-manager';
+      const rawAlloc = cols.alloc >= 0 ? r[cols.alloc]?.toString().replace(/[^0-9]/g,'') : '100';
+      const allocation = Math.min(100, Math.max(1, parseInt(rawAlloc) || 100));
+      const rawAsk = cols.ask >= 0 ? r[cols.ask]?.toString().replace(/[^0-9]/g,'') : '';
+      const askAllocation = rawAsk ? Math.min(100, Math.max(0, parseInt(rawAsk) || allocation)) : allocation;
+      const rawShared = cols.shared >= 0 ? r[cols.shared]?.toString().toLowerCase() : '';
+      const shared = rawShared.includes('yes') || rawShared.includes('true') || rawShared === '1';
+      return {
+        name, initials,
+        role: cols.role >= 0 ? r[cols.role]?.toString().trim() || 'Team Member' : 'Team Member',
+        type, allocation, askAllocation, shared
+      };
+    });
+
+  if(!_parsedMembers.length){ showToast('❌ No valid rows found'); return; }
+  _renderExcelPreview();
+}
+
+function _renderExcelPreview(){
+  const preview = document.getElementById('excel-preview');
+  const typeColor = {'safety-manager':'#dc2626','security-manager':'#1d4ed8','quality-manager':'#15803d','quality-consultant':'#7e22ce','safety-consultant':'#c2410c'};
+  preview.innerHTML = `
+    <div style="margin-bottom:10px;display:flex;align-items:center;gap:8px">
+      <span style="font-size:13px;font-weight:700;color:var(--heading)">${_parsedMembers.length} members parsed</span>
+      <span style="font-size:11px;color:var(--muted)">Preview (first 8 rows)</span>
+    </div>
+    <div style="overflow-x:auto;border-radius:8px;border:1px solid var(--border)">
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+    <thead><tr style="background:var(--bg)">
+      ${['Name','Initials','Role','Type','Alloc%','Ask%','Shared'].map(h=>`<th style="padding:7px 12px;text-align:left;font-weight:600;color:var(--muted);font-size:11px;border-bottom:1px solid var(--border);white-space:nowrap">${h}</th>`).join('')}
+    </tr></thead>
+    <tbody>
+    ${_parsedMembers.slice(0,8).map(m=>`<tr>
+      <td style="padding:7px 12px;border-bottom:1px solid var(--border);font-weight:500">${m.name}</td>
+      <td style="padding:7px 12px;border-bottom:1px solid var(--border)">
+        <div style="width:26px;height:26px;border-radius:50%;background:${typeColor[m.type]||'#3C00FF'};color:#fff;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">${m.initials}</div>
+      </td>
+      <td style="padding:7px 12px;border-bottom:1px solid var(--border);color:var(--muted)">${m.role}</td>
+      <td style="padding:7px 12px;border-bottom:1px solid var(--border)">
+        <span style="background:${typeColor[m.type]}20;color:${typeColor[m.type]};border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;text-transform:uppercase">${m.type}</span>
+      </td>
+      <td style="padding:7px 12px;border-bottom:1px solid var(--border);font-weight:700;color:${m.allocation<50?'#ef4444':'var(--heading)'}">${m.allocation}%</td>
+      <td style="padding:7px 12px;border-bottom:1px solid var(--border);font-weight:700;color:${(m.askAllocation||0)>m.allocation?'#f59e0b':'var(--heading)'}">${m.askAllocation||m.allocation}%</td>
+      <td style="padding:7px 12px;border-bottom:1px solid var(--border)">${m.shared?'<span style="color:#7e22ce;font-size:11px;font-weight:600">Yes</span>':'<span style="color:var(--muted);font-size:11px">No</span>'}</td>
+    </tr>`).join('')}
+    ${_parsedMembers.length>8?`<tr><td colspan="7" style="padding:8px 12px;color:var(--muted);font-size:11px;font-style:italic">…and ${_parsedMembers.length-8} more rows</td></tr>`:''}
+    </tbody></table></div>`;
+
+  document.getElementById('excel-import-options').style.display = 'block';
+  document.getElementById('excel-import-btn').style.display = 'inline-flex';
+  document.getElementById('excel-import-btn').textContent = `✅ Import ${_parsedMembers.length} Members`;
+}
+
+function importExcelMembers(){
+  const mode = document.getElementById('excel-import-mode').value;
+  if(mode === 'replace'){
+    TEAM[PID] = _parsedMembers;
+  } else {
+    const existing = TEAM[PID] || [];
+    const existingNames = new Set(existing.map(m=>m.name.toLowerCase()));
+    const newOnes = _parsedMembers.filter(m => !existingNames.has(m.name.toLowerCase()));
+    TEAM[PID] = [...existing, ...newOnes];
+    if(_parsedMembers.length - newOnes.length > 0)
+      showToast(`ℹ️ Skipped ${_parsedMembers.length - newOnes.length} duplicate names`);
+  }
+  persistData();
+  markChanged();
+  closeExcelModal();
+  renderTeam();
+  showToast(`✅ ${_parsedMembers.length} members imported successfully`);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   JIRA SYNC — uses JIRA_CFG from data.js
+   ════════════════════════════════════════════════════════════════ */
+const JIRA_PROXY = 'http://localhost:3000';
+let _jiraData = {risks:[], nc:[]};
+
+function jiraProjectKey() {
+  return JIRA_CFG.projects[PID] || null;
+}
+
+async function syncJira() {
+  const key = jiraProjectKey();
+  const pill = document.getElementById('jira-status-pill');
+  if(!key){
+    pill.style.background='#f1f5f9'; pill.style.color='var(--muted)';
+    pill.textContent='No JIRA project configured for this product';
+    document.getElementById('jira-risks-list').innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px">No JIRA project linked to this product.</div>';
+    document.getElementById('jira-nc-list').innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px">No JIRA project linked to this product.</div>';
+    return;
+  }
+  if(JIRA_CFG.email==='YOUR_EMAIL@qorix.com'||JIRA_CFG.token==='YOUR_JIRA_API_TOKEN'){
+    pill.style.background='#fff7ed'; pill.style.color='#c2410c';
+    pill.textContent='⚠ Fill in JIRA_CFG credentials in data.js';
+    return;
+  }
+  pill.style.background='#eff6ff'; pill.style.color='#1d4ed8';
+  pill.textContent='Syncing…';
+  document.getElementById('jira-project-info').textContent=`Project: ${key} · ${JIRA_CFG.domain}`;
+  try {
+    const [risks, nc] = await Promise.all([
+      _fetchJiraIssues(key,'Risk'),
+      _fetchJiraIssues(key,'Non-Conformance')
+    ]);
+    _jiraData = {risks, nc};
+    saveJiraData(PID, _jiraData);
+    pill.style.background='#f0fdf4'; pill.style.color='#15803d';
+    pill.textContent=`✅ Synced · ${risks.length} risks · ${nc.length} NCs`;
+    _renderJiraData();
+  } catch(e) {
+    pill.style.background='#fff5f5'; pill.style.color='#991b1b';
+    pill.textContent='❌ Sync failed — check proxy server & credentials';
+    console.error('[JIRA]', e);
+  }
+}
+
+async function _fetchJiraIssues(projectKey, issueType) {
+  const jql = encodeURIComponent(`project=${projectKey} AND issuetype="${issueType}" ORDER BY priority DESC`);
+  const url = `${JIRA_PROXY}/api/jira?domain=${JIRA_CFG.domain}&email=${encodeURIComponent(JIRA_CFG.email)}&token=${encodeURIComponent(JIRA_CFG.token)}&jql=${jql}&maxResults=50`;
+  const r = await fetch(url);
+  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  const data = await r.json();
+  return (data.issues||[]).map(i=>({
+    key:    i.key,
+    title:  i.fields.summary,
+    status: i.fields.status?.name||'Unknown',
+    priority: i.fields.priority?.name||'Medium',
+    assignee: i.fields.assignee?.displayName||'Unassigned',
+    created: i.fields.created?.slice(0,10)||'—',
+    url:    `https://${JIRA_CFG.domain}/browse/${i.key}`
+  }));
+}
+
+function _renderJiraData() {
+  const sevColor = {Highest:'#991b1b',High:'#dc2626',Medium:'#d97706',Low:'#16a34a',Lowest:'#6b7280'};
+
+  function issueCard(issue){
+    const c = sevColor[issue.priority]||'#64748b';
+    return `<div style="padding:10px;border:1px solid var(--border);border-radius:7px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="font-weight:600;font-size:13px;flex:1">${issue.title}</div>
+        <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:${c}20;color:${c};white-space:nowrap">${issue.priority}</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:5px;display:flex;gap:12px;flex-wrap:wrap">
+        <span><a href="${issue.url}" target="_blank" style="color:var(--qx-blue);text-decoration:none">${issue.key}</a></span>
+        <span>${issue.status}</span>
+        <span>👤 ${issue.assignee}</span>
+        <span>${issue.created}</span>
+      </div>
+    </div>`;
+  }
+
+  const rEl = document.getElementById('jira-risks-list');
+  const nEl = document.getElementById('jira-nc-list');
+  document.getElementById('risk-count-jira').textContent = _jiraData.risks.length ? `${_jiraData.risks.length} items` : '';
+  document.getElementById('nc-count-jira').textContent   = _jiraData.nc.length    ? `${_jiraData.nc.length} items`    : '';
+
+  rEl.innerHTML = _jiraData.risks.length
+    ? _jiraData.risks.map(issueCard).join('')
+    : '<div style="color:var(--muted);font-size:13px;padding:8px">No Risk issues found.</div>';
+  nEl.innerHTML = _jiraData.nc.length
+    ? _jiraData.nc.map(issueCard).join('')
+    : '<div style="color:var(--muted);font-size:13px;padding:8px">No Non-Conformance issues found.</div>';
+}
+
+function _loadCachedJiraData() {
+  const cached = getJiraData(PID);
+  if(cached){ _jiraData=cached; _renderJiraData(); }
+  const key = jiraProjectKey();
+  const info = document.getElementById('jira-project-info');
+  if(info) info.textContent = key ? `Project: ${key} · ${JIRA_CFG.domain}` : 'No JIRA project linked';
+  const pill = document.getElementById('jira-status-pill');
+  if(pill && cached){
+    pill.style.background='#f0fdf4'; pill.style.color='#15803d';
+    pill.textContent='Loaded from cache — click Sync to refresh';
+  } else if(pill && !key){
+    pill.textContent='No JIRA project configured for this product';
+  }
+}
+
+/* ── Boot ─────────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
