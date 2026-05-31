@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Qorix – Product Portfolio Dashboard</title>
+<style>
+.site-topbar-nav{height:44px;background:rgba(14,40,65,.97);backdrop-filter:blur(12px);display:flex;align-items:center;padding:0 24px;gap:24px;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;z-index:60}
+.stn-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+.stn-logo-mark{width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,#3C00FF,#0F9ED5);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:12px}
+.stn-logo-text{font-weight:700;color:#fff;font-size:14px}
+.stn-links{display:flex;gap:2px}
+.stn-link{color:rgba(255,255,255,.6);font-size:12px;font-weight:500;padding:4px 12px;border-radius:6px;text-decoration:none;transition:all .15s}
+.stn-link:hover{color:#fff;background:rgba(255,255,255,.08)}
+.stn-link.active{color:#fff;background:rgba(60,0,255,.35)}
+.stn-sep{width:1px;height:20px;background:rgba(255,255,255,.1);margin:0 8px;align-self:center}
+.stn-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.stn-badge{background:#D7FF3C;color:#0E2841;font-weight:700;padding:4px 12px;border-radius:6px;font-size:12px;text-decoration:none}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="assets/data.js"></script>
+<style>
+/* ── Qorix Brand Tokens ───────────────────────────────────────────── */
+:root{
+  --qx-navy:       #0E2841;
+  --qx-blue:       #3C00FF;
+  --qx-blue-mid:   #156082;
+  --qx-sky:        #0F9ED5;
+  --qx-cyan:       #00FFFF;
+  --qx-lime:       #D7FF3C;
+  --qx-orange:     #E97132;
+  --qx-green-dark: #196B24;
+  --qx-green:      #4EA72E;
+  --qx-purple:     #A02B93;
+  --qx-gray-light: #E8E8E8;
+
+  /* semantic */
+  --color-on-track: #22c55e;
+  --color-at-risk:  #f59e0b;
+  --color-delayed:  #ef4444;
+  --color-closed:   #6b7280;
+
+  /* surface */
+  --bg:       #F4F6FA;
+  --sidebar:  var(--qx-navy);
+  --card:     #FFFFFF;
+  --border:   #E2E8F0;
+  --text:     #1e293b;
+  --muted:    #64748b;
+  --heading:  #0E2841;
+
+  --sidebar-w: 240px;
+  --topbar-h:  64px;
+  --radius:    10px;
+  --shadow:    0 1px 4px rgba(14,40,65,.08),0 4px 16px rgba(14,40,65,.06);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+
+/* ── Section tab bar (replaces sidebar) ──────────────────────────── */
+.section-tabbar{
+  background:#fff;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 28px;gap:2px;
+  overflow-x:auto;position:sticky;top:44px;z-index:40;
+  scrollbar-width:none;
+}
+.section-tabbar::-webkit-scrollbar{display:none}
+.stab{
+  display:flex;align-items:center;gap:6px;
+  padding:12px 14px;border:none;background:none;
+  font-size:13px;font-weight:600;color:var(--muted);
+  cursor:pointer;border-bottom:2px solid transparent;
+  white-space:nowrap;transition:color .15s;margin-bottom:-1px;
+}
+.stab:hover{color:var(--text)}
+.stab.active{color:var(--qx-blue);border-bottom-color:var(--qx-blue)}
+.stab .stab-badge{background:var(--qx-orange);color:#fff;border-radius:9px;padding:1px 6px;font-size:10px;font-weight:700}
+
+/* ── Main ────────────────────────────────────────────────────────── */
+.main{display:flex;flex-direction:column;min-height:100vh}
+
+/* ── Topbar ──────────────────────────────────────────────────────── */
+.topbar{
+  height:var(--topbar-h);background:#fff;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 28px;gap:16px;
+  position:sticky;top:44px;z-index:39;
+}
+.topbar-title{font-weight:700;font-size:18px;color:var(--heading);flex:1}
+.topbar-title span{color:var(--qx-blue)}
+
+.filter-bar{display:flex;align-items:center;gap:10px}
+.filter-select{
+  border:1px solid var(--border);border-radius:7px;padding:6px 12px;
+  font-size:13px;color:var(--text);background:#fff;cursor:pointer;outline:none;
+}
+.filter-select:focus{border-color:var(--qx-blue)}
+.btn{
+  padding:7px 16px;border-radius:7px;font-size:13px;font-weight:600;
+  cursor:pointer;border:none;transition:opacity .15s;
+}
+.btn-primary{background:var(--qx-blue);color:#fff}
+.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text)}
+.btn:hover{opacity:.85}
+.btn-sm{padding:5px 12px;font-size:12px}
+
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--qx-blue),var(--qx-sky));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0}
+
+/* ── Page sections ───────────────────────────────────────────────── */
+.section{display:none;padding:28px;flex-direction:column;gap:24px}
+.section.active{display:flex}
+
+/* ── KPI row ─────────────────────────────────────────────────────── */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.kpi-card{
+  background:var(--card);border-radius:var(--radius);padding:20px;
+  box-shadow:var(--shadow);border:1px solid var(--border);
+  display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden;
+}
+.kpi-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.kpi-card.k1::before{background:var(--qx-blue)}
+.kpi-card.k2::before{background:var(--color-on-track)}
+.kpi-card.k3::before{background:var(--qx-sky)}
+.kpi-card.k4::before{background:var(--color-delayed)}
+.kpi-card.k5::before{background:var(--qx-orange)}
+.kpi-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.kpi-value{font-size:32px;font-weight:800;color:var(--heading);line-height:1}
+.kpi-sub{font-size:12px;color:var(--muted)}
+.kpi-icon{position:absolute;top:16px;right:16px;font-size:22px;opacity:.15}
+
+/* ── Section header ──────────────────────────────────────────────── */
+.section-hdr{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.section-hdr h2{font-size:17px;font-weight:700;color:var(--heading)}
+.section-hdr .hdr-actions{display:flex;gap:8px;align-items:center}
+
+/* ── Product cards ───────────────────────────────────────────────── */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.product-card{
+  background:var(--card);border-radius:var(--radius);
+  box-shadow:var(--shadow);border:1px solid var(--border);
+  overflow:hidden;transition:transform .15s,box-shadow .15s;cursor:pointer;
+}
+.product-card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(14,40,65,.12)}
+.product-card-top{
+  padding:18px 20px 14px;
+  border-bottom:1px solid var(--border);
+  display:flex;flex-direction:column;gap:8px;
+}
+.product-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.product-name{font-weight:700;font-size:15px;color:var(--heading)}
+.product-phase{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;padding:2px 8px;border-radius:20px}
+.phase-discovery{background:#ede9fe;color:#6d28d9}
+.phase-development{background:#dbeafe;color:#1d4ed8}
+.phase-launch{background:#fef3c7;color:#92400e}
+.phase-scale{background:#dcfce7;color:#15803d}
+
+.status-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.status-badge::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.badge-on-track{background:#dcfce7;color:#15803d}.badge-on-track::before{background:#22c55e}
+.badge-at-risk{background:#fef9c3;color:#854d0e}.badge-at-risk::before{background:#eab308}
+.badge-delayed{background:#fee2e2;color:#991b1b}.badge-delayed::before{background:#ef4444}
+
+.progress-row{display:flex;align-items:center;gap:10px}
+.progress-bar-wrap{flex:1;height:6px;background:var(--border);border-radius:4px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--qx-blue),var(--qx-sky));transition:width .6s ease}
+.progress-pct{font-size:12px;font-weight:700;color:var(--heading);white-space:nowrap}
+
+.product-card-mid{padding:14px 20px;display:flex;gap:12px;border-bottom:1px solid var(--border)}
+.metric-pill{flex:1;text-align:center;padding:8px 4px;background:var(--bg);border-radius:7px}
+.metric-pill .mp-val{font-size:13px;font-weight:700;color:var(--heading)}
+.metric-pill .mp-label{font-size:10px;color:var(--muted);margin-top:2px}
+
+.product-card-bottom{padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
+.pm-info{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.updated-info{font-size:11px;color:var(--muted)}
+
+/* ── Flag chip ───────────────────────────────────────────────────── */
+.flag-chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px;background:#fee2e2;color:#991b1b}
+
+/* ── Tables ──────────────────────────────────────────────────────── */
+.table-wrap{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead{background:var(--bg)}
+th{text-align:left;padding:11px 16px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(60,0,255,.02)}
+
+/* ── Risk score ──────────────────────────────────────────────────── */
+.risk-score{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;font-weight:700;font-size:12px;color:#fff}
+.rs-low{background:#22c55e}.rs-medium{background:#f59e0b}.rs-high{background:#ef4444}.rs-critical{background:#7f1d1d}
+
+.sev-low{color:#15803d;background:#dcfce7;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.sev-medium{color:#92400e;background:#fef3c7;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.sev-high{color:#991b1b;background:#fee2e2;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+
+.status-open{color:#991b1b;font-weight:600}
+.status-inprog{color:#92400e;font-weight:600}
+.status-closed{color:#15803d;font-weight:600}
+
+/* ── Roadmap ─────────────────────────────────────────────────────── */
+.roadmap-product{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:0}
+.roadmap-product-hdr{padding:14px 20px;background:linear-gradient(90deg,var(--qx-navy),var(--qx-blue-mid));display:flex;align-items:center;gap:12px}
+.roadmap-product-hdr .rph-name{font-weight:700;color:#fff;font-size:14px}
+.roadmap-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid var(--border)}
+.roadmap-col{padding:16px 18px;border-right:1px solid var(--border)}
+.roadmap-col:last-child{border-right:none}
+.roadmap-col-hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.col-now{color:var(--qx-blue)}.col-next{color:var(--qx-orange)}.col-later{color:var(--muted)}
+.roadmap-item{padding:8px 10px;border-radius:7px;border:1px solid var(--border);margin-bottom:8px;font-size:12px}
+.roadmap-item .ri-title{font-weight:600;color:var(--heading);margin-bottom:3px}
+.roadmap-item .ri-meta{font-size:11px;color:var(--muted)}
+.ri-milestone{border-left:3px solid var(--qx-blue)}
+.ri-dep{border-left:3px solid var(--qx-orange)}
+.ri-init{border-left:3px solid var(--qx-sky)}
+
+/* ── Heatmap ─────────────────────────────────────────────────────── */
+.heatmap-cell{text-align:center;font-weight:600;font-size:12px;border-radius:5px;padding:4px 2px}
+.h0{background:#f1f5f9;color:var(--muted)}
+.h1{background:#dbeafe;color:#1d4ed8}
+.h2{background:#bfdbfe;color:#1e40af}
+.h3{background:#93c5fd;color:#1e3a8a}
+.h4{background:#fca5a5;color:#991b1b}
+
+/* ── Compliance ──────────────────────────────────────────────────── */
+.compliance-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.compliance-item:last-child{border-bottom:none}
+.ci-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ci-pass{background:#dcfce7}.ci-warn{background:#fef3c7}.ci-fail{background:#fee2e2}
+.ci-info{flex:1}
+.ci-name{font-weight:600;font-size:13px}
+.ci-desc{font-size:11px;color:var(--muted);margin-top:1px}
+.ci-status{font-size:11px;font-weight:600;white-space:nowrap}
+.ci-pass-txt{color:#15803d}.ci-warn-txt{color:#92400e}.ci-fail-txt{color:#991b1b}
+
+/* ── Timeline ────────────────────────────────────────────────────── */
+.timeline{display:flex;flex-direction:column;gap:0}
+.timeline-item{display:flex;gap:14px;padding:12px 0}
+.tl-line{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--qx-blue);border:2px solid #fff;box-shadow:0 0 0 2px var(--qx-blue);flex-shrink:0;margin-top:3px}
+.tl-connector{flex:1;width:2px;background:var(--border);margin:4px 0}
+.tl-content{flex:1;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.timeline-item:last-child .tl-content{border-bottom:none}
+.tl-time{font-size:11px;color:var(--muted)}
+.tl-msg{font-size:13px;font-weight:500;color:var(--text);margin-top:2px}
+.tl-product{font-size:11px;color:var(--qx-blue);font-weight:600;margin-top:3px}
+
+/* ── Alert cards ─────────────────────────────────────────────────── */
+.alert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.alert-card{border-radius:var(--radius);padding:16px;display:flex;gap:12px;align-items:flex-start;border-left:4px solid}
+.alert-danger{background:#fff5f5;border-color:#ef4444}
+.alert-warning{background:#fffbeb;border-color:#f59e0b}
+.alert-info{background:#eff6ff;border-color:var(--qx-blue)}
+.alert-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.alert-body .alert-title{font-weight:700;font-size:13px}
+.alert-body .alert-desc{font-size:12px;color:var(--muted);margin-top:3px}
+.alert-body .alert-product{font-size:11px;font-weight:600;margin-top:5px;color:var(--qx-blue)}
+
+/* ── Financial bars ──────────────────────────────────────────────── */
+.fin-bar-wrap{height:8px;background:var(--border);border-radius:4px;overflow:hidden;position:relative;margin-top:4px}
+.fin-bar-budget{height:100%;background:var(--qx-gray-light);border-radius:4px;position:absolute;top:0;left:0}
+.fin-bar-actual{height:100%;border-radius:4px;position:absolute;top:0;left:0}
+.fin-ok{background:linear-gradient(90deg,var(--qx-blue),var(--qx-sky))}
+.fin-over{background:linear-gradient(90deg,#ef4444,#f87171)}
+
+/* ── Dependency pills ────────────────────────────────────────────── */
+.dep-internal{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600}
+.dep-external{background:#fdf4ff;color:#7e22ce;border:1px solid #e9d5ff;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600}
+.dep-blocker{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600}
+
+/* ── Modal ───────────────────────────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(14,40,65,.55);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:780px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(14,40,65,.25)}
+.modal-hdr{padding:22px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2}
+.modal-hdr h3{font-weight:700;font-size:17px;color:var(--heading)}
+.modal-close{border:none;background:none;font-size:20px;cursor:pointer;color:var(--muted);width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--bg)}
+.modal-body{padding:24px 28px;display:flex;flex-direction:column;gap:20px}
+.modal-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:10px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.detail-field label{font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px}
+.detail-field input,.detail-field select,.detail-field textarea{width:100%;border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-size:13px;font-family:inherit;outline:none;color:var(--text)}
+.detail-field input:focus,.detail-field select:focus,.detail-field textarea:focus{border-color:var(--qx-blue);box-shadow:0 0 0 3px rgba(60,0,255,.08)}
+.detail-field textarea{height:70px;resize:vertical}
+
+/* ── Export button ───────────────────────────────────────────────── */
+.btn-export{background:var(--qx-lime);color:var(--qx-navy);font-weight:700;border:none;padding:7px 16px;border-radius:7px;font-size:13px;cursor:pointer}
+.btn-export:hover{opacity:.85}
+
+/* ── Scrollbar ───────────────────────────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr)}
+}
+
+/* ── Editable field highlight ────────────────────────────────────── */
+[contenteditable="true"]{outline:none;border-bottom:1px dashed var(--qx-blue);cursor:text;padding:1px 3px;border-radius:3px}
+[contenteditable="true"]:focus{background:rgba(60,0,255,.04)}
+
+/* ── Mini chart canvas ───────────────────────────────────────────── */
+.chart-container{position:relative;height:220px}
+.chart-container-sm{position:relative;height:160px}
+
+/* ── Tabs ────────────────────────────────────────────────────────── */
+.tab-bar{display:flex;gap:4px;border-bottom:2px solid var(--border);margin-bottom:16px}
+.tab-btn{padding:8px 16px;border:none;background:none;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;border-radius:4px 4px 0 0;transition:color .15s}
+.tab-btn.active{color:var(--qx-blue);border-bottom-color:var(--qx-blue)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+/* ── Top accent gradient ─────────────────────────────────────────── */
+.section-accent-bar{height:4px;background:linear-gradient(90deg,var(--qx-blue),var(--qx-sky),var(--qx-cyan));border-radius:2px;margin-bottom:4px}
+
+</style>
+</head>
+<body>
+<!-- SITE NAV BAR -->
+<nav class="site-topbar-nav">
+  <a href="index.html" class="stn-logo">
+    <div class="stn-logo-mark">Q</div>
+    <div class="stn-logo-text">Qorix</div>
+  </a>
+  <div class="stn-sep"></div>
+  <div class="stn-links">
+    <a href="index.html" class="stn-link">Portal Home</a>
+    <a href="dashboard.html" class="stn-link active">Portfolio Dashboard</a>
+    <a href="product.html?id=classic" class="stn-link">Classic</a>
+    <a href="product.html?id=adaptive" class="stn-link">Adaptive</a>
+    <a href="product.html?id=bootloader" class="stn-link">Bootloader</a>
+    <a href="product.html?id=developer" class="stn-link">Developer</a>
+    <a href="product.html?id=performance" class="stn-link">Performance</a>
+    <a href="product.html?id=lightweight" class="stn-link">Light weight</a>
+    <a href="product.html?id=processdef" class="stn-link">Process Def</a>
+    <a href="product.html?id=osporting" class="stn-link">OS Porting</a>
+  </div>
+  <div class="stn-right">
+    <a href="index.html" class="stn-badge">← Portal</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════ MAIN -->
+<div class="main">
+
+<!-- SECTION TAB BAR -->
+<div class="section-tabbar" id="section-tabbar">
+  <button class="stab active" onclick="navigate('overview',this)">⬛ Dashboard</button>
+  <button class="stab" onclick="navigate('products',this)">📦 Products</button>
+  <button class="stab" onclick="navigate('roadmap',this)">🗺️ Roadmap</button>
+  <button class="stab" onclick="navigate('team',this)">👥 Team Allocation</button>
+  <button class="stab" onclick="navigate('dependencies',this)">🔗 Dependencies</button>
+  <button class="stab" onclick="navigate('insights',this)">💡 Insights &amp; Alerts <span class="stab-badge" id="alert-badge">5</span></button>
+  <button class="stab" onclick="navigate('activity',this)">📋 Activity Log</button>
+</div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title">Product Portfolio <span>Dashboard</span></div>
+    <div class="filter-bar">
+      <select class="filter-select" id="global-product-filter" onchange="applyFilters()">
+        <option value="all">All Products</option>
+        <option value="classic">Qorix Classic</option>
+        <option value="adaptive">Qorix Adaptive</option>
+        <option value="bootloader">Qorix Bootloader</option>
+        <option value="developer">Qorix Developer</option>
+        <option value="performance">Qorix Performance</option>
+        <option value="lightweight">Qorix Light weight</option>
+        <option value="processdef">Qorix Process Definition</option>
+        <option value="osporting">Qorix OS Porting</option>
+      </select>
+      <select class="filter-select" id="global-status-filter" onchange="applyFilters()">
+        <option value="all">All Statuses</option>
+        <option value="on-track">On Track</option>
+        <option value="at-risk">At Risk</option>
+        <option value="delayed">Delayed</option>
+      </select>
+      <button class="btn-export" onclick="exportReport()">⬇ Export</button>
+      <div class="avatar">SD</div>
+    </div>
+  </div>
+
+  <!-- ═══════ SECTION: OVERVIEW ═══════ -->
+  <section class="section active" id="sec-overview">
+    <div class="section-accent-bar"></div>
+
+    <!-- KPIs (rendered by JS into #kpi-grid) -->
+    <div class="kpi-grid" id="kpi-grid"></div>
+
+    <!-- Quick product summary -->
+    <div class="section-hdr">
+      <h2>Portfolio Health</h2>
+      <div class="hdr-actions">
+        <button class="btn btn-outline btn-sm" onclick="navigate('products', document.querySelector('.stab:nth-child(2)'))">View All Products →</button>
+      </div>
+    </div>
+
+    <div class="product-grid" id="overview-cards"></div>
+
+    <!-- Charts row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+      <div class="table-wrap" style="padding:18px">
+        <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">Status Distribution</div>
+        <div class="chart-container-sm"><canvas id="statusChart"></canvas></div>
+      </div>
+      <div class="table-wrap" style="padding:18px">
+        <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">Team FTE Distribution</div>
+        <div class="chart-container-sm"><canvas id="fteChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: PRODUCTS ═══════ -->
+  <section class="section" id="sec-products">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr">
+      <h2>Product Overview</h2>
+      <div class="hdr-actions">
+        <button class="btn btn-primary btn-sm" onclick="openNewProductModal()">+ Add Product</button>
+      </div>
+    </div>
+    <div class="product-grid" id="products-grid"></div>
+  </section>
+
+  <!-- ═══════ SECTION: ROADMAP ═══════ -->
+  <section class="section" id="sec-roadmap">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr">
+      <h2>Product Roadmap — Now · Next · Later</h2>
+      <div class="hdr-actions">
+        <select class="filter-select" id="roadmap-filter" onchange="renderRoadmap()">
+          <option value="all">All Products</option>
+          <option value="classic">Qorix Classic</option>
+          <option value="adaptive">Qorix Adaptive</option>
+          <option value="bootloader">Qorix Bootloader</option>
+          <option value="developer">Qorix Developer</option>
+          <option value="performance">Qorix Performance</option>
+          <option value="lightweight">Qorix Light weight</option>
+          <option value="processdef">Qorix Process Definition</option>
+          <option value="osporting">Qorix OS Porting</option>
+        </select>
+      </div>
+    </div>
+    <div id="roadmap-container" style="display:flex;flex-direction:column;gap:16px"></div>
+  </section>
+
+  <!-- ═══════ SECTION: TEAM ═══════ -->
+  <section class="section" id="sec-team">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr">
+      <h2>Team Allocation</h2>
+      <div class="hdr-actions">
+        <select class="filter-select" id="team-view-toggle" onchange="renderTeam()">
+          <option value="table">Table View</option>
+          <option value="heatmap">Heatmap View</option>
+        </select>
+      </div>
+    </div>
+    <div id="team-container"></div>
+  </section>
+
+  <!-- note: sec-financial, sec-risks, sec-compliance removed -->
+
+  <!-- ═══════ SECTION: DEPENDENCIES ═══════ -->
+  <section class="section" id="sec-dependencies">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr"><h2>Dependencies &amp; Blockers</h2></div>
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchDepTab('internal',this)">Internal Dependencies</button>
+      <button class="tab-btn" onclick="switchDepTab('external',this)">External Dependencies</button>
+      <button class="tab-btn" onclick="switchDepTab('blockers',this)">🔴 Blockers</button>
+    </div>
+    <div class="tab-pane active" id="dep-internal">
+      <div class="table-wrap">
+        <table><thead><tr><th>Product</th><th>Depends On</th><th>Team</th><th>Description</th><th>Status</th></tr></thead>
+        <tbody id="dep-internal-tbody"></tbody></table>
+      </div>
+    </div>
+    <div class="tab-pane" id="dep-external">
+      <div class="table-wrap">
+        <table><thead><tr><th>Product</th><th>Vendor / API</th><th>Type</th><th>Description</th><th>Status</th></tr></thead>
+        <tbody id="dep-external-tbody"></tbody></table>
+      </div>
+    </div>
+    <div class="tab-pane" id="dep-blockers">
+      <div class="table-wrap">
+        <table><thead><tr><th>Product</th><th>Blocker</th><th>Owner</th><th>ETA</th><th>Impact</th></tr></thead>
+        <tbody id="dep-blockers-tbody"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: INSIGHTS ═══════ -->
+  <section class="section" id="sec-insights">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr"><h2>Insights &amp; Auto-Generated Alerts</h2></div>
+    <div class="alert-grid" id="alerts-grid"></div>
+    <div class="section-hdr" style="margin-top:8px"><h2>Missing Data Flags</h2></div>
+    <div class="alert-grid" id="flags-grid"></div>
+
+    <!-- JIRA sync status strip -->
+    <div class="section-hdr" style="margin-top:8px">
+      <h2>🔗 JIRA Cloud Sync Status</h2>
+      <div class="hdr-actions">
+        <button class="btn btn-outline btn-sm" onclick="syncAllJira(this)">🔄 Sync All Products</button>
+      </div>
+    </div>
+    <div id="jira-dashboard-strip" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px"></div>
+  </section>
+
+  <!-- ═══════ SECTION: ACTIVITY ═══════ -->
+  <section class="section" id="sec-activity">
+    <div class="section-accent-bar"></div>
+    <div class="section-hdr">
+      <h2>Activity Timeline</h2>
+      <div class="hdr-actions">
+        <select class="filter-select" id="activity-filter" onchange="renderActivity()">
+          <option value="all">All Products</option>
+          <option value="classic">Qorix Classic</option>
+          <option value="adaptive">Qorix Adaptive</option>
+          <option value="bootloader">Qorix Bootloader</option>
+          <option value="developer">Qorix Developer</option>
+          <option value="performance">Qorix Performance</option>
+          <option value="lightweight">Qorix Light weight</option>
+          <option value="processdef">Qorix Process Definition</option>
+          <option value="osporting">Qorix OS Porting</option>
+        </select>
+      </div>
+    </div>
+    <div class="table-wrap" style="padding:24px 28px">
+      <div class="timeline" id="timeline-container"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ PRODUCT DETAIL MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-hdr">
+      <h3 id="modal-title">Product Detail</h3>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-primary btn-sm" onclick="saveModal()">Save Changes</button>
+        <button class="modal-close" onclick="closeModalDirect()">✕</button>
+      </div>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   LOCAL DATA  (data.js supplies PRODUCTS / TEAM / RISKS /
+   ROADMAP / COMPLIANCE / ACTIVITY — no need to redeclare them)
+════════════════════════════════════════════════════════════ */
+
+/* Flat-risks helper (data.js RISKS is an object keyed by product id) */
+function allRisksFlat(){
+  return Object.entries(RISKS).flatMap(([pid,arr])=>
+    (arr||[]).map(r=>({...r, product:pid, pname:getProduct(pid)?.name||pid}))
+  );
+}
+
+const COMPLIANCE_FLAGS = [
+  {product:'Qorix Developer',      area:'Data',      issue:'Opt-out telemetry not implemented',          action:'Implement GDPR-compliant opt-out',  deadline:'2026-05-31', status:'Open'},
+  {product:'Qorix Developer',      area:'Security',  issue:'3 medium CVEs in SDK dependencies',           action:'Patch or replace vulnerable packages', deadline:'2026-05-31', status:'Open'},
+  {product:'Qorix Bootloader',     area:'Security',  issue:'FIPS 140-2 not certifiable until HSM chosen', action:'Complete HSM vendor selection',        deadline:'2026-08-01', status:'Open'},
+  {product:'Qorix Process Definition',area:'Compliance','issue':'Process governance not started',         action:'Appoint PM and initiate governance',   deadline:'2026-06-01', status:'Open'},
+  {product:'Qorix Classic',        area:'Safety',    issue:'ISO 26262 gaps — 4 items identified',         action:'Remediate before Jun 12 audit',        deadline:'2026-06-30', status:'In Progress'}
+];
+
+const DEPS_INTERNAL = [
+  {product:'Qorix Classic',    depends:'Safety/Legal Team',  team:'Legal',      desc:'ISO 26262 compliance review',          status:'Pending'},
+  {product:'Qorix Adaptive',   depends:'Qorix Classic team', team:'Engineering',desc:'Adaptive runtime integrates with Classic',status:'Active'},
+  {product:'Qorix Light weight',depends:'Qorix Developer',  team:'SDK',        desc:'Needs Developer SDK toolchain',         status:'Pending'},
+  {product:'Qorix Developer',  depends:'API Design Freeze',  team:'Architecture',desc:'⚠ Blocked — API freeze overdue',       status:'Blocked'},
+  {product:'Qorix Classic',    depends:'Qorix Bootloader',   team:'Firmware',   desc:'OTA update feature dependency',         status:'Pending'}
+];
+
+const DEPS_EXTERNAL = [
+  {product:'Qorix Bootloader',  vendor:'HSM Vendor (TBD)',  type:'Security',    desc:'Hardware security module — 3 vendors evaluated', status:'At Risk'},
+  {product:'Qorix Classic',     vendor:'ARM/AUTOSAR',       type:'Standard',    desc:'AUTOSAR migration dependency',                  status:'Active'},
+  {product:'Qorix Light weight',vendor:'STMicroelectronics',type:'Hardware',    desc:'STM32 reference platform',                      status:'Active'},
+  {product:'Qorix Performance', vendor:'Percepio / SEGGER', type:'Competitive', desc:'Benchmarking against third-party tools',         status:'Active'}
+];
+
+const BLOCKERS = [
+  {product:'Qorix Developer',         blocker:'API Design Freeze Overdue',    owner:'Marcus Webb',    eta:'2026-05-15', impact:'Delays SDK beta by 6+ weeks'},
+  {product:'Qorix Process Definition', blocker:'No Product Manager Assigned', owner:'— Leadership —', eta:'TBD',        impact:'Entire product blocked'},
+  {product:'Qorix Adaptive',          blocker:'Go/no-go Review — May 20',     owner:'Jordan Lee',     eta:'2026-05-20', impact:'Scope reduction may pause work'},
+  {product:'Qorix Bootloader',        blocker:'HSM Vendor Not Selected',       owner:'Priya Nair',     eta:'2026-06-01', impact:'Cannot start FIPS certification'}
+];
+
+const ALERTS = [
+  {type:'danger', icon:'🚩', title:'Qorix Process Definition — No PM',        desc:'Product ownership undefined. All roadmap and delivery work is blocked.', product:'Qorix Process Definition'},
+  {type:'danger', icon:'⚠️', title:'Qorix Developer — API Freeze Delayed',    desc:'Design freeze overdue. SDK beta timeline slipping by 6+ weeks.',          product:'Qorix Developer'},
+  {type:'warning',icon:'⏳', title:'Qorix Adaptive — Go/No-Go Review',        desc:'Stakeholder review on May 20. Scope reduction option on the table.',       product:'Qorix Adaptive'},
+  {type:'danger', icon:'🛠️', title:'Qorix Light weight — Memory Target Risk','desc':'Sub-256KB target proving harder than estimated. Compiler opts in progress.',product:'Qorix Light weight'},
+  {type:'info',   icon:'📋', title:'Qorix Performance — Assessment Stage',    desc:'Business case pending leadership approval before any development begins.', product:'Qorix Performance'}
+];
+
+const FLAGS = [
+  {type:'danger', icon:'🚩', title:'Scope Undefined — Process Definition', desc:'No scope, no PM, no mitigation plan. Product is effectively blocked.', product:'Qorix Process Definition'},
+  {type:'warning',icon:'🚩', title:'Shared Resource Over-allocation Risk', desc:'Sam Torres, Mia Patel, Felix Brand, and Priya Das are shared across 3+ products — check total %.',  product:'Multiple'},
+  {type:'danger', icon:'🚩', title:'Compliance Fails — Developer + Process Def', desc:'Telemetry opt-out (Developer) and process governance (Process Def) are failing.', product:'Multiple'}
+];
+
+/* ════════════════════════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════════════════════════ */
+function navigate(sec, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + sec).classList.add('active');
+  document.querySelectorAll('.stab').forEach(n => n.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
+/* ════════════════════════════════════════════════════════════
+   FILTERS
+════════════════════════════════════════════════════════════ */
+function applyFilters() {
+  const pf = document.getElementById('global-product-filter').value;
+  const sf = document.getElementById('global-status-filter').value;
+  document.querySelectorAll('.product-card[data-id]').forEach(card => {
+    const matchP = pf === 'all' || card.dataset.id === pf;
+    const matchS = sf === 'all' || card.dataset.status === sf;
+    card.style.display = matchP && matchS ? '' : 'none';
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   STATUS HELPERS
+════════════════════════════════════════════════════════════ */
+function statusBadge(s) {
+  const map = {'on-track':['badge-on-track','On Track'],'at-risk':['badge-at-risk','At Risk'],'delayed':['badge-delayed','Delayed']};
+  const [cls,label] = map[s] || ['','Unknown'];
+  return `<span class="status-badge ${cls}">${label}</span>`;
+}
+function phaseBadge(p) {
+  const bg  = phaseBg(p);
+  const col = phaseText(p);
+  return `<span class="product-phase" style="background:${bg};color:${col}">${p}</span>`;
+}
+function sevBadge(s){return `<span class="sev-${s.toLowerCase()}">${s}</span>`}
+function riskScoreBadge(n){
+  const cls = n>=8?'rs-critical':n>=6?'rs-high':n>=4?'rs-medium':'rs-low';
+  return `<span class="risk-score ${cls}">${n}</span>`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: PRODUCT CARDS
+════════════════════════════════════════════════════════════ */
+function buildCard(p) {
+  return `
+  <div class="product-card" data-id="${p.id}" data-status="${p.status}" onclick="openProductModal('${p.id}')">
+    <div class="product-card-top">
+      <div class="product-card-header">
+        <div>
+          <div class="product-name">${p.name}</div>
+          <div style="margin-top:5px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+            ${statusBadge(p.status)} ${phaseBadge(p.phase)}
+          </div>
+        </div>
+        <div style="width:8px;height:8px;border-radius:50%;background:${p.color};margin-top:4px;flex-shrink:0"></div>
+      </div>
+      <div class="progress-row" style="margin-top:10px">
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${p.completion}%;background:linear-gradient(90deg,${p.color},${p.color}99)"></div></div>
+        <div class="progress-pct">${p.completion}%</div>
+      </div>
+    </div>
+    <div class="product-card-mid">
+      <div class="metric-pill"><div class="mp-val">${p.users}</div><div class="mp-label">Users</div></div>
+      <div class="metric-pill"><div class="mp-val">${p.adoption}</div><div class="mp-label">Adoption</div></div>
+    </div>
+    <div class="product-card-bottom">
+      <div class="pm-info"><div class="avatar" style="width:26px;height:26px;font-size:10px">${p.pm.split(' ').map(w=>w[0]).join('')}</div>${p.pm}</div>
+      <div class="updated-info">Updated ${p.updated}</div>
+    </div>
+  </div>`;
+}
+
+function renderCards(containerId) {
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML = PRODUCTS.map(buildCard).join('');
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: ROADMAP
+════════════════════════════════════════════════════════════ */
+function renderRoadmap() {
+  const pf = document.getElementById('roadmap-filter').value;
+  const container = document.getElementById('roadmap-container');
+  const products = pf === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.id === pf);
+  container.innerHTML = products.map(p => {
+    const items = ROADMAP[p.id] || [];
+    const now   = items.filter(i=>i.col==='now');
+    const next  = items.filter(i=>i.col==='next');
+    const later = items.filter(i=>i.col==='later');
+    const colHtml = (arr, label, cls) => `
+      <div class="roadmap-col">
+        <div class="roadmap-col-hdr ${cls}">${label==='now'?'🟦':label==='next'?'🟧':'⬜'} ${label==='now'?'Now (0–3 mo)':label==='next'?'Next (3–6 mo)':'Later (6+ mo)'}</div>
+        ${arr.map(it=>`
+          <div class="roadmap-item ri-${it.type}">
+            <div class="ri-title">${it.title}</div>
+            <div class="ri-meta">${it.desc}${it.dep?` · Dep: ${it.dep}`:''}</div>
+          </div>`).join('') || '<div style="font-size:12px;color:var(--muted);padding:8px 0">No items</div>'}
+      </div>`;
+    return `
+    <div class="roadmap-product">
+      <div class="roadmap-product-hdr">
+        <div class="rph-name">${p.name}</div>
+        ${statusBadge(p.status)}
+        ${phaseBadge(p.phase)}
+      </div>
+      <div class="roadmap-cols">
+        ${colHtml(now,'now','col-now')}
+        ${colHtml(next,'next','col-next')}
+        ${colHtml(later,'later','col-later')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: TEAM  (uses data.js TEAM object format)
+════════════════════════════════════════════════════════════ */
+function renderTeam() {
+  const view = document.getElementById('team-view-toggle').value;
+  const container = document.getElementById('team-container');
+
+  const roleKeys = ['safety-manager','security-manager','quality-manager','quality-consultant','safety-consultant'];
+  const roleLabels = {'safety-manager':'Safety Mgr','security-manager':'Sec Mgr','quality-manager':'Quality Mgr','quality-consultant':'Quality Con','safety-consultant':'Safety Con'};
+
+  /* Build per-product summary from data.js TEAM */
+  const summary = PRODUCTS.map(p => {
+    const members = TEAM[p.id] || [];
+    const counts = {};
+    roleKeys.forEach(k=>{ counts[k]=members.filter(m=>m.type===k).length; });
+    const total  = members.length;
+    const totAlloc = members.reduce((s,m)=>s+(m.allocation||0),0);
+    const totAsk   = members.reduce((s,m)=>s+(m.askAllocation||0),0);
+    const gap      = totAsk - totAlloc;
+    return {name:p.name, id:p.id, color:p.color, ...counts, total, totAlloc, totAsk, gap};
+  });
+
+  if(view === 'table') {
+    container.innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>${roleKeys.map(k=>`<th>${roleLabels[k]}</th>`).join('')}
+            <th>Total</th><th>Allocated %</th><th>Ask %</th><th>Gap</th><th></th>
+          </tr>
+        </thead>
+        <tbody>${summary.map(t => {
+          const gapColor = t.gap>0?'#ef4444':t.gap<0?'#22c55e':'var(--muted)';
+          return `<tr>
+            <td><strong style="color:${t.color}">${t.name}</strong></td>
+            ${roleKeys.map(k=>`<td>${t[k]}</td>`).join('')}
+            <td><strong>${t.total}</strong></td>
+            <td>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div class="fin-bar-wrap" style="width:80px">
+                  <div class="fin-bar-actual fin-ok" style="width:${Math.min(t.totAlloc/Math.max(t.total,1)/100*100,100)}%;background:${t.color}"></div>
+                </div>
+                <span style="font-size:12px;font-weight:600">${t.totAlloc}%</span>
+              </div>
+            </td>
+            <td style="font-weight:600">${t.totAsk}%</td>
+            <td style="font-weight:700;color:${gapColor}">${t.gap>0?'+':''}${t.gap}%</td>
+            <td><a href="product.html?id=${t.id}#team" class="btn btn-outline btn-sm">View →</a></td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>
+    <div style="margin-top:10px;padding:10px 14px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;font-size:12px;color:#1d4ed8">
+      <strong>Gap = Ask% − Allocated%</strong> &nbsp;·&nbsp; Positive gap (red) = team wants more allocation than currently assigned &nbsp;·&nbsp; Negative (green) = surplus capacity
+    </div>`;
+  } else {
+    const heatClass = v => v===0?'h0':v<=2?'h1':v<=5?'h2':v<=9?'h3':'h4';
+    container.innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Product</th>${roleKeys.map(k=>`<th>${roleLabels[k]}</th>`).join('')}<th>Total</th><th>Ask% Gap</th></tr></thead>
+        <tbody>${summary.map(t=>{
+          const gapColor = t.gap>0?'#ef4444':t.gap<0?'#22c55e':'var(--muted)';
+          return `<tr>
+            <td><strong style="color:${t.color}">${t.name}</strong></td>
+            ${roleKeys.map(k=>`<td><div class="heatmap-cell ${heatClass(t[k])}">${t[k]}</div></td>`).join('')}
+            <td><strong>${t.total}</strong></td>
+            <td style="font-weight:700;color:${gapColor}">${t.gap>0?'+':''}${t.gap}%</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:10px;align-items:center;font-size:12px;color:var(--muted)">
+      <span>FTE heatmap:</span>
+      <span class="heatmap-cell h0" style="padding:3px 10px">0</span>
+      <span class="heatmap-cell h1" style="padding:3px 10px">1–2</span>
+      <span class="heatmap-cell h2" style="padding:3px 10px">3–5</span>
+      <span class="heatmap-cell h3" style="padding:3px 10px">6–9</span>
+      <span class="heatmap-cell h4" style="padding:3px 10px">10+</span>
+    </div>`;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: DEPENDENCIES
+════════════════════════════════════════════════════════════ */
+function renderDependencies() {
+  document.getElementById('dep-internal-tbody').innerHTML = DEPS_INTERNAL.map(d=>`<tr>
+    <td><strong>${d.product}</strong></td>
+    <td><span class="dep-internal">${d.depends}</span></td>
+    <td>${d.team}</td>
+    <td style="font-size:12px">${d.desc}</td>
+    <td style="color:${d.status==='Blocked'?'#ef4444':d.status==='Pending'?'#f59e0b':'#22c55e'};font-weight:600">${d.status}</td>
+  </tr>`).join('');
+
+  document.getElementById('dep-external-tbody').innerHTML = DEPS_EXTERNAL.map(d=>`<tr>
+    <td><strong>${d.product}</strong></td>
+    <td><span class="dep-external">${d.vendor}</span></td>
+    <td>${d.type}</td>
+    <td style="font-size:12px">${d.desc}</td>
+    <td style="color:${d.status==='At Risk'||d.status==='Undefined'?'#ef4444':'#22c55e'};font-weight:600">${d.status}</td>
+  </tr>`).join('');
+
+  document.getElementById('dep-blockers-tbody').innerHTML = BLOCKERS.map(b=>`<tr>
+    <td><strong>${b.product}</strong></td>
+    <td><span class="dep-blocker">🔴 ${b.blocker}</span></td>
+    <td>${b.owner}</td>
+    <td>${b.eta}</td>
+    <td style="font-size:12px;color:#ef4444">${b.impact}</td>
+  </tr>`).join('');
+}
+
+function switchDepTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('dep-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: INSIGHTS
+════════════════════════════════════════════════════════════ */
+function renderInsights() {
+  const allAlerts = [...ALERTS];
+
+  const alertsGrid = document.getElementById('alerts-grid');
+  alertsGrid.innerHTML = allAlerts.map(a=>`
+    <div class="alert-card alert-${a.type}">
+      <div class="alert-icon">${a.icon}</div>
+      <div class="alert-body">
+        <div class="alert-title">${a.title}</div>
+        <div class="alert-desc">${a.desc}</div>
+        <div class="alert-product">${a.product}</div>
+      </div>
+    </div>`).join('');
+
+  const flagsGrid = document.getElementById('flags-grid');
+  flagsGrid.innerHTML = FLAGS.map(f=>`
+    <div class="alert-card alert-${f.type}">
+      <div class="alert-icon">${f.icon}</div>
+      <div class="alert-body">
+        <div class="alert-title">${f.title}</div>
+        <div class="alert-desc">${f.desc}</div>
+        <div class="alert-product">${f.product}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('alert-badge').textContent = allAlerts.filter(a=>a.type==='danger').length + FLAGS.filter(f=>f.type==='danger').length;
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: KPIs  (dynamic from data.js)
+════════════════════════════════════════════════════════════ */
+function renderKPIs() {
+  const allM  = Object.values(TEAM).flat();
+  const uniqM = new Set(allM.map(m=>m.name)).size;
+  const sharedM = allM.filter(m=>m.shared).length;
+  const openR = allRisksFlat().filter(r=>r.status!=='Closed').length;
+  const highR = allRisksFlat().filter(r=>r.sev==='High'&&r.status!=='Closed').length;
+  const kpis = [
+    {cls:'k1',icon:'📦',label:'Total Products',    val:PRODUCTS.length,   sub:`${PRODUCTS.filter(p=>p.status==='on-track').length} on track`},
+    {cls:'k2',icon:'🚀',label:'On Track',          val:PRODUCTS.filter(p=>p.status==='on-track').length, sub:`${PRODUCTS.filter(p=>p.status==='delayed').length} delayed`},
+    {cls:'k3',icon:'👥',label:'Team Members',      val:uniqM,             sub:`${sharedM} shared allocations`},
+    {cls:'k4',icon:'⚠️',label:'Open Risks',        val:openR,             sub:`${highR} high severity`},
+    {cls:'k5',icon:'📋',label:'Phases in Progress',val:PRODUCTS.filter(p=>p.phase==='Development').length, sub:`${PRODUCTS.filter(p=>p.phase==='POC').length} POC · ${PRODUCTS.filter(p=>p.phase==='Assessment').length} Assessment`}
+  ];
+  const grid = document.getElementById('kpi-grid');
+  if(grid) grid.innerHTML = kpis.map(k=>`
+    <div class="kpi-card ${k.cls}">
+      <div class="kpi-icon">${k.icon}</div>
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.val}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+}
+
+/* ════════════════════════════════════════════════════════════
+   RENDER: ACTIVITY
+════════════════════════════════════════════════════════════ */
+function renderActivity() {
+  const pf = document.getElementById('activity-filter').value;
+  const filtered = pf === 'all' ? ACTIVITY : ACTIVITY.filter(a => a.product === pf);
+  const typeIcon = {risk:'⚠️',roadmap:'🗺️',team:'👥',flag:'🚩',financial:'💰',compliance:'🛡️',milestone:'🏁'};
+  const container = document.getElementById('timeline-container');
+  container.innerHTML = filtered.map((a,i)=>`
+    <div class="timeline-item">
+      <div class="tl-line">
+        <div class="tl-dot" style="background:${a.type==='risk'?'#ef4444':a.type==='flag'?'#f59e0b':'var(--qx-blue)'}"></div>
+        ${i<filtered.length-1?'<div class="tl-connector"></div>':''}
+      </div>
+      <div class="tl-content">
+        <div class="tl-time">${typeIcon[a.type]||'📌'} ${a.ts}</div>
+        <div class="tl-msg">${a.msg}</div>
+        <div class="tl-product">${a.pname}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ════════════════════════════════════════════════════════════
+   MODAL
+════════════════════════════════════════════════════════════ */
+function openProductModal(id) {
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('modal-title').textContent = p.name;
+  document.getElementById('modal-body').innerHTML = `
+    <div>
+      <div class="modal-section-title">Product Details</div>
+      <div class="detail-grid">
+        <div class="detail-field"><label>Product Name</label><input value="${p.name}" onchange="updateProduct('${p.id}','name',this.value)"/></div>
+        <div class="detail-field"><label>Product Manager</label><input value="${p.pm}" onchange="updateProduct('${p.id}','pm',this.value)"/></div>
+        <div class="detail-field"><label>Status</label>
+          <select onchange="updateProduct('${p.id}','status',this.value)">
+            <option ${p.status==='on-track'?'selected':''} value="on-track">On Track</option>
+            <option ${p.status==='at-risk'?'selected':''} value="at-risk">At Risk</option>
+            <option ${p.status==='delayed'?'selected':''} value="delayed">Delayed</option>
+          </select>
+        </div>
+        <div class="detail-field"><label>Phase</label>
+          <select onchange="updateProduct('${p.id}','phase',this.value)">
+            <option ${p.phase==='Development'?'selected':''}>Development</option>
+            <option ${p.phase==='POC'?'selected':''}>POC</option>
+            <option ${p.phase==='Assessment'?'selected':''}>Assessment</option>
+          </select>
+        </div>
+        <div class="detail-field"><label>Completion %</label><input type="number" min="0" max="100" value="${p.completion}" onchange="updateProduct('${p.id}','completion',+this.value)"/></div>
+        <div class="detail-field"><label>Last Updated</label><input type="date" value="${p.updated}" onchange="updateProduct('${p.id}','updated',this.value)"/></div>
+        <div class="detail-field"><label>Users</label><input value="${p.users}" onchange="updateProduct('${p.id}','users',this.value)"/></div>
+        <div class="detail-field"><label>Adoption</label><input value="${p.adoption}" onchange="updateProduct('${p.id}','adoption',this.value)"/></div>
+      </div>
+    </div>
+    <div>
+      <div class="modal-section-title">Description</div>
+      <div class="detail-field"><textarea onchange="updateProduct('${p.id}','desc',this.value)">${p.desc}</textarea></div>
+    </div>
+    <div>
+      <div class="modal-section-title">Risks (${(RISKS[id]||[]).length} total)</div>
+      ${(RISKS[id]||[]).map(r=>`
+        <div style="padding:10px;border:1px solid var(--border);border-radius:7px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px">
+          ${riskScoreBadge(r.score)}
+          <div><div style="font-weight:600;font-size:13px">${r.title}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">${r.sev} severity · ${r.impact} · ${r.status}</div></div>
+        </div>`).join('') || '<div style="font-size:13px;color:var(--muted)">No risks logged</div>'}
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function openNewProductModal(){
+  document.getElementById('modal-title').textContent = 'Add New Product';
+  document.getElementById('modal-body').innerHTML = `
+    <div>
+      <div class="modal-section-title">New Product</div>
+      <div class="detail-grid">
+        <div class="detail-field"><label>Product Name</label><input placeholder="e.g. Product Alpha" id="np-name"/></div>
+        <div class="detail-field"><label>Product Manager</label><input placeholder="Full name" id="np-pm"/></div>
+        <div class="detail-field"><label>Status</label><select id="np-status"><option>on-track</option><option>at-risk</option><option>delayed</option></select></div>
+        <div class="detail-field"><label>Phase</label><select id="np-phase"><option>Development</option><option>POC</option><option>Assessment</option></select></div>
+        <div class="detail-field"><label>FTEs</label><input type="number" id="np-fte" placeholder="0"/></div>
+      </div>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function updateProduct(id, field, value) {
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(p) p[field] = value;
+}
+
+function saveModal() {
+  renderCards('products-grid');
+  renderCards('overview-cards');
+  renderCharts();
+  closeModalDirect();
+}
+
+function closeModal(e) {
+  if(e.target === document.getElementById('modal-overlay')) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+/* ════════════════════════════════════════════════════════════
+   CHARTS
+════════════════════════════════════════════════════════════ */
+let charts = {};
+function renderCharts() {
+  const QX = PRODUCTS.map(p=>p.color);
+
+  if(charts.status) charts.status.destroy();
+  charts.status = new Chart(document.getElementById('statusChart'), {
+    type:'doughnut',
+    data:{
+      labels:['On Track','At Risk','Delayed'],
+      datasets:[{data:[
+        PRODUCTS.filter(p=>p.status==='on-track').length,
+        PRODUCTS.filter(p=>p.status==='at-risk').length,
+        PRODUCTS.filter(p=>p.status==='delayed').length
+      ],backgroundColor:['#22c55e','#f59e0b','#ef4444'],borderWidth:0}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}}}
+  });
+
+  if(charts.fte) charts.fte.destroy();
+  charts.fte = new Chart(document.getElementById('fteChart'), {
+    type:'doughnut',
+    data:{
+      labels:PRODUCTS.map(p=>p.name.split(' ')[0]),
+      datasets:[{data:PRODUCTS.map(p=>(TEAM[p.id]||[]).length),backgroundColor:QX,borderWidth:0}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}}}
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   EXPORT
+════════════════════════════════════════════════════════════ */
+function exportReport() {
+  const rows = [
+    ['Product','PM','Status','Phase','Completion','Users','Adoption','FTEs','Open Risks'],
+    ...PRODUCTS.map(p=>[
+      p.name, p.pm, p.status, p.phase, p.completion+'%',
+      p.users, p.adoption,
+      (TEAM[p.id]||[]).length,
+      (RISKS[p.id]||[]).filter(r=>r.status!=='Closed').length
+    ])
+  ];
+  const csv = rows.map(r=>r.join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='qorix-portfolio-report.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ════════════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  renderKPIs();
+  renderCards('overview-cards');
+  renderCards('products-grid');
+  renderRoadmap();
+  renderTeam();
+  renderDependencies();
+  renderInsights();
+  renderActivity();
+  setTimeout(renderCharts, 100);
+  renderJiraDashboard();
+});
+
+/* ════════════════════════════════════════════════════════════════
+   JIRA DASHBOARD STRIP
+════════════════════════════════════════════════════════════════ */
+const PRODUCTS_IDS = PRODUCTS.map(p=>p.id);
+const PRODUCTS_NAMES = Object.fromEntries(PRODUCTS.map(p=>[p.id,p.name]));
+const PRODUCTS_COLORS = Object.fromEntries(PRODUCTS.map(p=>[p.id,p.color]));
+
+function getJiraConfig(pid){
+  try{ return JSON.parse(localStorage.getItem('qx_jira_cfg_'+pid)||'null'); }catch(e){return null;}
+}
+function getJiraData(pid){
+  try{ return JSON.parse(localStorage.getItem('qx_jira_data_'+pid)||'null'); }catch(e){return null;}
+}
+
+function renderJiraDashboard(){
+  const strip = document.getElementById('jira-dashboard-strip');
+  if(!strip) return;
+
+  strip.innerHTML = PRODUCTS_IDS.map(pid => {
+    const cfg  = getJiraConfig(pid);
+    const data = getJiraData(pid);
+    const color = PRODUCTS_COLORS[pid];
+    const name  = PRODUCTS_NAMES[pid];
+
+    if(!cfg){
+      return `<div style="background:#fff;border-radius:10px;border:1px solid #E2E8F0;padding:16px;box-shadow:0 1px 4px rgba(14,40,65,.08)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div style="width:8px;height:8px;border-radius:50%;background:#E2E8F0"></div>
+          <span style="font-weight:700;font-size:13px">${name}</span>
+        </div>
+        <div style="font-size:12px;color:#64748b">JIRA not configured</div>
+        <a href="product.html?id=${pid}#jira" style="font-size:11px;color:#3C00FF;font-weight:600;margin-top:6px;display:inline-block">Configure →</a>
+      </div>`;
+    }
+
+    if(!data){
+      return `<div style="background:#fff;border-radius:10px;border:1px solid #E2E8F0;padding:16px;box-shadow:0 1px 4px rgba(14,40,65,.08)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div style="width:8px;height:8px;border-radius:50%;background:${color}"></div>
+          <span style="font-weight:700;font-size:13px">${name}</span>
+          <span style="font-size:10px;background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:auto">Never synced</span>
+        </div>
+        <div style="font-size:12px;color:#64748b">Project: <strong>${cfg.project}</strong></div>
+        <a href="product.html?id=${pid}#jira" style="font-size:11px;color:#3C00FF;font-weight:600;margin-top:6px;display:inline-block">Sync Now →</a>
+      </div>`;
+    }
+
+    const openRisks = (data.risks||[]).filter(i=>i._statusCat!=='Done'&&i._statusCat!=='Closed').length;
+    const openNCs   = (data.ncs  ||[]).filter(i=>i._statusCat!=='Done'&&i._statusCat!=='Closed').length;
+    const ts        = data.syncedAt ? new Date(data.syncedAt).toLocaleDateString() : '—';
+    const hasIssues = openRisks > 0 || openNCs > 0;
+
+    return `<div style="background:#fff;border-radius:10px;border:1px solid ${hasIssues?'#fca5a5':'#E2E8F0'};padding:16px;box-shadow:0 1px 4px rgba(14,40,65,.08)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <div style="width:8px;height:8px;border-radius:50%;background:${color}"></div>
+        <span style="font-weight:700;font-size:13px">${name}</span>
+        <span style="font-size:10px;background:#dcfce7;color:#15803d;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:auto">Synced ${ts}</span>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:8px">
+        <div style="flex:1;background:${openRisks>0?'#fff5f5':'#f0fdf4'};border-radius:7px;padding:8px;text-align:center">
+          <div style="font-size:18px;font-weight:800;color:${openRisks>0?'#ef4444':'#22c55e'}">${openRisks}</div>
+          <div style="font-size:10px;color:#64748b;margin-top:1px">Open Risks</div>
+        </div>
+        <div style="flex:1;background:${openNCs>0?'#fff5f5':'#f0fdf4'};border-radius:7px;padding:8px;text-align:center">
+          <div style="font-size:18px;font-weight:800;color:${openNCs>0?'#ef4444':'#22c55e'}">${openNCs}</div>
+          <div style="font-size:10px;color:#64748b;margin-top:1px">Open NCs</div>
+        </div>
+        <div style="flex:1;background:#f1f5f9;border-radius:7px;padding:8px;text-align:center">
+          <div style="font-size:18px;font-weight:800;color:#64748b">${(data.risks||[]).length+((data.ncs||[]).length)}</div>
+          <div style="font-size:10px;color:#64748b;margin-top:1px">Total</div>
+        </div>
+      </div>
+      <a href="product.html?id=${pid}#jira" style="font-size:11px;color:#3C00FF;font-weight:600">View in ${name.split(' ')[0]} →</a>
+    </div>`;
+  }).join('');
+}
+
+async function syncAllJira(btn){
+  const origText = btn.textContent;
+  btn.textContent = '⏳ Syncing all…'; btn.disabled = true;
+
+  const results = [];
+  for(const pid of PRODUCTS_IDS){
+    const cfg = getJiraConfig(pid);
+    if(!cfg?.domain||!cfg?.email||!cfg?.token||!cfg?.project){
+      results.push(`${PRODUCTS_NAMES[pid]}: not configured`);
+      continue;
+    }
+    try {
+      const [rr, nr] = await Promise.all([
+        fetch('http://localhost:3000/api/jira/search',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({domain:cfg.domain,email:cfg.email,token:cfg.token,
+            jql:`project = "${cfg.project}" AND issuetype = "${cfg.riskType||'Risk'}" ORDER BY priority ASC`})}),
+        fetch('http://localhost:3000/api/jira/search',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({domain:cfg.domain,email:cfg.email,token:cfg.token,
+            jql:`project = "${cfg.project}" AND issuetype = "${cfg.ncType||'Non-Conformance'}" ORDER BY priority ASC`})})
+      ]);
+      const rd = await rr.json(), nd = await nr.json();
+      const normalise = arr => (arr.issues||[]).map(i=>{
+        const f=i.fields||{};
+        return {key:i.key,id:i.id,_summary:f.summary||'(no summary)',_status:f.status?.name||'—',
+          _statusCat:f.status?.statusCategory?.name||'—',_priority:f.priority?.name||null,
+          _assignee:f.assignee?.displayName||null,_created:(f.created||'').slice(0,10),
+          _duedate:f.duedate||null,_type:f.issuetype?.name||'—'};
+      });
+      localStorage.setItem('qx_jira_data_'+pid, JSON.stringify({
+        risks:normalise(rd), ncs:normalise(nd), syncedAt:new Date().toISOString()
+      }));
+      results.push(`${PRODUCTS_NAMES[pid]}: ✅ ${(rd.issues||[]).length}R ${(nd.issues||[]).length}NC`);
+    } catch(e){
+      results.push(`${PRODUCTS_NAMES[pid]}: ❌ ${e.message}`);
+    }
+  }
+
+  renderJiraDashboard();
+  btn.textContent = origText; btn.disabled = false;
+  const ok = results.filter(r=>r.includes('✅')).length;
+  alert(`Sync complete:\n\n${results.join('\n')}\n\n${ok} product(s) synced successfully.`);
+}
+</script>
+</body>
+</html>

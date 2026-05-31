@@ -134,10 +134,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   content:'';position:absolute;top:0;left:0;right:0;height:3px;
 }
 .kpi-card.k1::before{background:var(--qx-blue)}
-.kpi-card.k2::before{background:var(--color-on-track)}
-.kpi-card.k3::before{background:var(--qx-sky)}
-.kpi-card.k4::before{background:var(--color-delayed)}
-.kpi-card.k5::before{background:var(--qx-orange)}
+.kpi-card.k2::before{background:var(--qx-violet)}
+.kpi-card.k3::before{background:var(--qx-violet)}
+.kpi-card.k4::before{background:var(--qx-violet)}
+.kpi-card.k5::before{background:var(--qx-violet)}
 .kpi-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
 .kpi-value{font-size:32px;font-weight:800;color:var(--heading);line-height:1}
 .kpi-sub{font-size:12px;color:var(--muted)}
@@ -369,18 +369,20 @@ tr:hover td{background:rgba(58,0,245,.02)}
     <!-- KPIs (rendered by JS into #kpi-grid) -->
     <div class="kpi-grid" id="kpi-grid"></div>
 
-    <!-- Quick product summary -->
+    <!-- Portfolio Health -->
     <div class="section-hdr">
       <h2 contenteditable="false">Portfolio Health</h2>
       <div class="hdr-actions">
-        <button class="btn btn-outline btn-sm" onclick="navigate('products', document.querySelector('.stab:nth-child(2)'))">View All Products →</button>
+        <button class="btn btn-outline btn-sm" onclick="navigate('products', document.querySelector('.stab:nth-child(2)'))">View All →</button>
       </div>
     </div>
 
+    <!-- Product Overview Cards -->
+    <div style="font-weight:600;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px">Product Overview</div>
     <div class="product-grid" id="overview-cards"></div>
 
     <!-- Charts row -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px">
       <div class="table-wrap" style="padding:18px">
         <div style="font-weight:700;font-size:14px;color:var(--heading);margin-bottom:14px">Status Distribution</div>
         <div class="chart-container-sm"><canvas id="statusChart"></canvas></div>
@@ -390,14 +392,6 @@ tr:hover td{background:rgba(58,0,245,.02)}
         <div class="chart-container-sm"><canvas id="fteChart"></canvas></div>
       </div>
     </div>
-
-    <div class="section-hdr" style="margin-top:8px">
-      <h2>Product JIRA Sync Status</h2>
-      <div class="hdr-actions">
-        <button class="btn btn-outline btn-sm" onclick="syncAllJira(this)">Sync All Products</button>
-      </div>
-    </div>
-    <div id="jira-dashboard-strip" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px"></div>
   </section>
 
   <!-- ═══════ SECTION: PRODUCTS ═══════ -->
@@ -775,19 +769,25 @@ function renderTeam() {
   const view = document.getElementById('team-view-toggle').value;
   const container = document.getElementById('team-container');
 
-  const roleKeys = ['safety-manager','security-manager','quality-manager','quality-consultant','safety-consultant'];
-  const roleLabels = {'safety-manager':'Safety Mgr','security-manager':'Sec Mgr','quality-manager':'Quality Mgr','quality-consultant':'Quality Con','safety-consultant':'Safety Con'};
+  const roleKeys = ['safety-manager','security-manager','quality-manager','quality-consultant'];
+  const roleLabels = {'safety-manager':'Safety Manager','security-manager':'Security Manager','quality-manager':'Quality Manager','quality-consultant':'Quality Consultant'};
 
   /* Build per-product summary from data.js TEAM */
   const summary = PRODUCTS.map(p => {
     const members = TEAM[p.id] || [];
     const counts = {};
-    roleKeys.forEach(k=>{ counts[k]=members.filter(m=>m.type===k).length; });
+    const roleFte = {};
+    roleKeys.forEach(k=>{
+      const roleMembers = members.filter(m=>m.type===k);
+      counts[k] = roleMembers.length;
+      roleFte[k] = parseFloat((roleMembers.reduce((s,m)=>s+(m.allocation||0),0)/100).toFixed(2));
+    });
     const total  = members.length;
     const totAlloc = members.reduce((s,m)=>s+(m.allocation||0),0);
     const totAsk   = members.reduce((s,m)=>s+(m.askAllocation||0),0);
     const gap      = totAsk - totAlloc;
-    return {name:p.name, id:p.id, color:p.color, ...counts, total, totAlloc, totAsk, gap};
+    const totalFte = parseFloat((totAlloc/100).toFixed(2));
+    return {name:p.name, id:p.id, color:p.color, ...counts, roleFte, total, totalFte, totAlloc, totAsk, gap};
   });
 
   if(view === 'table') {
@@ -804,8 +804,8 @@ function renderTeam() {
           const gapColor = t.gap>0?'#ef4444':t.gap<0?'#22c55e':'var(--muted)';
           return `<tr>
             <td><strong style="color:${t.color}">${t.name}</strong></td>
-            ${roleKeys.map(k=>`<td>${t[k]}</td>`).join('')}
-            <td><strong>${t.total}</strong></td>
+            ${roleKeys.map(k=>`<td><strong>${t.roleFte[k]} FTE</strong><div style="font-size:11px;color:var(--muted)">${t[k]} member${t[k]===1?'':'s'}</div></td>`).join('')}
+            <td><strong>${t.total}</strong><div style="font-size:11px;color:var(--muted)">${t.totalFte} FTE</div></td>
             <td>
               <div style="display:flex;align-items:center;gap:8px">
                 <div class="fin-bar-wrap" style="width:80px">
@@ -825,7 +825,7 @@ function renderTeam() {
       <strong>Gap = Ask% − Allocated%</strong> &nbsp;·&nbsp; Positive gap (red) = team wants more allocation than currently assigned &nbsp;·&nbsp; Negative (green) = surplus capacity
     </div>`;
   } else {
-    const heatClass = v => v===0?'h0':v<=2?'h1':v<=5?'h2':v<=9?'h3':'h4';
+    const heatClass = v => v===0?'h0':v<=0.5?'h1':v<=1?'h2':v<=2?'h3':'h4';
     container.innerHTML = `
     <div class="table-wrap">
       <table>
@@ -834,8 +834,8 @@ function renderTeam() {
           const gapColor = t.gap>0?'#ef4444':t.gap<0?'#22c55e':'var(--muted)';
           return `<tr>
             <td><strong style="color:${t.color}">${t.name}</strong></td>
-            ${roleKeys.map(k=>`<td><div class="heatmap-cell ${heatClass(t[k])}">${t[k]}</div></td>`).join('')}
-            <td><strong>${t.total}</strong></td>
+            ${roleKeys.map(k=>`<td><div class="heatmap-cell ${heatClass(t.roleFte[k])}">${t.roleFte[k]} FTE</div></td>`).join('')}
+            <td><strong>${t.total}</strong><div style="font-size:11px;color:var(--muted)">${t.totalFte} FTE</div></td>
             <td style="font-weight:700;color:${gapColor}">${t.gap>0?'+':''}${t.gap}%</td>
           </tr>`;
         }).join('')}</tbody>
@@ -844,10 +844,10 @@ function renderTeam() {
     <div style="margin-top:12px;display:flex;gap:10px;align-items:center;font-size:12px;color:var(--muted)">
       <span>FTE heatmap:</span>
       <span class="heatmap-cell h0" style="padding:3px 10px">0</span>
-      <span class="heatmap-cell h1" style="padding:3px 10px">1–2</span>
-      <span class="heatmap-cell h2" style="padding:3px 10px">3–5</span>
-      <span class="heatmap-cell h3" style="padding:3px 10px">6–9</span>
-      <span class="heatmap-cell h4" style="padding:3px 10px">10+</span>
+      <span class="heatmap-cell h1" style="padding:3px 10px">0.1–0.5</span>
+      <span class="heatmap-cell h2" style="padding:3px 10px">0.6–1.0</span>
+      <span class="heatmap-cell h3" style="padding:3px 10px">1.1–2.0</span>
+      <span class="heatmap-cell h4" style="padding:3px 10px">2.0+</span>
     </div>`;
   }
 }
@@ -925,14 +925,15 @@ function renderKPIs() {
   const allM  = Object.values(TEAM).flat();
   const uniqM = new Set(allM.map(m=>m.name)).size;
   const sharedM = allM.filter(m=>m.shared).length;
+  const totalR = allRisksFlat().length;
   const openR = allRisksFlat().filter(r=>r.status!=='Closed').length;
   const highR = allRisksFlat().filter(r=>r.sev==='High'&&r.status!=='Closed').length;
   const kpis = [
-    {cls:'k1',icon:'P',label:'Total Products',    val:PRODUCTS.length,   sub:`${PRODUCTS.filter(p=>p.status==='on-track').length} on track`},
-    {cls:'k2',icon:'OT',label:'On Track',          val:PRODUCTS.filter(p=>p.status==='on-track').length, sub:`${PRODUCTS.filter(p=>p.status==='delayed').length} delayed`},
-    {cls:'k3',icon:'TM',label:'Team Members',      val:uniqM,             sub:`${sharedM} shared allocations`},
-    {cls:'k4',icon:'!',label:'Open Risks',        val:openR,             sub:`${highR} high severity`},
-    {cls:'k5',icon:'PH',label:'Phases in Progress',val:PRODUCTS.filter(p=>p.phase==='Development').length, sub:`${PRODUCTS.filter(p=>p.phase==='POC').length} POC · ${PRODUCTS.filter(p=>p.phase==='Assessment').length} Assessment`}
+    {cls:'k1',icon:'',label:'Total Products',    val:PRODUCTS.length,   sub:`${PRODUCTS.filter(p=>p.status==='on-track').length} on track`},
+    {cls:'k2',icon:'',label:'On Track',          val:PRODUCTS.filter(p=>p.status==='on-track').length, sub:`${PRODUCTS.filter(p=>p.status==='delayed').length} delayed`},
+    {cls:'k3',icon:'',label:'Team Members',      val:uniqM,             sub:`${sharedM} shared allocations`},
+    {cls:'k4',icon:'!',label:'Total Risks',       val:totalR,            sub:`${openR} open · ${highR} high severity`},
+    {cls:'k5',icon:'',label:'Phases in Progress', val:PRODUCTS.filter(p=>p.phase==='Development').length, sub:`${PRODUCTS.filter(p=>p.phase==='POC').length} POC · ${PRODUCTS.filter(p=>p.phase==='Assessment').length} Assessment`}
   ];
   const grid = document.getElementById('kpi-grid');
   if(grid) grid.innerHTML = kpis.map(k=>`
@@ -1226,7 +1227,6 @@ async function syncAllJira(btn){
     }
   }
 
-  renderJiraDashboard();
   btn.textContent = origText;
   btn.disabled = false;
   const ok = results.filter(r=>r.endsWith(': ok')).length;
@@ -1244,7 +1244,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderTeam();
   renderDependencies();
   renderInsights();
-  renderJiraDashboard();
   setTimeout(renderCharts, 100);
 });
 </script>

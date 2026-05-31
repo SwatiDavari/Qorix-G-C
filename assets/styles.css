@@ -1,13 +1,23 @@
 /* ─── Qorix Brand Design System ────────────────────────────────────────── */
 :root {
-  --qx-blue:    #3C00FF;
-  --qx-cyan:    #00FFFF;
-  --qx-lime:    #D7FF3C;
-  --qx-navy:    #0E2841;
-  --qx-steel:   #156082;
-  --qx-sky:     #0F9ED5;
+  /* ── New Qorix Palette ── */
+  --qx-blue:         #3A00F5;  /* Deep Violet – primary */
+  --qx-violet:       #4B00FF;  /* Electric Violet – accent */
+  --qx-teal:         #4FE0C4;  /* Teal Mint – cool gradient start */
+  --qx-mint:         #66E8AA;  /* Soft Mint Green – light transition */
+  --qx-fresh-green:  #72E27A;  /* Fresh Green – core green */
+  --qx-bright-green: #8FEA6B;  /* Bright Green – mid highlight */
+  --qx-lime-green:   #A7F04A;  /* Lime Green – strong accent */
+  --qx-neon-lime:    #C4FF32;  /* Neon Lime – high-energy highlight */
+
+  /* ── Legacy aliases (keeps existing usage working) ── */
+  --qx-cyan:    var(--qx-mint);
+  --qx-lime:    var(--qx-neon-lime);
+  --qx-navy:    #0D0033;        /* Deep Violet dark base */
+  --qx-steel:   var(--qx-violet);
+  --qx-sky:     var(--qx-teal);
   --qx-orange:  #E97132;
-  --qx-green:   #4EA72E;
+  --qx-green:   var(--qx-fresh-green);
   --qx-purple:  #A02B93;
   --qx-gray:    #E8E8E8;
 
@@ -20,13 +30,13 @@
   --border:     #E2E8F0;
   --text:       #1e293b;
   --muted:      #64748b;
-  --heading:    #0E2841;
+  --heading:    #0D0033;
 
   --nav-h:      64px;
   --radius:     10px;
   --radius-lg:  16px;
-  --shadow:     0 1px 4px rgba(14,40,65,.08), 0 4px 16px rgba(14,40,65,.06);
-  --shadow-lg:  0 4px 24px rgba(14,40,65,.14);
+  --shadow:     0 1px 4px rgba(13,0,51,.08), 0 4px 16px rgba(13,0,51,.06);
+  --shadow-lg:  0 4px 24px rgba(13,0,51,.14);
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -45,19 +55,19 @@ a:hover{text-decoration:underline}
 /* ── Site Nav ──────────────────────────────────────────────────────────── */
 .site-nav{
   position:sticky;top:0;z-index:100;
-  height:var(--nav-h);background:rgba(14,40,65,.96);
+  height:var(--nav-h);background:rgba(13,0,51,.97);
   backdrop-filter:blur(12px);
   display:flex;align-items:center;padding:0 40px;gap:32px;
-  border-bottom:1px solid rgba(255,255,255,.08);
+  border-bottom:1px solid rgba(79,224,196,.12);
 }
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.nav-logo-mark{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--qx-blue),var(--qx-sky));display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:15px}
+.nav-logo-mark{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#3C00FF,#0F9ED5);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:15px}
 .nav-logo-text{font-weight:700;color:#fff;font-size:16px;letter-spacing:.3px}
 .nav-links{display:flex;gap:4px;margin-left:auto}
 .nav-link{color:rgba(255,255,255,.7);font-size:13px;font-weight:500;padding:6px 14px;border-radius:7px;text-decoration:none;transition:color .15s,background .15s}
 .nav-link:hover{color:#fff;background:rgba(255,255,255,.08);text-decoration:none}
-.nav-link.active{color:#fff;background:rgba(60,0,255,.35)}
-.nav-cta{background:var(--qx-lime);color:var(--qx-navy);font-weight:700;padding:7px 18px;border-radius:7px;font-size:13px;text-decoration:none;transition:opacity .15s;margin-left:8px}
+.nav-link.active{color:#fff;background:rgba(58,0,245,.4)}
+.nav-cta{background:var(--qx-neon-lime);color:#0D0033;font-weight:700;padding:7px 18px;border-radius:7px;font-size:13px;text-decoration:none;transition:opacity .15s;margin-left:8px}
 .nav-cta:hover{opacity:.85;text-decoration:none}
 
 /* ── Buttons ────────────────────────────────────────────────────────────── */
@@ -92,7 +102,7 @@ thead{background:var(--bg)}
 th{text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;border-bottom:1px solid var(--border)}
 td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle}
 tr:last-child td{border-bottom:none}
-tbody tr:hover td{background:rgba(60,0,255,.02)}
+tbody tr:hover td{background:rgba(58,0,245,.02)}
 
 /* ── Progress bar ───────────────────────────────────────────────────────── */
 .progress-wrap{height:6px;background:var(--border);border-radius:4px;overflow:hidden}
@@ -199,12 +209,12 @@ tbody tr:hover td{background:rgba(60,0,255,.02)}
 
 /* ── Editable ───────────────────────────────────────────────────────────── */
 [contenteditable="true"]{outline:none;border-bottom:1px dashed var(--qx-blue);cursor:text;padding:0 2px}
-[contenteditable="true"]:focus{background:rgba(60,0,255,.04);border-radius:3px}
+[contenteditable="true"]:focus{background:rgba(58,0,245,.04);border-radius:3px}
 
 /* ── Modal ──────────────────────────────────────────────────────────────── */
-.modal-overlay{position:fixed;inset:0;background:rgba(14,40,65,.5);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay{position:fixed;inset:0;background:rgba(13,0,51,.5);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:14px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(14,40,65,.25)}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(13,0,51,.25)}
 .modal-hdr{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2}
 .modal-hdr h3{font-size:16px;font-weight:700}
 .modal-body{padding:24px}
@@ -213,7 +223,7 @@ tbody tr:hover td{background:rgba(60,0,255,.02)}
 .form-field{margin-bottom:14px}
 .form-field label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
 .form-field input,.form-field select,.form-field textarea{width:100%;border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-size:13px;font-family:inherit;outline:none;color:var(--text);background:#fff}
-.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--qx-blue);box-shadow:0 0 0 3px rgba(60,0,255,.08)}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--qx-blue);box-shadow:0 0 0 3px rgba(58,0,245,.08)}
 .form-field textarea{height:72px;resize:vertical}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 

@@ -3,12 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Knowledge Assistant - Enterprise AI Chatbot</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Product — Qorix Portal</title>
+    <title>Product — Qorix Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="assets/styles.css"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -134,39 +129,14 @@
 </style>
 </head>
 <body>
-    
-    <!-- NAVIGATION -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">Knowledge Assistant</div>
-            <ul class="nav-menu">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#benefits">Benefits</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="/app" class="nav-button">Open App</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- HERO SECTION -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="badge">ENTERPRISE AI ASSISTANT</div>
-            <h1>Knowledge Assistant</h1>
-            <p class="tagline">Get instant answers about company policies, benefits, and procedures</p>
-            <div class="hero-buttons">
-                <a href="/app" class="btn btn-primary">Get Started</a>
-                <a href="#features" class="btn btn-secondary">Learn More</a>
-            </div>
 
 <!-- NAV -->
 <nav class="site-nav">
-  <a href="index.html" class="nav-logo">
+  <div class="nav-logo">
     <div class="nav-logo-mark">Q</div>
     <div class="nav-logo-text">Qorix</div>
-  </a>
+  </div>
   <div class="nav-links">
-    <a href="index.html" class="nav-link">Portal Home</a>
     <a href="dashboard.html" class="nav-link">Portfolio Dashboard</a>
     <a href="product.html" class="nav-link active">Products</a>
   </div>
@@ -188,8 +158,8 @@
       <div class="hero-name" id="hero-name"></div>
       <div class="hero-desc" id="hero-desc"></div>
       <div class="hero-actions-row">
-        <button class="btn btn-lime btn-sm" onclick="saveChanges()">💾 Save Changes</button>
-        <button class="btn btn-ghost btn-sm" onclick="exportProduct()">⬇ Export</button>
+        <button class="btn btn-lime btn-sm" onclick="saveChanges()">Save Changes</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportProduct()">Export</button>
         <button class="btn btn-ghost btn-sm" onclick="addMember()">+ Add Team Member</button>
       </div>
     </div>
@@ -225,10 +195,10 @@
     <div class="section-hdr">
       <h2>Team Allocation</h2>
       <div class="actions">
-        <button class="btn btn-outline btn-sm" onclick="openExcelImport()">📥 Import Excel</button>
-        <button class="btn btn-outline btn-sm" onclick="downloadExcelTemplate()">📄 Template</button>
+        <button class="btn btn-outline btn-sm" onclick="openExcelImport()">Import Excel</button>
+        <button class="btn btn-outline btn-sm" onclick="downloadExcelTemplate()">Template</button>
         <button class="btn btn-primary btn-sm" onclick="addMember()">+ Add Member</button>
-        <button class="btn btn-outline btn-sm" onclick="exportTeam()">⬇ Export CSV</button>
+        <button class="btn btn-outline btn-sm" onclick="exportTeam()">Export CSV</button>
       </div>
     </div>
 
@@ -271,17 +241,18 @@
       <h2>JIRA Integration</h2>
       <div class="actions">
         <span id="jira-status-pill" style="font-size:11px;padding:4px 10px;border-radius:20px;background:#f1f5f9;color:var(--muted)">Not connected</span>
-        <button class="btn btn-primary btn-sm" onclick="syncJira()">🔄 Sync from JIRA</button>
+        <button class="btn btn-ghost btn-sm" onclick="openJiraConfig()">Configure</button>
+        <button class="btn btn-primary btn-sm" onclick="syncJira()">Sync from JIRA</button>
       </div>
     </div>
     <div id="jira-project-info" style="margin-bottom:16px;font-size:12px;color:var(--muted)"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div class="card">
-        <div class="card-hdr"><h3>⚠️ Risks</h3><span id="risk-count-jira" style="font-size:11px;color:var(--muted)"></span></div>
+        <div class="card-hdr"><h3>Risks</h3><span id="risk-count-jira" style="font-size:11px;color:var(--muted)"></span></div>
         <div id="jira-risks-list" style="padding:12px"></div>
       </div>
       <div class="card">
-        <div class="card-hdr"><h3>🛡️ Non-Conformances</h3><span id="nc-count-jira" style="font-size:11px;color:var(--muted)"></span></div>
+        <div class="card-hdr"><h3>Non-Conformances</h3><span id="nc-count-jira" style="font-size:11px;color:var(--muted)"></span></div>
         <div id="jira-nc-list" style="padding:12px"></div>
       </div>
     </div>
@@ -294,7 +265,7 @@
 <div class="excel-overlay" id="excel-overlay" onclick="if(event.target===this)closeExcelModal()">
   <div class="excel-modal">
     <div class="excel-hdr">
-      <h3>📥 Import Team from Excel / CSV</h3>
+      <h3>Import Team from Excel / CSV</h3>
       <button class="modal-close" onclick="closeExcelModal()">✕</button>
     </div>
     <div style="padding:20px">
@@ -313,95 +284,14 @@
         <div class="hero-visual">
             <div class="gradient-blob"></div>
         </div>
-    </section>
-
-    <!-- FEATURES GRID -->
-    <section id="features" class="features">
-        <div class="container">
-            <h2>Powered By</h2>
-            <div class="features-grid">
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🤖</div>
-                    <h3>AI Powered</h3>
-                    <p>Claude AI generates accurate, context-aware answers from your company knowledge base</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Lightning Fast</h3>
-                    <p>Get answers in 3-5 seconds. No waiting, no back-and-forth emails</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">📚</div>
-                    <h3>Knowledge Base</h3>
-                    <p>Integrated with SharePoint policies and OneDrive documents</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🔗</div>
-                    <h3>Teams Integration</h3>
-                    <p>Access directly from Microsoft Teams. Same assistant, any platform</p>
-                </div>
       </div>
 
-            </div>
       <!-- Template download row -->
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:10px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
-        <span style="font-size:18px">📄</span>
+        <span style="font-size:18px">FILE</span>
         <div style="flex:1">
           <div style="font-size:13px;font-weight:600">Need a template?</div>
           <div style="font-size:11px;color:var(--muted)">Download a pre-formatted CSV with correct column headers</div>
-        </div>
-    </section>
-
-    <!-- BENEFITS SECTION -->
-    <section id="benefits" class="benefits">
-        <div class="container">
-            <h2>Why Knowledge Assistant</h2>
-            <div class="benefits-grid">
-                
-                <div class="benefit">
-                    <h3>⏱️ 3-5 Second Response</h3>
-                    <p>Instant answers without waiting for HR or support teams</p>
-                </div>
-
-                <div class="benefit">
-                    <h3>🔒 Enterprise Secure</h3>
-                    <p>Your data stays within your company. No external sharing</p>
-                </div>
-
-                <div class="benefit">
-                    <h3>📱 Multi-Platform</h3>
-                    <p>Web, Teams, or mobile. Same seamless experience everywhere</p>
-                </div>
-
-                <div class="benefit">
-                    <h3>🔄 Always Learning</h3>
-                    <p>Updates automatically when policies change in SharePoint</p>
-                </div>
-        <button class="btn btn-outline btn-sm" onclick="downloadExcelTemplate()">⬇ Template</button>
-      </div>
-
-            </div>
-      <!-- Column mapping hint -->
-      <div style="margin-bottom:14px;padding:10px 12px;background:#eff6ff;border-radius:8px;border:1px solid #bfdbfe;font-size:12px;color:#1d4ed8">
-        <strong>Expected columns:</strong> Name · Initials · Role · Type (safety-manager/security-manager/quality-manager/quality-consultant/safety-consultant) · Allocation% · Ask% · Shared (Yes/No)
-        <br/>Column headers are auto-detected — order doesn't matter.
-      </div>
-
-      <!-- Preview area (populated after file load) -->
-      <div id="excel-preview" style="margin-bottom:12px"></div>
-
-      <!-- Import options (shown after file parsed) -->
-      <div id="excel-import-options" style="display:none;margin-bottom:14px;padding:12px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
-        <div class="form-field" style="margin:0">
-          <label>Import mode</label>
-          <select id="excel-import-mode" style="border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:13px;width:100%;outline:none">
-            <option value="merge">Merge — add to existing team (skip duplicates by name)</option>
-            <option value="replace">Replace — remove current team and use imported data</option>
-          </select>
         </div>
     </section>
 
@@ -450,7 +340,7 @@
       <!-- Action buttons -->
       <div style="display:flex;gap:8px;justify-content:flex-end">
         <button class="btn btn-outline" onclick="closeExcelModal()">Cancel</button>
-        <button class="btn btn-primary" id="excel-import-btn" style="display:none" onclick="importExcelMembers()">✅ Import Members</button>
+        <button class="btn btn-primary" id="excel-import-btn" style="display:none" onclick="importExcelMembers()">Import Members</button>
       </div>
 
     </div>
@@ -523,9 +413,9 @@ function renderHero(){
 
 /* ── Tabs ─────────────────────────────────────────────────────── */
 const TABS=[
-  {id:'overview',  label:'📊 Overview'},
-  {id:'team',      label:'👥 Team'},
-  {id:'jira',      label:'🔗 JIRA'}
+  {id:'overview',  label:'Overview'},
+  {id:'team',      label:'Team'},
+  {id:'jira',      label:'JIRA'}
 ];
 function renderTabs(){
   document.getElementById('ptabs').innerHTML = TABS.map(t=>`<button class="ptab${t.id==='overview'?' active':''}" onclick="activateTab('${t.id}')">${t.label}</button>`).join('');
@@ -536,12 +426,27 @@ function activateTab(id){
   history.replaceState(null,'','product.html?id='+PID+'#'+id);
 }
 
+function isOpenIssueStatus(issue){
+  const statusCat = String(issue?._statusCat || '').toLowerCase();
+  const status = String(issue?.status || issue?._status || '').toLowerCase();
+  return statusCat !== 'done' && statusCat !== 'closed' && status !== 'done' && status !== 'closed';
+}
+
+function getNonComplianceItems(data){
+  if(!data) return [];
+  const candidates =
+    (Array.isArray(data.sev0Risks) && data.sev0Risks.length ? data.sev0Risks : null) ||
+    (Array.isArray(data.ncs) && data.ncs.length ? data.ncs : null) ||
+    (Array.isArray(data.nc) && data.nc.length ? data.nc : null) ||
+    [];
+  return candidates.filter(isOpenIssueStatus);
+}
+
 /* ── Overview ─────────────────────────────────────────────────── */
 function renderOverview(){
   // KPIs
   const kpis=[
     {val:P.users,    label:'Users',      accent:QX.green},
-    {val:P.adoption, label:'Adoption',   accent:QX.purple},
     {val:P.nps+'',   label:'NPS Score',  accent:QX.orange},
     {val:productFTE(PID)+' FTE',label:'Team Size', accent:QX.steel}
   ];
@@ -553,17 +458,20 @@ function renderOverview(){
     </div>`).join('');
 
   // Alerts — sourced from JIRA cache
+  const cfg = getJiraConfig(PID) || {};
+  const jiraDomain = cfg.domain || JIRA_CFG.domain || 'qorix.atlassian.net';
+  const jiraBaseUrl = `https://${jiraDomain}/browse`;
   const riskAlerts = (_jiraData.risks||[]).filter(r=>r.status!=='Done'&&r.status!=='Closed').slice(0,3);
-  const ncAlerts   = (_jiraData.nc||[]).filter(c=>c.status!=='Done'&&c.status!=='Closed').slice(0,3);
+  const ncAlerts   = getNonComplianceItems(_jiraData).slice(0,3);
   const alerts = [
-    ...riskAlerts.map(r=>({type:'danger', icon:'⚠️', title:'Risk: '+r.title, desc:`${r.key} · ${r.priority} · ${r.assignee}`})),
-    ...ncAlerts.map(c=>({type:'warning', icon:'🛡️', title:'NC: '+c.title,   desc:`${c.key} · ${c.status}`}))
+    ...riskAlerts.map(r=>({type:'danger', icon:'!', title:'Risk: '+r.title, key:r.key, keyUrl:`${jiraBaseUrl}/${r.key}`, desc:`${r.priority} · ${r.assignee}`})),
+    ...ncAlerts.map(c=>({type:'warning', icon:'NC', title:'NC: '+c.title, key:c.key, keyUrl:`${jiraBaseUrl}/${c.key}`, desc:`${c.status}`}))
   ];
   document.getElementById('overview-alerts').innerHTML = alerts.length ? `
     <div class="section-hdr"><h3>Product Flags</h3></div>
     <div style="display:flex;flex-direction:column;gap:8px">
-      ${alerts.map(a=>`<div class="alert alert-${a.type}"><div class="alert-icon">${a.icon}</div><div class="alert-body"><div class="at">${a.title}</div><div class="ad">${a.desc}</div></div></div>`).join('')}
-    </div>` : '<div class="alert alert-info"><div class="alert-icon">✅</div><div class="alert-body"><div class="at">No critical flags</div><div class="ad">This product has no high-severity open issues.</div></div></div>';
+      ${alerts.map(a=>`<div class="alert alert-${a.type}"><div class="alert-icon">${a.icon}</div><div class="alert-body"><div class="at">${a.title}</div><div class="ad"><a href="${a.keyUrl}" target="_blank" style="color:var(--qx-blue);text-decoration:none;font-weight:600">${a.key}</a> · ${a.desc}</div></div></div>`).join('')}
+    </div>` : '<div class="alert alert-info"><div class="alert-icon">OK</div><div class="alert-body"><div class="at">No critical flags</div><div class="ad">This product has no high-severity open issues.</div></div></div>';
 }
 
 /* ── Team ─────────────────────────────────────────────────────── */
@@ -641,7 +549,7 @@ function renderTeam(){
           <div class="member-name truncate">${g.name}</div>
           <div class="member-total" style="color:${allocColor}">
             ${g.entries.length > 1 ? g.entries.length+' roles · ' : ''}Total: <strong>${total}%</strong>
-            ${isOver ? ' ⚠ Over-allocated' : total===100 ? ' ✅' : ''}
+            ${isOver ? ' Over-allocated' : total===100 ? ' Complete' : ''}
           </div>
         </div>
         <button class="btn btn-primary btn-sm" style="font-size:11px;padding:4px 10px;flex-shrink:0"
@@ -665,7 +573,7 @@ function renderTeam(){
   const callout = document.getElementById('shared-callout');
   if(callout) callout.innerHTML = sharedMembers.length ? `
     <div class="alert alert-warning mt-12">
-      <div class="alert-icon">⚠️</div>
+      <div class="alert-icon">!</div>
       <div class="alert-body">
         <div class="at">${sharedMembers.length} Shared Allocation${sharedMembers.length>1?'s':''}</div>
         <div class="ad">${sharedMembers.map(m=>`${m.name} (${m.role}) @${m.allocation}%`).join(' · ')} — verify no cross-product overallocation</div>
@@ -722,14 +630,14 @@ function renderTeam(){
 function renderActivity(){
   const items=ACTIVITY.filter(a=>a.product===PID);
   const typeColor={risk:'#ef4444',roadmap:QX.blue,team:QX.sky,flag:'#f59e0b',financial:QX.orange,compliance:'#22c55e',milestone:QX.blue};
-  const typeIcon={risk:'⚠️',roadmap:'🗺️',team:'👥',flag:'🚩',financial:'💰',compliance:'🛡️',milestone:'🏁'};
+  const typeIcon={risk:'!',roadmap:'>',team:'@',flag:'*',financial:'$',compliance:'NC',milestone:'+'};
   document.getElementById('activity-timeline').innerHTML=items.length?items.map((a,i)=>`
     <div class="tl-item">
       <div class="tl-dot-wrap">
         <div class="tl-dot" style="background:${typeColor[a.type]||QX.blue}"></div>
       </div>
       <div style="flex:1">
-        <div class="tl-ts">${typeIcon[a.type]||'📌'} ${a.ts}</div>
+        <div class="tl-ts">${typeIcon[a.type]||'•'} ${a.ts}</div>
         <div class="tl-msg">${a.msg}</div>
       </div>
     </div>`).join(''):
@@ -894,11 +802,11 @@ function saveMember(){
       askAllocation: Math.max(0,Math.min(100,+document.getElementById('nm-ask').value||allocation)),
       shared:       !!document.getElementById('nm-shared').value
     });
-    showToast('✅ Member added');
+    showToast('Success: Member added');
   } else {
     const name     = document.getElementById('ep-name').value;
     const initials = document.getElementById('ep-init').value || '??';
-    if(!name){ showToast('⚠️ Select a person first'); return; }
+    if(!name){ showToast('Warning: Select a person first'); return; }
     const allocation = Math.max(1,Math.min(100,+document.getElementById('ep-alloc').value||20));
     TEAM[PID].push({
       name, initials,
@@ -908,7 +816,7 @@ function saveMember(){
       askAllocation: Math.max(0,Math.min(100,+document.getElementById('ep-ask').value||allocation)),
       shared:       !!document.getElementById('ep-shared').value
     });
-    showToast('✅ Role added for ' + name);
+    showToast('Success: Role added for ' + name);
   }
   closeModal(); persistData(); renderTeam();
 }
@@ -950,7 +858,7 @@ function addRoleFor(name, initials){
             style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
           <span style="font-size:12px;color:var(--muted)">/100%</span>
         </div>
-        ${total+20>100?`<div style="font-size:11px;color:#f59e0b;margin-top:3px">⚠ Total may exceed 100% — review carefully</div>`:''}
+        ${total+20>100?`<div style="font-size:11px;color:#f59e0b;margin-top:3px">Warning: Total may exceed 100% — review carefully</div>`:''}
       </div>
       <div class="form-field">
         <label>Ask % <span style="font-size:10px;color:var(--muted)">(requested)</span></label>
@@ -982,7 +890,7 @@ function saveRoleFor(name, initials){
     shared:       !!document.getElementById('ar-shared').value
   });
   closeModal(); persistData(); renderTeam();
-  showToast(`✅ New role added for ${name}`);
+  showToast(`Success: New role added for ${name}`);
 }
 
 /* ── Edit a single role entry ─────────────────────────────────── */
@@ -1047,7 +955,7 @@ function applyMemberEdit(i){
   TEAM[PID][i].allocation   = Math.max(1,Math.min(100,+document.getElementById('em-alloc').value||TEAM[PID][i].allocation));
   TEAM[PID][i].askAllocation= Math.max(0,Math.min(100,+document.getElementById('em-ask').value||TEAM[PID][i].askAllocation||TEAM[PID][i].allocation));
   TEAM[PID][i].shared       = !!document.getElementById('em-shared').value;
-  closeModal(); persistData(); renderTeam(); showToast('✅ Role updated');
+  closeModal(); persistData(); renderTeam(); showToast('Success: Role updated');
 }
 
 /* ── Remove helpers ───────────────────────────────────────────── */
@@ -1081,7 +989,7 @@ function updateMemberAskAlloc(i, val){
 /* ── Save / Export ────────────────────────────────────────────── */
 let _changed=false;
 function markChanged(){ _changed=true; document.title='• '+P.name+' — Qorix Portal'; }
-function saveChanges(){ _changed=false; persistData(); document.title=P.name+' — Qorix Portal'; showToast('✅ Changes saved'); }
+function saveChanges(){ _changed=false; persistData(); document.title=P.name+' — Qorix Portal'; showToast('Success: Changes saved'); }
 function exportProduct(){
   const rows=[['Name','Role','Type','Allocation%','Ask%','Shared'],...(TEAM[PID]||[]).map(m=>[m.name,m.role,m.type,m.allocation,m.askAllocation||m.allocation,m.shared?'Yes':'No'])];
   const csv=rows.map(r=>r.join(',')).join('\n');
@@ -1130,7 +1038,7 @@ function downloadExcelTemplate(){
   const a = document.createElement('a');
   a.href = url; a.download = 'qorix-team-template.csv'; a.click();
   URL.revokeObjectURL(url);
-  showToast('📄 Template downloaded');
+  showToast('Template downloaded');
 }
 
 function handleExcelDrop(e){
@@ -1143,7 +1051,7 @@ function handleExcelFile(file){
   if(!file) return;
   const ext = file.name.split('.').pop().toLowerCase();
   if(!['xlsx','xls','csv'].includes(ext)){
-    showToast('❌ Please upload .xlsx, .xls or .csv');
+    showToast('Error: Please upload .xlsx, .xls or .csv');
     return;
   }
   const reader = new FileReader();
@@ -1152,7 +1060,7 @@ function handleExcelFile(file){
     reader.readAsText(file);
   } else {
     reader.onload = e => {
-      if(!window.XLSX){ showToast('❌ Excel parser not loaded — use CSV instead'); return; }
+      if(!window.XLSX){ showToast('Error: Excel parser not loaded — use CSV instead'); return; }
       const wb = XLSX.read(e.target.result, {type:'binary'});
       const ws = wb.Sheets[wb.SheetNames[0]];
       const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
@@ -1193,7 +1101,7 @@ const TYPE_MAP = {
 };
 
 function _processExcelRows(rows){
-  if(!rows||rows.length < 2){ showToast('❌ File appears empty'); return; }
+  if(!rows||rows.length < 2){ showToast('Error: File appears empty'); return; }
   const headers = rows[0].map(h => String(h).toLowerCase().trim());
   const idx = k => headers.findIndex(h => h.includes(k));
 
@@ -1228,7 +1136,7 @@ function _processExcelRows(rows){
       };
     });
 
-  if(!_parsedMembers.length){ showToast('❌ No valid rows found'); return; }
+  if(!_parsedMembers.length){ showToast('Error: No valid rows found'); return; }
   _renderExcelPreview();
 }
 
@@ -1264,7 +1172,7 @@ function _renderExcelPreview(){
 
   document.getElementById('excel-import-options').style.display = 'block';
   document.getElementById('excel-import-btn').style.display = 'inline-flex';
-  document.getElementById('excel-import-btn').textContent = `✅ Import ${_parsedMembers.length} Members`;
+  document.getElementById('excel-import-btn').textContent = `Import ${_parsedMembers.length} Members`;
 }
 
 function importExcelMembers(){
@@ -1277,13 +1185,13 @@ function importExcelMembers(){
     const newOnes = _parsedMembers.filter(m => !existingNames.has(m.name.toLowerCase()));
     TEAM[PID] = [...existing, ...newOnes];
     if(_parsedMembers.length - newOnes.length > 0)
-      showToast(`ℹ️ Skipped ${_parsedMembers.length - newOnes.length} duplicate names`);
+      showToast(`Info: Skipped ${_parsedMembers.length - newOnes.length} duplicate names`);
   }
   persistData();
   markChanged();
   closeExcelModal();
   renderTeam();
-  showToast(`✅ ${_parsedMembers.length} members imported successfully`);
+  showToast(`Success: ${_parsedMembers.length} members imported successfully`);
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -1291,6 +1199,78 @@ function importExcelMembers(){
    ════════════════════════════════════════════════════════════════ */
 const JIRA_PROXY = 'http://localhost:3000';
 let _jiraData = {risks:[], nc:[]};
+
+function openJiraConfig(){
+  openModal('JIRA Configuration', `
+    <div style="margin-bottom:14px;padding:10px 12px;background:#eff6ff;border-radius:8px;border:1px solid #bfdbfe;font-size:12px;color:#1d4ed8">
+      <strong>How to get your JIRA API token:</strong>
+      <ol style="margin:8px 0 0 16px;padding-left:0">
+        <li>Go to <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" style="color:#1d4ed8;text-decoration:underline">https://id.atlassian.com/manage-profile/security/api-tokens</a></li>
+        <li>Click "Create API token"</li>
+        <li>Name it "Qorix Dashboard"</li>
+        <li>Copy and paste the token below</li>
+      </ol>
+    </div>
+    <div class="form-field">
+      <label>Atlassian Email</label>
+      <input id="jira-cfg-email" type="email" placeholder="your.email@company.com" value="${JIRA_CFG.email}" style="border:1.5px solid var(--border);border-radius:7px;padding:8px 10px;width:100%;font-size:13px;outline:none"/>
+    </div>
+    <div class="form-field">
+      <label>API Token</label>
+      <input id="jira-cfg-token" type="password" placeholder="Your 24-char API token" value="${JIRA_CFG.token}" style="border:1.5px solid var(--border);border-radius:7px;padding:8px 10px;width:100%;font-size:13px;outline:none;font-family:monospace"/>
+      <div style="margin-top:4px;font-size:11px;color:var(--muted)">Token is stored in your browser (localStorage). Never share this publicly.</div>
+    </div>
+    <div class="form-field">
+      <label>JIRA Domain</label>
+      <input id="jira-cfg-domain" type="text" placeholder="mycompany.atlassian.net" value="${JIRA_CFG.domain}" style="border:1.5px solid var(--border);border-radius:7px;padding:8px 10px;width:100%;font-size:13px;outline:none"/>
+    </div>
+    <div class="form-field">
+      <label>Link JIRA Project to ${P.name}</label>
+      <input id="jira-cfg-project" type="text" placeholder="e.g., CP, AP, QB" value="${JIRA_CFG.projects[PID] || ''}" style="border:1.5px solid var(--border);border-radius:7px;padding:8px 10px;width:100%;font-size:13px;outline:none;font-family:monospace"/>
+      <div style="margin-top:4px;font-size:11px;color:var(--muted)">JIRA project key (e.g., CP=Qorix Classic, AP=Adaptive, QB=Bootloader)</div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveJiraConfig()">Save Configuration</button>
+    </div>`);
+}
+
+function saveJiraConfig(){
+  const email = document.getElementById('jira-cfg-email').value.trim();
+  const token = document.getElementById('jira-cfg-token').value.trim();
+  const domain = document.getElementById('jira-cfg-domain').value.trim();
+  const projectKey = document.getElementById('jira-cfg-project').value.trim();
+  
+  if(!email || !token){
+    showToast('Warning: Email and API token are required');
+    return;
+  }
+  
+  // Save to localStorage
+  localStorage.setItem('jira_email', email);
+  localStorage.setItem('jira_token', token);
+  localStorage.setItem('jira_domain', domain);
+  
+  // Update JIRA_CFG
+  JIRA_CFG.email = email;
+  JIRA_CFG.token = token;
+  if(domain) JIRA_CFG.domain = domain;
+  
+  // Save project key for this product
+  if(projectKey){
+    JIRA_CFG.projects[PID] = projectKey;
+    localStorage.setItem('jira_project_'+PID, projectKey);
+  }
+  
+  closeModal();
+  showToast('Success: JIRA configuration saved');
+  
+  // Reload JIRA data
+  renderActivity();
+  _loadCachedJiraData();
+}
+
+/* ────────────────────────────────────────────────────────────────── */
 
 function jiraProjectKey() {
   return JIRA_CFG.projects[PID] || null;
@@ -1306,9 +1286,10 @@ async function syncJira() {
     document.getElementById('jira-nc-list').innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px">No JIRA project linked to this product.</div>';
     return;
   }
-  if(JIRA_CFG.email==='YOUR_EMAIL@qorix.com'||JIRA_CFG.token==='YOUR_JIRA_API_TOKEN'){
+  if(!JIRA_CFG.email || !JIRA_CFG.token){
     pill.style.background='#fff7ed'; pill.style.color='#c2410c';
-    pill.textContent='⚠ Fill in JIRA_CFG credentials in data.js';
+    pill.textContent='Configure JIRA credentials first';
+    showToast('Warning: Please click Configure to set up JIRA');
     return;
   }
   pill.style.background='#eff6ff'; pill.style.color='#1d4ed8';
@@ -1319,22 +1300,32 @@ async function syncJira() {
       _fetchJiraIssues(key,'Risk'),
       _fetchJiraIssues(key,'Non-Conformance')
     ]);
-    _jiraData = {risks, nc};
+    _jiraData = {risks, nc, ncs:nc, sev0Risks:nc};
     saveJiraData(PID, _jiraData);
     pill.style.background='#f0fdf4'; pill.style.color='#15803d';
-    pill.textContent=`✅ Synced · ${risks.length} risks · ${nc.length} NCs`;
+    pill.textContent=`Synced · ${risks.length} risks · ${nc.length} NCs`;
     _renderJiraData();
   } catch(e) {
     pill.style.background='#fff5f5'; pill.style.color='#991b1b';
-    pill.textContent='❌ Sync failed — check proxy server & credentials';
+    pill.textContent='Sync failed — check proxy server & credentials';
     console.error('[JIRA]', e);
   }
 }
 
 async function _fetchJiraIssues(projectKey, issueType) {
-  const jql = encodeURIComponent(`project=${projectKey} AND issuetype="${issueType}" ORDER BY priority DESC`);
-  const url = `${JIRA_PROXY}/api/jira?domain=${JIRA_CFG.domain}&email=${encodeURIComponent(JIRA_CFG.email)}&token=${encodeURIComponent(JIRA_CFG.token)}&jql=${jql}&maxResults=50`;
-  const r = await fetch(url);
+  const r = await fetch(`${JIRA_PROXY}/api/jira/search`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      domain: JIRA_CFG.domain,
+      email: JIRA_CFG.email,
+      token: JIRA_CFG.token,
+      jql: `project = "${projectKey}" AND issuetype = "${issueType}" ORDER BY priority DESC, created DESC`,
+      fields: 'summary,status,priority,assignee,created',
+      maxResults: 50,
+      startAt: 0
+    })
+  });
   if(!r.ok) throw new Error(`HTTP ${r.status}`);
   const data = await r.json();
   return (data.issues||[]).map(i=>({
@@ -1369,14 +1360,15 @@ function _renderJiraData() {
 
   const rEl = document.getElementById('jira-risks-list');
   const nEl = document.getElementById('jira-nc-list');
+  const nonCompliances = getNonComplianceItems(_jiraData);
   document.getElementById('risk-count-jira').textContent = _jiraData.risks.length ? `${_jiraData.risks.length} items` : '';
-  document.getElementById('nc-count-jira').textContent   = _jiraData.nc.length    ? `${_jiraData.nc.length} items`    : '';
+  document.getElementById('nc-count-jira').textContent   = nonCompliances.length ? `${nonCompliances.length} items` : '';
 
   rEl.innerHTML = _jiraData.risks.length
     ? _jiraData.risks.map(issueCard).join('')
     : '<div style="color:var(--muted);font-size:13px;padding:8px">No Risk issues found.</div>';
-  nEl.innerHTML = _jiraData.nc.length
-    ? _jiraData.nc.map(issueCard).join('')
+  nEl.innerHTML = nonCompliances.length
+    ? nonCompliances.map(issueCard).join('')
     : '<div style="color:var(--muted);font-size:13px;padding:8px">No Non-Conformance issues found.</div>';
 }
 
@@ -1387,11 +1379,16 @@ function _loadCachedJiraData() {
   const info = document.getElementById('jira-project-info');
   if(info) info.textContent = key ? `Project: ${key} · ${JIRA_CFG.domain}` : 'No JIRA project linked';
   const pill = document.getElementById('jira-status-pill');
-  if(pill && cached){
-    pill.style.background='#f0fdf4'; pill.style.color='#15803d';
-    pill.textContent='Loaded from cache — click Sync to refresh';
-  } else if(pill && !key){
-    pill.textContent='No JIRA project configured for this product';
+  if(pill){
+    if(!JIRA_CFG.email || !JIRA_CFG.token){
+      pill.style.background='#fff7ed'; pill.style.color='#c2410c';
+      pill.textContent='Needs configuration';
+    } else if(cached){
+      pill.style.background='#f0fdf4'; pill.style.color='#15803d';
+      pill.textContent='Loaded from cache — click Sync to refresh';
+    } else if(!key){
+      pill.textContent='No JIRA project configured for this product';
+    }
   }
 }
 

@@ -13,7 +13,7 @@
 /* ── Product-page specific ────────────────────────────────────── */
 .product-hero{
   padding:32px 40px 0;
-  background:linear-gradient(135deg,var(--qx-navy),#1a0a6e 80%);
+  background:linear-gradient(135deg,#3A00F5,#2200cc 80%);
   position:relative;overflow:hidden;
 }
 .product-hero::before{
@@ -43,7 +43,7 @@
 .ks-card{background:var(--card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border);position:relative;overflow:hidden}
 .ks-card .kv{font-size:22px;font-weight:800;color:var(--heading);line-height:1}
 .ks-card .kl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
-.ks-accent{position:absolute;top:0;left:0;right:0;height:3px}
+.ks-accent{position:absolute;top:0;left:0;bottom:0;width:4px;border-radius:4px 0 0 4px}
 
 /* Roadmap */
 .rm-now .rm-col-hdr{color:var(--qx-blue);border-color:var(--qx-blue)}
@@ -59,7 +59,7 @@
 .member-role-row:hover{background:#fafbff}
 .role-row-label{font-size:12px;font-weight:600;color:var(--heading);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .alloc-input{width:46px;border:1.5px solid var(--border);border-radius:6px;padding:3px 4px;font-size:12px;font-weight:700;text-align:center;outline:none;color:var(--heading);background:#fff;transition:border-color .15s}
-.alloc-input:focus{border-color:var(--qx-blue);box-shadow:0 0 0 2px rgba(60,0,255,.1)}
+.alloc-input:focus{border-color:var(--qx-blue);box-shadow:0 0 0 2px rgba(58,0,245,.1)}
 .member-footer{padding:8px 14px 10px;background:var(--bg)}
 .icon-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s;flex-shrink:0;line-height:1}
 .icon-btn:hover{border-color:var(--qx-blue);background:#eff6ff}
@@ -77,17 +77,17 @@
 
 /* Editable highlight */
 .editable-field{cursor:text;border-bottom:1px dashed transparent;border-radius:3px;padding:1px 3px;transition:border-color .15s,background .15s}
-.editable-field:hover{border-color:var(--qx-blue);background:rgba(60,0,255,.04)}
-.editable-field:focus{outline:none;border-color:var(--qx-blue);background:rgba(60,0,255,.06)}
+.editable-field:hover{border-color:var(--qx-blue);background:rgba(58,0,245,.04)}
+.editable-field:focus{outline:none;border-color:var(--qx-blue);background:rgba(58,0,245,.06)}
 
 /* ── Excel import modal ─────────────────────────────────────── */
-.excel-overlay{position:fixed;inset:0;background:rgba(14,40,65,.55);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.excel-overlay{position:fixed;inset:0;background:rgba(13,0,51,.55);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
 .excel-overlay.open{display:flex}
-.excel-modal{background:#fff;border-radius:14px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(14,40,65,.3)}
+.excel-modal{background:#fff;border-radius:14px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(13,0,51,.3)}
 .excel-hdr{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2}
 .excel-hdr h3{font-size:16px;font-weight:700}
 .dropzone{border:2px dashed var(--border);border-radius:10px;padding:32px 20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;position:relative}
-.dropzone:hover,.dropzone.drag-over{border-color:var(--qx-blue);background:rgba(60,0,255,.03)}
+.dropzone:hover,.dropzone.drag-over{border-color:var(--qx-blue);background:rgba(58,0,245,.03)}
 .dropzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .dropzone-icon{font-size:36px;margin-bottom:10px}
 .dropzone-text{font-size:14px;font-weight:600;color:var(--text)}
@@ -113,6 +113,76 @@
 .add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:2px dashed var(--border);border-radius:var(--radius);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;background:none;width:100%;transition:border-color .15s,color .15s}
 .add-btn:hover{border-color:var(--qx-blue);color:var(--qx-blue)}
 
+/* ── GRC Dashboard tab ─────────────────────────────────────── */
+.grc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px}
+.grc-card{
+  background:var(--card);
+  padding:16px;border-radius:var(--radius);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  position:relative;overflow:hidden;
+}
+.grc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.grc-card.accent-blue::before{background:var(--qx-blue)}
+.grc-card.accent-green::before{background:var(--qx-green)}
+.grc-card.accent-orange::before{background:var(--qx-orange)}
+.grc-card.accent-sky::before{background:var(--qx-sky)}
+.grc-card h3{margin:0 0 6px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.grc-card .grc-val{font-size:28px;font-weight:800;line-height:1;color:var(--heading)}
+.grc-success{color:var(--qx-green)}.grc-danger{color:var(--delayed)}.grc-warning{color:var(--at-risk)}.grc-primary{color:var(--qx-blue)}
+.grc-section-hdr{font-size:14px;font-weight:700;color:var(--heading);margin:0 0 10px}
+.grc-sub{font-size:12px;color:var(--muted);margin:0 0 12px}
+.grc-heatmap{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.grc-cell{padding:18px 8px;text-align:center;border-radius:6px;font-weight:700;font-size:13px;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.grc-low{background:var(--qx-green)}
+.grc-medium{background:var(--qx-orange)}
+.grc-high{background:var(--delayed)}
+.grc-heatmap-wrap{background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.grc-axis-y{display:flex;flex-direction:column;justify-content:space-around;align-items:center;gap:6px;font-size:10px;font-weight:700;color:var(--muted);margin-right:10px;padding-top:2px}
+.grc-axis-x{display:flex;justify-content:space-around;font-size:10px;font-weight:700;color:var(--muted);margin-top:8px;padding-left:28px}
+.grc-heatmap-outer{display:flex}
+.grc-table-wrap{background:var(--card);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow)}
+.grc-table{width:100%;border-collapse:collapse}
+.grc-table th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;background:var(--bg);border-bottom:1px solid var(--border)}
+.grc-table td{padding:10px 14px;font-size:12px;color:var(--text);border-bottom:1px solid var(--border)}
+.grc-table tr:last-child td{border-bottom:none}
+.grc-table tr:hover td{background:rgba(58,0,245,.03)}
+.grc-chart-wrap{background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.grc-comp-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-top:10px}
+.grc-comp-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--qx-blue),var(--qx-teal,#4FE0C4));transition:width .6s ease}
+.grc-refresh-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.grc-conn-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;background:var(--bg);color:var(--muted);border:1px solid var(--border)}
+.grc-conn-badge.ok{background:#dcfce7;color:#15803d;border-color:#bbf7d0}
+.grc-conn-badge.err{background:#fee2e2;color:#991b1b;border-color:#fecaca}
+.grc-priority-pill{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.grc-priority-High{background:rgba(239,68,68,.12);color:#b91c1c}
+.grc-priority-Medium{background:rgba(233,113,50,.12);color:#c2410c}
+.grc-priority-Low{background:rgba(78,167,46,.12);color:#166534}
+
+/* GRC overview cards */
+.grc-overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grc-overview-card{
+  display:flex;align-items:center;gap:20px;
+  border-radius:var(--radius);padding:18px 24px;
+  box-shadow:0 4px 20px rgba(58,0,245,.18);
+  color:#fff;min-height:140px;
+}
+.grc-defect-overview{background:linear-gradient(135deg,var(--qx-blue) 0%,var(--qx-teal,#4FE0C4) 100%)}
+.grc-risk-overview{background:linear-gradient(135deg,var(--qx-blue) 0%,var(--qx-teal,#4FE0C4) 100%)}
+.grc-do-icon{font-size:36px;flex-shrink:0;line-height:1}
+.grc-do-body{flex:1;min-width:0}
+.grc-do-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;opacity:.8;margin-bottom:4px}
+.grc-do-count{font-size:42px;font-weight:900;line-height:1;letter-spacing:-1px}
+.grc-do-sub{font-size:12px;opacity:.75;margin-top:4px}
+.grc-do-pills{display:flex;flex-wrap:wrap;gap:8px;flex-shrink:0}
+.grc-do-pill{
+  display:flex;flex-direction:column;align-items:center;
+  background:rgba(255,255,255,.18);border-radius:8px;
+  padding:8px 14px;min-width:56px;
+}
+.grc-do-pill-val{font-size:20px;font-weight:800;line-height:1}
+.grc-do-pill-lbl{font-size:10px;font-weight:600;opacity:.8;margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
+
 /* Summary chart strip */
 .summary-charts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .sc-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);padding:16px}
@@ -132,12 +202,11 @@
 
 <!-- NAV -->
 <nav class="site-nav">
-  <a href="index.html" class="nav-logo">
+  <div class="nav-logo">
     <div class="nav-logo-mark">Q</div>
     <div class="nav-logo-text">Qorix</div>
-  </a>
+  </div>
   <div class="nav-links">
-    <a href="index.html" class="nav-link">Portal Home</a>
     <a href="dashboard.html" class="nav-link">Portfolio Dashboard</a>
     <a href="product.html" class="nav-link active">Products</a>
   </div>
@@ -159,8 +228,8 @@
       <div class="hero-name" id="hero-name"></div>
       <div class="hero-desc" id="hero-desc"></div>
       <div class="hero-actions-row">
-        <button class="btn btn-lime btn-sm" onclick="saveChanges()">💾 Save Changes</button>
-        <button class="btn btn-ghost btn-sm" onclick="exportProduct()">⬇ Export</button>
+        <button class="btn btn-lime btn-sm" onclick="saveChanges()">Save Changes</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportProduct()">Export</button>
         <button class="btn btn-ghost btn-sm" onclick="addMember()">+ Add Team Member</button>
       </div>
     </div>
@@ -194,36 +263,15 @@
   <!-- ── TAB: TEAM ── -->
   <div class="ptab-pane" id="pane-team">
     <div class="section-hdr">
-      <h2>Team Allocation</h2>
-      <div class="actions">
-        <button class="btn btn-outline btn-sm" onclick="openExcelImport()">📥 Import Excel</button>
-        <button class="btn btn-outline btn-sm" onclick="downloadExcelTemplate()">📄 Template</button>
-        <button class="btn btn-primary btn-sm" onclick="addMember()">+ Add Member</button>
-        <button class="btn btn-outline btn-sm" onclick="exportTeam()">⬇ Export CSV</button>
-      </div>
+      <h2>Full Roster</h2>
     </div>
-
-    <!-- Role summary -->
-    <div id="role-summary" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px"></div>
-
-    <!-- Member grid -->
-    <div>
-      <div id="team-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:16px"></div>
-      <button class="add-btn" style="margin-top:12px" onclick="addMember()">+ Add Team Member</button>
-    </div>
-
-    <!-- Shared resources callout -->
-    <div id="shared-callout"></div>
 
     <!-- Team table -->
-    <div>
-      <div class="section-hdr" style="margin-top:4px"><h3>Full Roster</h3></div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Name</th><th>Role</th><th>Type</th><th>Allocation %</th><th>Ask %</th><th>Gap</th><th>Shared</th><th>Actions</th></tr></thead>
-          <tbody id="team-table"></tbody>
-        </table>
-      </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Name</th><th>Role</th><th>Type</th><th>Allocation %</th><th>Ask %</th><th>Gap</th><th>Shared</th><th>Actions</th></tr></thead>
+        <tbody id="team-table"></tbody>
+      </table>
     </div>
   </div>
 
@@ -242,22 +290,157 @@
       <h2>JIRA Integration</h2>
       <div class="actions">
         <span id="jira-status-pill" style="font-size:11px;padding:4px 10px;border-radius:20px;background:#f1f5f9;color:var(--muted)">Not connected</span>
-        <button class="btn btn-primary btn-sm" onclick="syncJira()">🔄 Sync from JIRA</button>
       </div>
     </div>
-    <div id="jira-project-info" style="margin-bottom:16px;font-size:12px;color:var(--muted)"></div>
+    <div class="card" style="padding:16px;margin-bottom:16px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-field" style="margin:0">
+          <label>JIRA Domain</label>
+          <input id="jira-domain" placeholder="qorix.atlassian.net"/>
+        </div>
+        <div class="form-field" style="margin:0">
+          <label>Project Key</label>
+          <input id="jira-project" placeholder="CP"/>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+        <div class="form-field" style="margin:0">
+          <label>Email</label>
+          <input id="jira-email" placeholder="name@company.com"/>
+        </div>
+        <div class="form-field" style="margin:0">
+          <label>API Token</label>
+          <input id="jira-token" type="password" placeholder="JIRA API token"/>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+        <button class="btn btn-outline btn-sm" onclick="saveJiraConnection()">Save Config</button>
+        <button class="btn btn-primary btn-sm" onclick="connectJira()">Connect to JIRA</button>
+        <button class="btn btn-outline btn-sm" onclick="runDefectsJql()">Run Defects JQL</button>
+        <button class="btn btn-outline btn-sm" style="color:#ef4444;border-color:#fca5a5" onclick="clearJiraCache()">Clear Cache</button>
+      </div>
+      <div id="jira-project-info" style="margin-top:10px;font-size:12px;color:var(--muted)"></div>
+    </div>
+
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div class="card">
-        <div class="card-hdr"><h3>⚠️ Risks</h3><span id="risk-count-jira" style="font-size:11px;color:var(--muted)"></span></div>
-        <div id="jira-risks-list" style="padding:12px"></div>
+        <div class="card-hdr" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <h3>Defects</h3>
+          <span id="jira-defect-count" style="font-size:11px;color:var(--muted);margin-left:auto"></span>
+          <select id="jira-defect-filter" class="filter-select" onchange="_renderJiraData()" style="padding:4px 8px;font-size:12px;min-width:130px">
+            <option value="all">All Defects</option>
+            <option value="open">Open</option>
+            <option value="resolved">Resolved</option>
+            <option value="highest">Highest Priority</option>
+            <option value="high">High Priority</option>
+          </select>
+        </div>
+        <div style="padding:12px 12px 0;font-size:12px;color:var(--muted)" id="jira-query-preview"></div>
+        <div id="jira-defects-list" style="padding:12px"></div>
       </div>
-      <div class="card">
-        <div class="card-hdr"><h3>🛡️ Non-Conformances</h3><span id="nc-count-jira" style="font-size:11px;color:var(--muted)"></span></div>
-        <div id="jira-nc-list" style="padding:12px"></div>
+      <div style="display:grid;grid-template-rows:auto auto;gap:16px">
+        <div class="card">
+          <div class="card-hdr"><h3>Non-Compliance</h3><span id="jira-nc-count" style="font-size:11px;color:var(--muted)"></span></div>
+          <div id="jira-nc-list" style="padding:12px"></div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><h3>Risks</h3><span id="jira-risk-count" style="font-size:11px;color:var(--muted)"></span></div>
+          <div id="jira-risk-list" style="padding:12px"></div>
+        </div>
       </div>
     </div>
 
   </div><!-- /pane-jira -->
+
+  <!-- ── TAB: GRC DASHBOARD ── -->
+  <div class="ptab-pane" id="pane-grc">
+
+    <div class="grc-refresh-row">
+      <h2 style="margin:0;font-size:20px;font-weight:800;color:var(--heading)">GRC Executive Dashboard</h2>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span id="grc-conn-badge" class="grc-conn-badge">Connecting...</span>
+        <button class="btn btn-sm btn-ghost" onclick="grcLoad()">Refresh</button>
+      </div>
+    </div>
+
+    <div class="grc-overview-grid">
+      <!-- Defect Overview -->
+      <div class="grc-overview-card grc-defect-overview">
+        <div class="grc-do-icon">Defect</div>
+        <div class="grc-do-body">
+          <div class="grc-do-label">Defect Overview</div>
+          <div class="grc-do-count" id="grc-total">—</div>
+          <div class="grc-do-sub">Total: project = CP AND issuetype = Bug &nbsp;|&nbsp; Resolved: status = Integrated</div>
+        </div>
+        <div class="grc-do-pills">
+          <div class="grc-do-pill"><div class="grc-do-pill-val" id="grc-resolved">—</div><div class="grc-do-pill-lbl">Resolved</div></div>
+          <div class="grc-do-pill"><div class="grc-do-pill-val" id="grc-open">—</div><div class="grc-do-pill-lbl">Open</div></div>
+          <div class="grc-do-pill"><div class="grc-do-pill-val" id="grc-avg">—</div><div class="grc-do-pill-lbl">Avg hrs</div></div>
+        </div>
+      </div>
+
+      <!-- Risk Overview -->
+      <div class="grc-overview-card grc-risk-overview">
+        <div class="grc-do-icon">Risk</div>
+        <div class="grc-do-body">
+          <div class="grc-do-label">Risk Overview</div>
+          <div class="grc-do-count" id="grc-risk-total">—</div>
+          <div class="grc-do-sub">Open risk items from JIRA total risks query</div>
+        </div>
+        <div class="grc-do-pills">
+          <div class="grc-do-pill"><div class="grc-do-pill-val" id="grc-risk-high">—</div><div class="grc-do-pill-lbl">High</div></div>
+          <div class="grc-do-pill"><div class="grc-do-pill-val" id="grc-risk-medium">—</div><div class="grc-do-pill-lbl">Medium</div></div>
+          <div class="grc-do-pill"><div class="grc-do-pill-val" id="grc-risk-low">—</div><div class="grc-do-pill-lbl">Low</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI Cards removed – now shown in overview cards above -->
+
+    <!-- Sub-Status Grid (3-4 columns) -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:16px">
+      <!-- Priority Doughnut -->
+      <div class="grc-chart-wrap">
+        <div class="grc-section-hdr">Issues by Priority</div>
+        <div style="position:relative;height:200px"><canvas id="grcPriorityChart"></canvas></div>
+      </div>
+      <!-- Compliance % -->
+      <div class="grc-card accent-green" style="padding:20px">
+        <h3 style="margin:0 0 12px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px">Compliance %</h3>
+        <div class="grc-val grc-success" id="grc-comp-score" style="font-size:32px;font-weight:800;line-height:1;margin-bottom:12px">—</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Done vs Total</div>
+        <div class="grc-comp-bar"><div class="grc-comp-fill" id="grc-comp-fill" style="width:0%"></div></div>
+      </div>
+      <!-- High-Priority Violations -->
+      <div class="grc-card accent-orange" style="padding:20px">
+        <h3 style="margin:0 0 12px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px">High-Priority Violations</h3>
+        <div class="grc-val grc-danger" id="grc-violations" style="font-size:32px;font-weight:800;line-height:1">—</div>
+      </div>
+    </div>
+
+    <!-- Risk Heatmap -->
+    <div class="grc-heatmap-wrap">
+      <div class="grc-section-hdr">Risk Heatmap — Likelihood × Impact</div>
+      <div class="grc-sub">Rows: Likelihood 5→1 &nbsp;|&nbsp; Cols: Impact 1→5</div>
+      <div class="grc-heatmap-outer">
+        <div class="grc-axis-y" id="grc-axis-y"></div>
+        <div style="flex:1">
+          <div class="grc-heatmap" id="grc-heatmap"></div>
+          <div class="grc-axis-x" id="grc-axis-x"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Audit Table -->
+    <div class="grc-table-wrap">
+      <div id="grc-audit-header" style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.07)"><span class="grc-section-hdr">Audit Findings (latest 10)</span></div>
+      <table class="grc-table">
+        <thead><tr><th>Key</th><th>Summary</th><th>Status</th><th>Priority</th><th>Assignee</th></tr></thead>
+        <tbody id="grc-audit-body"></tbody>
+      </table>
+    </div>
+
+  </div><!-- /pane-grc -->
 
 </div><!-- /product-body -->
 
@@ -265,7 +448,7 @@
 <div class="excel-overlay" id="excel-overlay" onclick="if(event.target===this)closeExcelModal()">
   <div class="excel-modal">
     <div class="excel-hdr">
-      <h3>📥 Import Team from Excel / CSV</h3>
+      <h3>Import Team from Excel / CSV</h3>
       <button class="modal-close" onclick="closeExcelModal()">✕</button>
     </div>
     <div style="padding:20px">
@@ -285,12 +468,12 @@
 
       <!-- Template download row -->
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:10px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
-        <span style="font-size:18px">📄</span>
+        <span style="font-size:18px">FILE</span>
         <div style="flex:1">
           <div style="font-size:13px;font-weight:600">Need a template?</div>
           <div style="font-size:11px;color:var(--muted)">Download a pre-formatted CSV with correct column headers</div>
         </div>
-        <button class="btn btn-outline btn-sm" onclick="downloadExcelTemplate()">⬇ Template</button>
+        <button class="btn btn-outline btn-sm" onclick="downloadExcelTemplate()">Template</button>
       </div>
 
       <!-- Column mapping hint -->
@@ -316,7 +499,7 @@
       <!-- Action buttons -->
       <div style="display:flex;gap:8px;justify-content:flex-end">
         <button class="btn btn-outline" onclick="closeExcelModal()">Cancel</button>
-        <button class="btn btn-primary" id="excel-import-btn" style="display:none" onclick="importExcelMembers()">✅ Import Members</button>
+        <button class="btn btn-primary" id="excel-import-btn" style="display:none" onclick="importExcelMembers()">Import Members</button>
       </div>
 
     </div>
@@ -367,7 +550,7 @@ function buildSwitcher(){
 
 /* ── Hero ─────────────────────────────────────────────────────── */
 function renderHero(){
-  document.getElementById('product-hero').style.background=`linear-gradient(135deg,${P.color}33 0%,var(--qx-navy) 40%,#1a0a6e 100%)`;
+  document.getElementById('product-hero').style.background=`linear-gradient(135deg,#3A00F5,#2200cc 80%)`;
   document.getElementById('hero-badge').style.background=P.color;
   document.getElementById('hero-badge').textContent=P.abbr;
   document.getElementById('hero-name').textContent=P.name;
@@ -389,9 +572,10 @@ function renderHero(){
 
 /* ── Tabs ─────────────────────────────────────────────────────── */
 const TABS=[
-  {id:'overview',  label:'📊 Overview'},
-  {id:'team',      label:'👥 Team'},
-  {id:'jira',      label:'🔗 JIRA'}
+  {id:'overview',  label:'Overview'},
+  {id:'team',      label:'Team'},
+  {id:'jira',      label:'JIRA'},
+  {id:'grc',       label:'GRC Dashboard'}
 ];
 function renderTabs(){
   document.getElementById('ptabs').innerHTML = TABS.map(t=>`<button class="ptab${t.id==='overview'?' active':''}" onclick="activateTab('${t.id}')">${t.label}</button>`).join('');
@@ -400,36 +584,266 @@ function activateTab(id){
   document.querySelectorAll('.ptab').forEach(b=>b.classList.toggle('active',b.textContent.includes(TABS.find(t=>t.id===id)?.label||id)));
   document.querySelectorAll('.ptab-pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+id));
   history.replaceState(null,'','product.html?id='+PID+'#'+id);
+  if(id==='grc') grcLoad();
+}
+
+/* ── GRC Dashboard ───────────────────────────────────────────── */
+const GRC_API = 'http://localhost:3000/api/dashboard';
+let _grcChart = null;
+let _grcData  = [];
+
+async function grcLoad(){
+  if(typeof _jiraData !== 'undefined' && Array.isArray(_jiraData.defects) && _jiraData.defects.length){
+    _syncGrcFromJiraDefects(_jiraData.defects,
+      _jiraConnected ? 'JIRA live' : 'Cached JIRA',
+      _jiraData.defectsTotal  ?? null,
+      _jiraData.resolvedTotal ?? null);
+    return;
+  }
+  const badge = document.getElementById('grc-conn-badge');
+  badge.className = 'grc-conn-badge';
+  badge.textContent = 'Connecting...';
+  try {
+    const res = await fetch(GRC_API);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const d = await res.json();
+    _grcData = Array.isArray(d.issues) ? d.issues : [];
+    badge.className = 'grc-conn-badge ok';
+    badge.textContent = '✓ Live — '+new Date().toLocaleTimeString();
+  } catch(e) {
+    // Fall back to JIRA data already loaded in the page
+    _grcData = (typeof _jiraData !== 'undefined' && Array.isArray(_jiraData.defects)) ? _jiraData.defects : [];
+    badge.className = 'grc-conn-badge err';
+    badge.textContent = 'Warning: Offline — using cached data';
+  }
+  _grcBuildKPI(_grcData);
+  _grcBuildRisk(_grcData);
+  _grcBuildAudit(_grcData);
+  _grcBuildCompliance(_grcData);
+}
+
+function _grcBuildKPI(d, resolvedOverride=null, totalOverride=null){
+  const total    = totalOverride    !== null ? totalOverride
+    : d.length;
+  const resolved = resolvedOverride !== null ? resolvedOverride
+    : d.filter(x => x.resolved || String(x.status||x._status||'').toLowerCase()==='integrated').length;
+  const open     = Math.max(0, total - resolved);
+  const avgHrs   = resolved ? d.reduce((a,c)=>{
+    if(!c.resolved) return a;
+    const diff = new Date(c.resolved) - new Date(c.created);
+    return a + (isNaN(diff) ? 0 : diff/3600000);
+  }, 0) / resolved : 0;
+
+  document.getElementById('grc-total').textContent    = total    || '—';
+  document.getElementById('grc-resolved').textContent = resolved || '—';
+  document.getElementById('grc-open').textContent     = open     || '—';
+  document.getElementById('grc-avg').textContent      = total ? avgHrs.toFixed(1) : '—';
+
+  const p = {High:0, Medium:0, Low:0};
+  d.forEach(i => {
+    const pr = i.priority || i._priority || 'Low';
+    if(p[pr] !== undefined) p[pr]++; else p['Low']++;
+  });
+
+  if(_grcChart) _grcChart.destroy();
+  const ctx = document.getElementById('grcPriorityChart');
+  if(ctx && total) {
+    _grcChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(p),
+        datasets: [{ data: Object.values(p), backgroundColor: ['#EF4444','#E97132','#4EA72E'], borderColor: ['#fff','#fff','#fff'], borderWidth: 2 }]
+      },
+      options: { cutout: '68%', plugins: { legend: { position: 'bottom', labels: { color: '#64748b', font: { size: 11, weight: '600' }, padding: 16, boxWidth: 10, boxHeight: 10 } } } }
+    });
+  }
+}
+
+function _grcBuildRisk(d){
+  const map  = document.getElementById('grc-heatmap');
+  const axY  = document.getElementById('grc-axis-y');
+  const axX  = document.getElementById('grc-axis-x');
+  if(!map) return;
+  map.innerHTML = ''; axY.innerHTML = ''; axX.innerHTML = '';
+
+  for(let i=5; i>=1; i--){
+    axY.innerHTML += `<span>${i}</span>`;
+    for(let j=1; j<=5; j++){
+      const score = i * j;
+      const cls   = score > 12 ? 'grc-high' : score > 6 ? 'grc-medium' : 'grc-low';
+      const count = d.filter(x=>{
+        const pr = (x.priority||x._priority||'').toLowerCase();
+        return (i>=4 && pr==='high') || (i===3 && pr==='medium') || (i<=2 && pr==='low');
+      }).length;
+      map.innerHTML += `<div class="grc-cell ${cls}" title="L${i} × I${j} = ${score}">${count||''}</div>`;
+    }
+  }
+  for(let j=1; j<=5; j++) axX.innerHTML += `<span>${j}</span>`;
+}
+
+function _grcBuildAudit(d){
+  const tb = document.getElementById('grc-audit-body');
+  if(!tb) return;
+  
+  // Get the JIRA config to build links
+  const cfg = getJiraConfig(PID) || {};
+  const jiraDomain = cfg.domain || JIRA_CFG.domain || 'qorix.atlassian.net';
+  const jiraBaseUrl = `https://${jiraDomain}/browse`;
+  
+  // Build summary stats
+  const total = d.length;
+  const high = d.filter(i=>(i.priority||i._priority||'').toLowerCase()==='high').length;
+  const medium = d.filter(i=>(i.priority||i._priority||'').toLowerCase()==='medium').length;
+  const low = d.filter(i=>(i.priority||i._priority||'').toLowerCase()==='low').length;
+  const open = d.filter(i=>(i.status||i._status||'').toLowerCase()!=='integrated'&&(i.status||i._status||'').toLowerCase()!=='done').length;
+  
+  // Update header with summary
+  const headerEl = document.getElementById('grc-audit-header');
+  if(headerEl) {
+    headerEl.innerHTML = `<span class="grc-section-hdr">Audit Findings (latest 10)</span>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;display:flex;gap:12px">
+        <span><strong>${total}</strong> total</span>
+        <span style="color:#ef4444"><strong>${high}</strong> High</span>
+        <span style="color:#f59e0b"><strong>${medium}</strong> Medium</span>
+        <span style="color:#22c55e"><strong>${low}</strong> Low</span>
+        <span><strong>${open}</strong> open</span>
+      </div>`;
+  }
+  
+  const priorityColor = {High:'grc-danger', Medium:'grc-warning', Low:'grc-success'};
+  tb.innerHTML = d.slice(0,10).map(i=>{
+    const key      = i.key  || i.id  || '—';
+    const summary  = i.summary || i.title || i.name || key;
+    const status   = i.status || i._status || '—';
+    const priority = i.priority || i._priority || '—';
+    const assignee = i.assignee || '—';
+    const priorityPill = `<span class="grc-priority-pill grc-priority-${priority}">${priority}</span>`;
+    const keyLink = key !== '—' ? `<a href="${jiraBaseUrl}/${key}" target="_blank" style="color:var(--qx-blue);text-decoration:none;font-weight:700;cursor:pointer">${key}</a>` : '—';
+    return `<tr><td>${keyLink}</td><td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${summary}</td><td>${status}</td><td>${priorityPill}</td><td>${assignee}</td></tr>`;
+  }).join('');
+  if(!d.length) tb.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px">No data — connect to GRC API or JIRA</td></tr>';
+}
+
+function _grcBuildCompliance(d, resolvedOverride=null, totalOverride=null){
+  const total = totalOverride    !== null ? totalOverride    : d.length;
+  if(!total){ return; }
+  const done  = resolvedOverride !== null ? resolvedOverride
+    : d.filter(x=>String(x.status||x._status||'').toLowerCase()==='integrated').length;
+  const pct  = Math.round((done / total) * 100);
+  const viol = d.filter(x=>(x.priority||x._priority||'').toLowerCase()==='high').length;
+
+  document.getElementById('grc-comp-score').textContent  = pct + '%';
+  document.getElementById('grc-violations').textContent  = viol;
+  const fill = document.getElementById('grc-comp-fill');
+  if(fill) fill.style.width = pct + '%';
+}
+
+/* Auto-refresh GRC every 60 s when the pane is active */
+setInterval(()=>{ if(document.getElementById('pane-grc')?.classList.contains('active')) grcLoad(); }, 60000);
+
+function isOpenIssueStatus(issue){
+  const statusCat = String(issue?._statusCat || '').toLowerCase();
+  const status = String(issue?.status || issue?._status || '').toLowerCase();
+  return statusCat !== 'done' && statusCat !== 'closed' && status !== 'done' && status !== 'closed';
+}
+
+function getNonComplianceItems(data){
+  if(!data) return [];
+  const candidates =
+    (Array.isArray(data.ncs) && data.ncs.length ? data.ncs : null) ||
+    (Array.isArray(data.nc) && data.nc.length ? data.nc : null) ||
+    (Array.isArray(data.sev0Risks) && data.sev0Risks.length ? data.sev0Risks : null) ||
+    [];
+  return candidates.filter(isOpenIssueStatus);
+}
+
+function getTotalRiskItems(data){
+  if(!data) return [];
+  const candidates =
+    (Array.isArray(data.risks) && data.risks.length ? data.risks : null) ||
+    (Array.isArray(data.sev0Risks) && data.sev0Risks.length ? data.sev0Risks : null) ||
+    [];
+  return candidates.filter(isOpenIssueStatus);
 }
 
 /* ── Overview ─────────────────────────────────────────────────── */
 function renderOverview(){
+  const nonCompliances = getNonComplianceItems(_jiraData);
+  const totalRiskCount = getTotalRiskItems(_jiraData).length;
+  const sev0RiskCount = nonCompliances.length;
+  const highestDefectCount = (_jiraData.defects || []).filter(d => (d.priority || '').toLowerCase() === 'highest').length;
+
   // KPIs
   const kpis=[
     {val:P.users,    label:'Users',      accent:QX.green},
-    {val:P.adoption, label:'Adoption',   accent:QX.purple},
-    {val:P.nps+'',   label:'NPS Score',  accent:QX.orange},
-    {val:productFTE(PID)+' FTE',label:'Team Size', accent:QX.steel}
+    {val:totalRiskCount, label:'Total Risks', accent:'#ef4444'},
+    {val:sev0RiskCount, label:'Non-Compliance ( Sev -0 )', accent:QX.orange},
+    {val:productFTE(PID)+' FTE',label:'Team Size', accent:QX.steel},
+    {val:highestDefectCount, label:'Highest Defects', accent:'#991b1b'}
   ];
   document.getElementById('kpi-strip').innerHTML=kpis.map(k=>`
     <div class="ks-card">
-      <div class="ks-accent" style="background:${k.accent}"></div>
+      <div class="ks-accent" style="background:#3C08F5"></div>
       <div class="kv">${k.val}</div>
       <div class="kl">${k.label}</div>
     </div>`).join('');
 
+  // Team members highlighted box
+  const members = (TEAM[PID]||[]);
+  const uniqueMembers = {};
+  members.forEach(m => {
+    const key = m.name.toLowerCase().trim();
+    if(!uniqueMembers[key]) {
+      uniqueMembers[key] = {name: m.name, roles: [], totalAlloc: 0, totalAsk: 0};
+    }
+    uniqueMembers[key].roles.push(m.role);
+    uniqueMembers[key].totalAlloc += m.allocation;
+    uniqueMembers[key].totalAsk += (m.askAllocation || m.allocation);
+  });
+  
+  const teamMembersHtml = Object.values(uniqueMembers).length > 0 ? `
+    <div class="section-hdr"><h3>Team Members</h3></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:16px">
+      ${Object.values(uniqueMembers).map(m => `
+        <div class="card" style="padding:14px;border-left:4px solid var(--qx-blue);background:#f8fafc">
+          <div style="margin-bottom:12px">
+            <div style="font-weight:700;font-size:14px;color:var(--heading)">${m.name}</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px">${m.roles.join(', ')}</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="padding:10px;background:#fff;border-radius:6px;border:1px solid var(--border)">
+              <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:4px">Ask %</div>
+              <div style="font-size:16px;font-weight:800;color:#f59e0b">${m.totalAsk}%</div>
+            </div>
+            <div style="padding:10px;background:#fff;border-radius:6px;border:1px solid var(--border)">
+              <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:4px">Allocated %</div>
+              <div style="font-size:16px;font-weight:800;color:#3C08F5">${m.totalAlloc}%</div>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  ` : '';
+
+  document.getElementById('overview-alerts').innerHTML = teamMembersHtml;
+
   // Alerts — sourced from JIRA cache
+  const cfg = getJiraConfig(PID) || {};
+  const jiraDomain = cfg.domain || JIRA_CFG.domain || 'qorix.atlassian.net';
+  const jiraBaseUrl = `https://${jiraDomain}/browse`;
   const riskAlerts = (_jiraData.risks||[]).filter(r=>r.status!=='Done'&&r.status!=='Closed').slice(0,3);
-  const ncAlerts   = (_jiraData.nc||[]).filter(c=>c.status!=='Done'&&c.status!=='Closed').slice(0,3);
+  const ncAlerts   = nonCompliances.slice(0,3);
   const alerts = [
-    ...riskAlerts.map(r=>({type:'danger', icon:'⚠️', title:'Risk: '+r.title, desc:`${r.key} · ${r.priority} · ${r.assignee}`})),
-    ...ncAlerts.map(c=>({type:'warning', icon:'🛡️', title:'NC: '+c.title,   desc:`${c.key} · ${c.status}`}))
+    ...riskAlerts.map(r=>({type:'danger', icon:'!', title:'Risk: '+r.title, key:r.key, keyUrl:`${jiraBaseUrl}/${r.key}`, desc:`${r.priority} · ${r.assignee}`})),
+    ...ncAlerts.map(c=>({type:'warning', icon:'NC', title:'NC: '+c.title, key:c.key, keyUrl:`${jiraBaseUrl}/${c.key}`, desc:`${c.status}`}))
   ];
-  document.getElementById('overview-alerts').innerHTML = alerts.length ? `
+  const alertsHtml = alerts.length ? `
     <div class="section-hdr"><h3>Product Flags</h3></div>
     <div style="display:flex;flex-direction:column;gap:8px">
-      ${alerts.map(a=>`<div class="alert alert-${a.type}"><div class="alert-icon">${a.icon}</div><div class="alert-body"><div class="at">${a.title}</div><div class="ad">${a.desc}</div></div></div>`).join('')}
-    </div>` : '<div class="alert alert-info"><div class="alert-icon">✅</div><div class="alert-body"><div class="at">No critical flags</div><div class="ad">This product has no high-severity open issues.</div></div></div>';
+      ${alerts.map(a=>`<div class="alert alert-${a.type}"><div class="alert-icon">${a.icon}</div><div class="alert-body"><div class="at">${a.title}</div><div class="ad"><a href="${a.keyUrl}" target="_blank" style="color:var(--qx-blue);text-decoration:none;font-weight:600">${a.key}</a> · ${a.desc}</div></div></div>`).join('')}
+    </div>` : '<div class="alert alert-info"><div class="alert-icon">OK</div><div class="alert-body"><div class="at">No critical flags</div><div class="ad">This product has no high-severity open issues.</div></div></div>';
+  
+  document.getElementById('overview-alerts').innerHTML += alertsHtml;
 }
 
 /* ── Team ─────────────────────────────────────────────────────── */
@@ -441,102 +855,6 @@ const TYPE_TXT   = {'safety-manager':'#991b1b','security-manager':'#1d4ed8','qua
 
 function renderTeam(){
   const members = (TEAM[PID]||[]).map((m,i)=>({...m,_idx:i}));
-
-  /* ── Role summary strip ───────────────────────────────────── */
-  const roleDefs = [
-    {key:'safety-manager',   label:'Safety Manager',    color:'#dc2626'},
-    {key:'security-manager', label:'Security Manager',  color:'#1d4ed8'},
-    {key:'quality-manager',  label:'Quality Manager',   color:'#15803d'},
-    {key:'quality-consultant',label:'Quality Consultant',color:'#7e22ce'},
-    {key:'safety-consultant',label:'Safety Consultant', color:'#c2410c'}
-  ];
-  document.getElementById('role-summary').innerHTML = roleDefs.map(r=>{
-    const cnt = members.filter(m=>m.type===r.key).length;
-    return `<div class="ks-card"><div class="ks-accent" style="background:${r.color}"></div><div class="kv">${cnt}</div><div class="kl">${r.label}</div></div>`;
-  }).join('');
-
-  /* ── Group by name (case-insensitive) ────────────────────── */
-  const groupMap = {};
-  members.forEach(m => {
-    const key = m.name.trim().toLowerCase();
-    if(!groupMap[key]) groupMap[key] = {name:m.name, initials:m.initials, entries:[]};
-    groupMap[key].entries.push(m);
-  });
-  const groups = Object.values(groupMap);
-
-  /* ── Grouped member cards ────────────────────────────────── */
-  document.getElementById('team-grid').innerHTML = groups.map(g => {
-    const total   = g.entries.reduce((s,e)=>s+e.allocation, 0);
-    const isOver  = total > 100;
-    const isShared= g.entries.some(e=>e.shared);
-    const mainType= g.entries[0].type;
-    const allocColor = isOver ? '#ef4444' : total===100 ? '#22c55e' : '#f59e0b';
-
-    const roleRows = g.entries.map(e => {
-      const tColor = TC[e.type]||QX.blue;
-      return `
-      <div class="member-role-row">
-        <span style="width:7px;height:7px;border-radius:50%;background:${tColor};flex-shrink:0"></span>
-        <div style="flex:1;min-width:0">
-          <div class="role-row-label" title="${e.role}">${e.role}</div>
-          <div style="display:flex;align-items:center;gap:5px;margin-top:2px">
-            <span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;background:${TYPE_BG[e.type]};color:${TYPE_TXT[e.type]}">${TYPE_LABEL[e.type]}</span>
-            ${e.shared ? '<span class="shared-tag" style="font-size:9px;padding:1px 5px">Shared</span>' : ''}
-          </div>
-        </div>
-        <!-- Allocation % editable column -->
-        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
-          <div class="progress-wrap" style="width:40px;height:4px"><div class="progress-fill" style="width:${Math.min(e.allocation,100)}%;background:${tColor}"></div></div>
-          <input class="alloc-input" type="number" min="1" max="100" value="${e.allocation}"
-            title="Edit allocation %"
-            onchange="updateMemberAlloc(${e._idx},this.value)"
-            oninput="this.style.borderColor=''"/>
-          <span style="font-size:11px;color:var(--muted);font-weight:600">%</span>
-        </div>
-        <!-- Actions -->
-        <button class="icon-btn" title="Edit role" onclick="editMember(${e._idx})">✏</button>
-        <button class="icon-btn danger" title="Remove this role" onclick="removeMemberDirect(${e._idx})">✕</button>
-      </div>`;
-    }).join('');
-
-    return `
-    <div class="member-card">
-      <div class="member-card-hdr">
-        <div class="avatar avatar-md" style="background:${TC[mainType]||QX.blue}">${g.initials}</div>
-        <div style="flex:1;min-width:0">
-          <div class="member-name truncate">${g.name}</div>
-          <div class="member-total" style="color:${allocColor}">
-            ${g.entries.length > 1 ? g.entries.length+' roles · ' : ''}Total: <strong>${total}%</strong>
-            ${isOver ? ' ⚠ Over-allocated' : total===100 ? ' ✅' : ''}
-          </div>
-        </div>
-        <button class="btn btn-primary btn-sm" style="font-size:11px;padding:4px 10px;flex-shrink:0"
-          onclick="addRoleFor(${JSON.stringify(g.name)},${JSON.stringify(g.initials)})">+ Role</button>
-      </div>
-      ${roleRows}
-      <div class="member-footer">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-          <span style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Allocation</span>
-          <span style="font-size:12px;font-weight:800;color:${allocColor}">${total}%</span>
-        </div>
-        <div class="progress-wrap" style="height:5px">
-          <div class="progress-fill" style="width:${Math.min(total,100)}%;background:${isOver?'#ef4444':allocColor}"></div>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-
-  /* ── Shared resources callout ────────────────────────────── */
-  const sharedMembers = members.filter(m=>m.shared);
-  const callout = document.getElementById('shared-callout');
-  if(callout) callout.innerHTML = sharedMembers.length ? `
-    <div class="alert alert-warning mt-12">
-      <div class="alert-icon">⚠️</div>
-      <div class="alert-body">
-        <div class="at">${sharedMembers.length} Shared Allocation${sharedMembers.length>1?'s':''}</div>
-        <div class="ad">${sharedMembers.map(m=>`${m.name} (${m.role}) @${m.allocation}%`).join(' · ')} — verify no cross-product overallocation</div>
-      </div>
-    </div>` : '';
 
   /* ── Full roster table ───────────────────────────────────── */
   document.getElementById('team-table').innerHTML = members.map(m => `<tr>
@@ -588,14 +906,14 @@ function renderTeam(){
 function renderActivity(){
   const items=ACTIVITY.filter(a=>a.product===PID);
   const typeColor={risk:'#ef4444',roadmap:QX.blue,team:QX.sky,flag:'#f59e0b',financial:QX.orange,compliance:'#22c55e',milestone:QX.blue};
-  const typeIcon={risk:'⚠️',roadmap:'🗺️',team:'👥',flag:'🚩',financial:'💰',compliance:'🛡️',milestone:'🏁'};
+  const typeIcon={risk:'!',roadmap:'>',team:'@',flag:'*',financial:'$',compliance:'NC',milestone:'+'};
   document.getElementById('activity-timeline').innerHTML=items.length?items.map((a,i)=>`
     <div class="tl-item">
       <div class="tl-dot-wrap">
         <div class="tl-dot" style="background:${typeColor[a.type]||QX.blue}"></div>
       </div>
       <div style="flex:1">
-        <div class="tl-ts">${typeIcon[a.type]||'📌'} ${a.ts}</div>
+        <div class="tl-ts">${typeIcon[a.type]||'•'} ${a.ts}</div>
         <div class="tl-msg">${a.msg}</div>
       </div>
     </div>`).join(''):
@@ -760,11 +1078,11 @@ function saveMember(){
       askAllocation: Math.max(0,Math.min(100,+document.getElementById('nm-ask').value||allocation)),
       shared:       !!document.getElementById('nm-shared').value
     });
-    showToast('✅ Member added');
+    showToast('Success: Member added');
   } else {
     const name     = document.getElementById('ep-name').value;
     const initials = document.getElementById('ep-init').value || '??';
-    if(!name){ showToast('⚠️ Select a person first'); return; }
+    if(!name){ showToast('Warning: Select a person first'); return; }
     const allocation = Math.max(1,Math.min(100,+document.getElementById('ep-alloc').value||20));
     TEAM[PID].push({
       name, initials,
@@ -774,9 +1092,9 @@ function saveMember(){
       askAllocation: Math.max(0,Math.min(100,+document.getElementById('ep-ask').value||allocation)),
       shared:       !!document.getElementById('ep-shared').value
     });
-    showToast('✅ Role added for ' + name);
+    showToast('Success: Role added for ' + name);
   }
-  closeModal(); persistData(); renderTeam();
+  closeModal(); persistData(); renderTeam(); renderOverview();
 }
 
 /* ── Add role directly from card "+ Role" button ──────────────── */
@@ -816,7 +1134,7 @@ function addRoleFor(name, initials){
             style="border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;width:100%;font-size:13px;outline:none"/>
           <span style="font-size:12px;color:var(--muted)">/100%</span>
         </div>
-        ${total+20>100?`<div style="font-size:11px;color:#f59e0b;margin-top:3px">⚠ Total may exceed 100% — review carefully</div>`:''}
+        ${total+20>100?`<div style="font-size:11px;color:#f59e0b;margin-top:3px">Warning: Total may exceed 100% — review carefully</div>`:''}
       </div>
       <div class="form-field">
         <label>Ask % <span style="font-size:10px;color:var(--muted)">(requested)</span></label>
@@ -847,8 +1165,8 @@ function saveRoleFor(name, initials){
     askAllocation: Math.max(0,Math.min(100,+document.getElementById('ar-ask').value||allocation)),
     shared:       !!document.getElementById('ar-shared').value
   });
-  closeModal(); persistData(); renderTeam();
-  showToast(`✅ New role added for ${name}`);
+  closeModal(); persistData(); renderTeam(); renderOverview();
+  showToast(`Success: New role added for ${name}`);
 }
 
 /* ── Edit a single role entry ─────────────────────────────────── */
@@ -912,19 +1230,19 @@ function applyMemberEdit(i){
   TEAM[PID][i].allocation   = Math.max(1,Math.min(100,+document.getElementById('em-alloc').value||TEAM[PID][i].allocation));
   TEAM[PID][i].askAllocation= Math.max(0,Math.min(100,+document.getElementById('em-ask').value||TEAM[PID][i].askAllocation||TEAM[PID][i].allocation));
   TEAM[PID][i].shared       = !!document.getElementById('em-shared').value;
-  closeModal(); persistData(); renderTeam(); showToast('✅ Role updated');
+  closeModal(); persistData(); renderTeam(); renderOverview(); showToast('Success: Role updated');
 }
 
 /* ── Remove helpers ───────────────────────────────────────────── */
 function removeMember(i){
   TEAM[PID].splice(i,1);
-  closeModal(); persistData(); renderTeam(); showToast('Role removed');
+  closeModal(); persistData(); renderTeam(); renderOverview(); showToast('Role removed');
 }
 
 function removeMemberDirect(i){
   const name = TEAM[PID][i]?.name;
   TEAM[PID].splice(i,1);
-  persistData(); renderTeam();
+  persistData(); renderTeam(); renderOverview();
   showToast(`✕ Removed role for ${name||'member'}`);
 }
 
@@ -933,20 +1251,20 @@ function updateMemberAlloc(i, val){
   const v = Math.max(1, Math.min(100, parseInt(val)||1));
   if(TEAM[PID][i]) TEAM[PID][i].allocation = v;
   persistData(); markChanged();
-  renderTeam();
+  renderTeam(); renderOverview();
 }
 
 function updateMemberAskAlloc(i, val){
   const v = Math.max(0, Math.min(100, parseInt(val)||0));
   if(TEAM[PID][i]) TEAM[PID][i].askAllocation = v;
   persistData(); markChanged();
-  renderTeam();
+  renderTeam(); renderOverview();
 }
 
 /* ── Save / Export ────────────────────────────────────────────── */
 let _changed=false;
 function markChanged(){ _changed=true; document.title='• '+P.name+' — Qorix Portal'; }
-function saveChanges(){ _changed=false; persistData(); document.title=P.name+' — Qorix Portal'; showToast('✅ Changes saved'); }
+function saveChanges(){ _changed=false; persistData(); document.title=P.name+' — Qorix Portal'; showToast('Success: Changes saved'); }
 function exportProduct(){
   const rows=[['Name','Role','Type','Allocation%','Ask%','Shared'],...(TEAM[PID]||[]).map(m=>[m.name,m.role,m.type,m.allocation,m.askAllocation||m.allocation,m.shared?'Yes':'No'])];
   const csv=rows.map(r=>r.join(',')).join('\n');
@@ -995,7 +1313,7 @@ function downloadExcelTemplate(){
   const a = document.createElement('a');
   a.href = url; a.download = 'qorix-team-template.csv'; a.click();
   URL.revokeObjectURL(url);
-  showToast('📄 Template downloaded');
+  showToast('Template downloaded');
 }
 
 function handleExcelDrop(e){
@@ -1008,7 +1326,7 @@ function handleExcelFile(file){
   if(!file) return;
   const ext = file.name.split('.').pop().toLowerCase();
   if(!['xlsx','xls','csv'].includes(ext)){
-    showToast('❌ Please upload .xlsx, .xls or .csv');
+    showToast('Error: Please upload .xlsx, .xls or .csv');
     return;
   }
   const reader = new FileReader();
@@ -1017,7 +1335,7 @@ function handleExcelFile(file){
     reader.readAsText(file);
   } else {
     reader.onload = e => {
-      if(!window.XLSX){ showToast('❌ Excel parser not loaded — use CSV instead'); return; }
+      if(!window.XLSX){ showToast('Error: Excel parser not loaded — use CSV instead'); return; }
       const wb = XLSX.read(e.target.result, {type:'binary'});
       const ws = wb.Sheets[wb.SheetNames[0]];
       const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
@@ -1058,7 +1376,7 @@ const TYPE_MAP = {
 };
 
 function _processExcelRows(rows){
-  if(!rows||rows.length < 2){ showToast('❌ File appears empty'); return; }
+  if(!rows||rows.length < 2){ showToast('Error: File appears empty'); return; }
   const headers = rows[0].map(h => String(h).toLowerCase().trim());
   const idx = k => headers.findIndex(h => h.includes(k));
 
@@ -1093,7 +1411,7 @@ function _processExcelRows(rows){
       };
     });
 
-  if(!_parsedMembers.length){ showToast('❌ No valid rows found'); return; }
+  if(!_parsedMembers.length){ showToast('Error: No valid rows found'); return; }
   _renderExcelPreview();
 }
 
@@ -1114,7 +1432,7 @@ function _renderExcelPreview(){
     ${_parsedMembers.slice(0,8).map(m=>`<tr>
       <td style="padding:7px 12px;border-bottom:1px solid var(--border);font-weight:500">${m.name}</td>
       <td style="padding:7px 12px;border-bottom:1px solid var(--border)">
-        <div style="width:26px;height:26px;border-radius:50%;background:${typeColor[m.type]||'#3C00FF'};color:#fff;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">${m.initials}</div>
+        <div style="width:26px;height:26px;border-radius:50%;background:${typeColor[m.type]||'#3A00F5'};color:#fff;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">${m.initials}</div>
       </td>
       <td style="padding:7px 12px;border-bottom:1px solid var(--border);color:var(--muted)">${m.role}</td>
       <td style="padding:7px 12px;border-bottom:1px solid var(--border)">
@@ -1129,7 +1447,7 @@ function _renderExcelPreview(){
 
   document.getElementById('excel-import-options').style.display = 'block';
   document.getElementById('excel-import-btn').style.display = 'inline-flex';
-  document.getElementById('excel-import-btn').textContent = `✅ Import ${_parsedMembers.length} Members`;
+  document.getElementById('excel-import-btn').textContent = `Import ${_parsedMembers.length} Members`;
 }
 
 function importExcelMembers(){
@@ -1142,79 +1460,202 @@ function importExcelMembers(){
     const newOnes = _parsedMembers.filter(m => !existingNames.has(m.name.toLowerCase()));
     TEAM[PID] = [...existing, ...newOnes];
     if(_parsedMembers.length - newOnes.length > 0)
-      showToast(`ℹ️ Skipped ${_parsedMembers.length - newOnes.length} duplicate names`);
+      showToast(`Info: Skipped ${_parsedMembers.length - newOnes.length} duplicate names`);
   }
   persistData();
   markChanged();
   closeExcelModal();
   renderTeam();
-  showToast(`✅ ${_parsedMembers.length} members imported successfully`);
+  renderOverview();
+  showToast(`Success: ${_parsedMembers.length} members imported successfully`);
 }
 
 /* ════════════════════════════════════════════════════════════════
-   JIRA SYNC — uses JIRA_CFG from data.js
+   JIRA SYNC — per-product config with JIRA API
    ════════════════════════════════════════════════════════════════ */
 const JIRA_PROXY = 'http://localhost:3000';
-let _jiraData = {risks:[], nc:[]};
+const JIRA_CACHE_SCHEMA = 2;
+let _jiraData = {risks:[], nc:[], defects:[], resolvedDefects:[], defectsTotal:null, resolvedTotal:null, sev0Risks:[], cacheSchema:JIRA_CACHE_SCHEMA, fetchedWithFetchAll:false};
+let _jiraConnected = false;
 
-function jiraProjectKey() {
-  return JIRA_CFG.projects[PID] || null;
+function _defectsJqlForProduct(cfg) {
+  const projectKey = cfg?.projectKey || '';
+  if (!projectKey) return `issuetype = Bug ORDER BY priority DESC, created DESC`;
+  return `project = "${projectKey}" AND issuetype = Bug ORDER BY priority DESC, created DESC`;
 }
 
-async function syncJira() {
-  const key = jiraProjectKey();
+function _resolvedJqlForProduct(cfg) {
+  const projectKey = cfg?.projectKey || '';
+  if (!projectKey) return `issuetype = Bug AND status = Integrated`;
+  return `project = "${projectKey}" AND issuetype = Bug AND status = Integrated`;
+}
+
+function _programNameForProduct() {
+  const byId = {
+    classic: 'Classic',
+    adaptive: 'Adaptive',
+    bootloader: 'Bootloader',
+    developer: 'Qorix Developer',
+    performance: 'Performance',
+    osporting: 'Qorix OS Porting',
+    lightweight: 'Qorix Light weight',
+    processdef: 'Qorix Process Definition'
+  };
+  return byId[PID] || (P?.name || '') || '<PROGRAM_NAME>';
+}
+
+function _nonComplianceJqlForProduct() {
+  const programName = _programNameForProduct();
+  return `issuetype = "Non-Compliance" AND "Programs" = "${programName}" AND "Severity" = "Sev-0" AND status != "DONE" ORDER BY created DESC`;
+}
+
+function _totalRiskJqlForProduct() {
+  const programName = _programNameForProduct();
+  return `issuetype = "Risk" AND "Programs" = "${programName}" AND (Priority = "Highest" OR Priority = "High") AND status != "DONE" ORDER BY created DESC`;
+}
+
+function _defaultJiraCfgForProduct() {
+  return {
+    domain: JIRA_CFG.domain || '',
+    email: JIRA_CFG.email || '',
+    token: JIRA_CFG.token || '',
+    projectKey: JIRA_CFG.projects[PID] || ''
+  };
+}
+
+function _normalizeJiraDomain(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  return raw.replace(/^https?:\/\//i, '').replace(/\/.*$/, '');
+}
+
+function _readJiraCfgFromForm() {
+  return {
+    domain: _normalizeJiraDomain(document.getElementById('jira-domain')?.value || ''),
+    email: (document.getElementById('jira-email')?.value || '').trim(),
+    token: (document.getElementById('jira-token')?.value || '').trim(),
+    projectKey: (document.getElementById('jira-project')?.value || '').trim().toUpperCase()
+  };
+}
+
+function _loadJiraCfgToForm() {
+  const saved = getJiraConfig(PID);
+  const cfg = saved || _defaultJiraCfgForProduct();
+  const domainEl = document.getElementById('jira-domain');
+  const emailEl = document.getElementById('jira-email');
+  const tokenEl = document.getElementById('jira-token');
+  const projectEl = document.getElementById('jira-project');
+  if(domainEl) domainEl.value = cfg.domain || '';
+  if(emailEl) emailEl.value = cfg.email || '';
+  if(tokenEl) tokenEl.value = cfg.token || '';
+  if(projectEl) projectEl.value = cfg.projectKey || '';
+  const info = document.getElementById('jira-project-info');
+  if(info) info.textContent = cfg.projectKey ? `Product ${P.name} mapped to project ${cfg.projectKey}` : `No JIRA project configured for ${P.name}`;
+  const preview = document.getElementById('jira-query-preview');
+  if(preview) preview.textContent = `Defects JQL: ${_defectsJqlForProduct(cfg)}\nResolved JQL: ${_resolvedJqlForProduct(cfg)}\nNon-Compliance JQL: ${_nonComplianceJqlForProduct()}\nTotal Risks JQL: ${_totalRiskJqlForProduct()}`;
+}
+
+function _setJiraStatus(text, tone='idle') {
   const pill = document.getElementById('jira-status-pill');
-  if(!key){
-    pill.style.background='#f1f5f9'; pill.style.color='var(--muted)';
-    pill.textContent='No JIRA project configured for this product';
-    document.getElementById('jira-risks-list').innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px">No JIRA project linked to this product.</div>';
-    document.getElementById('jira-nc-list').innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px">No JIRA project linked to this product.</div>';
-    return;
-  }
-  if(JIRA_CFG.email==='YOUR_EMAIL@qorix.com'||JIRA_CFG.token==='YOUR_JIRA_API_TOKEN'){
-    pill.style.background='#fff7ed'; pill.style.color='#c2410c';
-    pill.textContent='⚠ Fill in JIRA_CFG credentials in data.js';
-    return;
-  }
-  pill.style.background='#eff6ff'; pill.style.color='#1d4ed8';
-  pill.textContent='Syncing…';
-  document.getElementById('jira-project-info').textContent=`Project: ${key} · ${JIRA_CFG.domain}`;
-  try {
-    const [risks, nc] = await Promise.all([
-      _fetchJiraIssues(key,'Risk'),
-      _fetchJiraIssues(key,'Non-Conformance')
-    ]);
-    _jiraData = {risks, nc};
-    saveJiraData(PID, _jiraData);
-    pill.style.background='#f0fdf4'; pill.style.color='#15803d';
-    pill.textContent=`✅ Synced · ${risks.length} risks · ${nc.length} NCs`;
-    _renderJiraData();
-  } catch(e) {
-    pill.style.background='#fff5f5'; pill.style.color='#991b1b';
-    pill.textContent='❌ Sync failed — check proxy server & credentials';
-    console.error('[JIRA]', e);
-  }
+  if(!pill) return;
+  if(tone==='ok'){ pill.style.background='#f0fdf4'; pill.style.color='#15803d'; }
+  else if(tone==='warn'){ pill.style.background='#fff7ed'; pill.style.color='#c2410c'; }
+  else if(tone==='fail'){ pill.style.background='#fff5f5'; pill.style.color='#991b1b'; }
+  else if(tone==='run'){ pill.style.background='#eff6ff'; pill.style.color='#1d4ed8'; }
+  else { pill.style.background='#f1f5f9'; pill.style.color='var(--muted)'; }
+  pill.textContent = text;
 }
 
-async function _fetchJiraIssues(projectKey, issueType) {
-  const jql = encodeURIComponent(`project=${projectKey} AND issuetype="${issueType}" ORDER BY priority DESC`);
-  const url = `${JIRA_PROXY}/api/jira?domain=${JIRA_CFG.domain}&email=${encodeURIComponent(JIRA_CFG.email)}&token=${encodeURIComponent(JIRA_CFG.token)}&jql=${jql}&maxResults=50`;
-  const r = await fetch(url);
-  if(!r.ok) throw new Error(`HTTP ${r.status}`);
-  const data = await r.json();
-  return (data.issues||[]).map(i=>({
-    key:    i.key,
-    title:  i.fields.summary,
-    status: i.fields.status?.name||'Unknown',
-    priority: i.fields.priority?.name||'Medium',
-    assignee: i.fields.assignee?.displayName||'Unassigned',
-    created: i.fields.created?.slice(0,10)||'—',
-    url:    `https://${JIRA_CFG.domain}/browse/${i.key}`
-  }));
+function _syncGrcFromJiraDefects(defects, sourceLabel='JIRA', defectsTotal=null, resolvedTotal=null) {
+  _grcData = Array.isArray(defects) ? defects : [];
+  // Fall back to cached totals if not explicitly passed
+  const trueTotal    = defectsTotal  !== null ? defectsTotal
+    : (typeof _jiraData.defectsTotal  === 'number' ? _jiraData.defectsTotal  : _grcData.length);
+  const trueResolved = resolvedTotal !== null ? resolvedTotal
+    : (typeof _jiraData.resolvedTotal === 'number' ? _jiraData.resolvedTotal : null);
+  const badge = document.getElementById('grc-conn-badge');
+  if (badge) {
+    badge.className = 'grc-conn-badge ok';
+    badge.textContent = `✓ ${sourceLabel} — ${trueTotal} issues`;
+  }
+  _grcBuildKPI(_grcData, trueResolved, trueTotal);
+  _grcBuildRisk(_grcData);
+  _grcBuildAudit(_grcData);
+  _grcBuildCompliance(_grcData, trueResolved, trueTotal);
+  const riskItems = getTotalRiskItems(_jiraData);
+  const totalRiskEl = document.getElementById('grc-risk-total');
+  const riskHighEl = document.getElementById('grc-risk-high');
+  const riskMediumEl = document.getElementById('grc-risk-medium');
+  const riskLowEl = document.getElementById('grc-risk-low');
+  if(totalRiskEl) totalRiskEl.textContent = riskItems.length || 0;
+  if(riskHighEl) riskHighEl.textContent = riskItems.filter(r => String(r.priority || r._priority || '').toLowerCase() === 'high').length || 0;
+  if(riskMediumEl) riskMediumEl.textContent = riskItems.filter(r => String(r.priority || r._priority || '').toLowerCase() === 'medium').length || 0;
+  if(riskLowEl) riskLowEl.textContent = riskItems.filter(r => String(r.priority || r._priority || '').toLowerCase() === 'low' || !String(r.priority || r._priority || '').trim()).length || 0;
+}
+
+function clearJiraCache() {
+  try { localStorage.removeItem('qx_jira_data_' + PID); } catch(e) {}
+  _jiraData = {risks:[],nc:[],defects:[],resolvedDefects:[],defectsTotal:null,resolvedTotal:null,sev0Risks:[], cacheSchema:JIRA_CACHE_SCHEMA, fetchedWithFetchAll:false};
+  _jiraConnected = false;
+  _renderJiraData();
+  _syncGrcFromJiraDefects([], 'Cache cleared', null, null);
+  renderOverview();
+  _setJiraStatus('Cache cleared — reconnect to JIRA to reload data', 'warn');
+}
+
+function saveJiraConnection() {
+  const cfg = _readJiraCfgFromForm();
+  if(!cfg.domain || !cfg.email || !cfg.token){
+    _setJiraStatus('Fill domain, email and token before saving', 'warn');
+    return;
+  }
+  saveJiraConfig(PID, cfg);
+  _setJiraStatus('Configuration saved', 'ok');
+  const info = document.getElementById('jira-project-info');
+  if(info) info.textContent = cfg.projectKey ? `Product ${P.name} mapped to project ${cfg.projectKey}` : `No JIRA project configured for ${P.name}`;
+}
+
+async function connectJira() {
+  const cfg = _readJiraCfgFromForm();
+  if(!cfg.domain || !cfg.email || !cfg.token){
+    _setJiraStatus('Enter domain, email and token to connect', 'warn');
+    return;
+  }
+  saveJiraConfig(PID, cfg);
+  _setJiraStatus('Connecting to JIRA…', 'run');
+  try {
+    const r = await fetch(`${JIRA_PROXY}/api/jira/test`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({domain:cfg.domain,email:cfg.email,token:cfg.token})
+    });
+    const data = await r.json();
+    if(!r.ok || !data.ok) throw new Error(data.error || `HTTP ${r.status}`);
+    _jiraConnected = true;
+    _setJiraStatus(`Connected as ${data.user || cfg.email}`, 'ok');
+    await runDefectsJql();
+  } catch(e) {
+    _jiraConnected = false;
+    _setJiraStatus(`Connection failed: ${e.message}`, 'fail');
+  }
 }
 
 function _renderJiraData() {
   const sevColor = {Highest:'#991b1b',High:'#dc2626',Medium:'#d97706',Low:'#16a34a',Lowest:'#6b7280'};
+
+  function filterDefects(defects){
+    const filterEl = document.getElementById('jira-defect-filter');
+    const mode = (filterEl?.value || 'all').toLowerCase();
+    if(mode === 'all') return defects;
+    if(mode === 'resolved') return defects.filter(d => String(d.status||'').toLowerCase() === 'integrated' || String(d.status||'').toLowerCase() === 'done');
+    if(mode === 'open') return defects.filter(d => {
+      const st = String(d.status||'').toLowerCase();
+      return st !== 'integrated' && st !== 'done' && st !== 'closed';
+    });
+    if(mode === 'highest') return defects.filter(d => String(d.priority||'').toLowerCase() === 'highest');
+    if(mode === 'high') return defects.filter(d => String(d.priority||'').toLowerCase() === 'high');
+    return defects;
+  }
 
   function issueCard(issue){
     const c = sevColor[issue.priority]||'#64748b';
@@ -1232,31 +1673,191 @@ function _renderJiraData() {
     </div>`;
   }
 
-  const rEl = document.getElementById('jira-risks-list');
-  const nEl = document.getElementById('jira-nc-list');
-  document.getElementById('risk-count-jira').textContent = _jiraData.risks.length ? `${_jiraData.risks.length} items` : '';
-  document.getElementById('nc-count-jira').textContent   = _jiraData.nc.length    ? `${_jiraData.nc.length} items`    : '';
+  function dedupeIssues(items){
+    const seen = new Set();
+    return (Array.isArray(items) ? items : []).filter(issue => {
+      const key = String(issue?.key || '').trim();
+      if(!key) return true;
+      if(seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
 
-  rEl.innerHTML = _jiraData.risks.length
-    ? _jiraData.risks.map(issueCard).join('')
-    : '<div style="color:var(--muted);font-size:13px;padding:8px">No Risk issues found.</div>';
-  nEl.innerHTML = _jiraData.nc.length
-    ? _jiraData.nc.map(issueCard).join('')
-    : '<div style="color:var(--muted);font-size:13px;padding:8px">No Non-Conformance issues found.</div>';
+  const defectsEl = document.getElementById('jira-defects-list');
+  const defectsCountEl = document.getElementById('jira-defect-count');
+  const ncEl = document.getElementById('jira-nc-list');
+  const ncCountEl = document.getElementById('jira-nc-count');
+  const riskEl = document.getElementById('jira-risk-list');
+  const riskCountEl = document.getElementById('jira-risk-count');
+  const defects = dedupeIssues(_jiraData.defects || []);
+  const filteredDefects = dedupeIssues(filterDefects(defects));
+  const defectsTotalRaw = typeof _jiraData.defectsTotal === 'number' ? _jiraData.defectsTotal : defects.length;
+  const defectsTotal = Math.max(defectsTotalRaw, defects.length);
+  const nonCompliances = dedupeIssues(getNonComplianceItems(_jiraData));
+  const risks = dedupeIssues(getTotalRiskItems(_jiraData));
+  if(defectsCountEl) defectsCountEl.textContent = defectsTotal ? `${filteredDefects.length}/${defectsTotal} defects` : '';
+  if(ncCountEl) ncCountEl.textContent = nonCompliances.length ? `${nonCompliances.length} items` : '';
+  if(riskCountEl) riskCountEl.textContent = risks.length ? `${risks.length} items` : '';
+  if(defectsEl){
+    defectsEl.innerHTML = filteredDefects.length
+      ? filteredDefects.map(issueCard).join('')
+      : '<div style="color:var(--muted);font-size:13px;padding:8px">No defects loaded yet.</div>';
+  }
+  if(ncEl){
+    ncEl.innerHTML = nonCompliances.length
+      ? nonCompliances.map(issueCard).join('')
+      : '<div style="color:var(--muted);font-size:13px;padding:8px">No Non-Compliance items loaded yet.</div>';
+  }
+  if(riskEl){
+    riskEl.innerHTML = risks.length
+      ? risks.map(issueCard).join('')
+      : '<div style="color:var(--muted);font-size:13px;padding:8px">No Risk items loaded yet.</div>';
+  }
+}
+
+async function runDefectsJql() {
+  const cfg = _readJiraCfgFromForm();
+  if(!cfg.domain || !cfg.email || !cfg.token){
+    _setJiraStatus('Enter domain, email and token before running query', 'warn');
+    return;
+  }
+  if(!_jiraConnected){
+    _setJiraStatus('Connect to JIRA first', 'warn');
+    return;
+  }
+  _setJiraStatus('Running JIRA queries…', 'run');
+  try {
+    const defectsJql = _defectsJqlForProduct(cfg);
+    const resolvedJql = _resolvedJqlForProduct(cfg);
+    const nonComplianceJql = _nonComplianceJqlForProduct();
+    const totalRiskJql = _totalRiskJqlForProduct();
+    const PAGE = 100; // JIRA Cloud hard cap per page
+    const MAX_ISSUES = 2000;
+    const MAX_PAGES = Math.ceil(MAX_ISSUES / PAGE);
+
+    // Backend handles token-based pagination via fetchAll=true
+    async function fetchAllJql(jql, label) {
+      _setJiraStatus(`Fetching ${label}…`, 'run');
+      const resp = await fetch(`${JIRA_PROXY}/api/jira/search`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          domain: cfg.domain, email: cfg.email, token: cfg.token,
+          jql,
+          fields: 'summary,status,priority,assignee,created',
+          maxResults: MAX_ISSUES,
+          startAt: 0,
+          fetchAll: true
+        })
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || `HTTP ${resp.status}`);
+      const issues = Array.isArray(data.issues) ? data.issues : [];
+      return { issues, total: typeof data.total === 'number' ? data.total : issues.length };
+    }
+
+    // Run defects + resolved sequentially (with live status), then Non-Compliance and Total Risks
+    const defectsResult  = await fetchAllJql(defectsJql,  'Defects');
+    const resolvedResult = await fetchAllJql(resolvedJql, 'Resolved');
+    _setJiraStatus('Fetching Non-Compliance…', 'run');
+    const ncResp = await fetch(`${JIRA_PROXY}/api/jira/search`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        domain: cfg.domain, email: cfg.email, token: cfg.token,
+        jql: nonComplianceJql,
+        fields: 'summary,status,priority,assignee,created',
+        maxResults: 500,
+        startAt: 0,
+        fetchAll: true
+      })
+    });
+    const ncData = await ncResp.json();
+    if (!ncResp.ok) throw new Error(ncData.error || `HTTP ${ncResp.status}`);
+
+    _setJiraStatus('Fetching Total Risks…', 'run');
+    const totalRiskResp = await fetch(`${JIRA_PROXY}/api/jira/search`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        domain: cfg.domain, email: cfg.email, token: cfg.token,
+        jql: totalRiskJql,
+        fields: 'summary,status,priority,assignee,created',
+        maxResults: 500,
+        startAt: 0,
+        fetchAll: true
+      })
+    });
+    const totalRiskData = await totalRiskResp.json();
+    if (!totalRiskResp.ok) throw new Error(totalRiskData.error || `HTTP ${totalRiskResp.status}`);
+
+    const mapIssue = (i) => ({
+      key:      i.key,
+      title:    i.fields.summary,
+      status:   i.fields.status?.name  || 'Unknown',
+      priority: i.fields.priority?.name || 'Medium',
+      assignee: i.fields.assignee?.displayName || 'Unassigned',
+      created:  i.fields.created?.slice(0,10)  || '—',
+      url:      `https://${cfg.domain}/browse/${i.key}`
+    });
+
+    const uniqueByKey = (items) => {
+      const seen = new Set();
+      return (Array.isArray(items) ? items : []).filter(issue => {
+        const key = String(issue?.key || '').trim();
+        if(!key) return true;
+        if(seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    };
+
+    const defects         = uniqueByKey(defectsResult.issues.map(mapIssue));
+    const resolvedDefects = uniqueByKey(resolvedResult.issues.map(mapIssue));
+    const nonCompliances  = uniqueByKey((ncData.issues || []).map(mapIssue));
+    const totalRisks      = uniqueByKey((totalRiskData.issues || []).map(mapIssue));
+    const defectsTotalRaw = defectsResult.total  ?? defects.length;
+    const defectsTotal    = Math.max(defectsTotalRaw, defects.length);
+    const resolvedTotalRaw = resolvedResult.total ?? resolvedDefects.length;
+    const resolvedTotal   = Math.max(resolvedTotalRaw, resolvedDefects.length);
+
+    _jiraData = { ..._jiraData, defects, resolvedDefects, defectsTotal, resolvedTotal,
+            sev0Risks: nonCompliances, ncs: nonCompliances, nc: nonCompliances, risks: totalRisks,
+                  cacheSchema: JIRA_CACHE_SCHEMA, fetchedWithFetchAll: true };
+    saveJiraData(PID, _jiraData);
+    _renderJiraData();
+    _syncGrcFromJiraDefects(defects, 'JIRA query', defectsTotal, resolvedTotal);
+    renderOverview();
+    _setJiraStatus(`Total: ${defectsTotal} · Resolved (Integrated): ${resolvedTotal} · Open: ${defectsTotal - resolvedTotal} · Non-Compliances: ${nonCompliances.length} · Total Risks: ${totalRisks.length}`, 'ok');
+  } catch(e) {
+    const prefix = _jiraConnected ? 'Warning: Connected, but JQL failed:' : 'JQL failed:';
+    _setJiraStatus(`${prefix} ${e.message}`, _jiraConnected ? 'warn' : 'fail');
+  }
 }
 
 function _loadCachedJiraData() {
   const cached = getJiraData(PID);
-  if(cached){ _jiraData=cached; _renderJiraData(); }
-  const key = jiraProjectKey();
-  const info = document.getElementById('jira-project-info');
-  if(info) info.textContent = key ? `Project: ${key} · ${JIRA_CFG.domain}` : 'No JIRA project linked';
-  const pill = document.getElementById('jira-status-pill');
-  if(pill && cached){
-    pill.style.background='#f0fdf4'; pill.style.color='#15803d';
-    pill.textContent='Loaded from cache — click Sync to refresh';
-  } else if(pill && !key){
-    pill.textContent='No JIRA project configured for this product';
+  if(cached){
+    _jiraData={risks:[],nc:[],defects:[],resolvedDefects:[],defectsTotal:null,resolvedTotal:null,sev0Risks:[], cacheSchema:JIRA_CACHE_SCHEMA, fetchedWithFetchAll:false, ...cached};
+
+    const isLegacyOrStaleCache = _jiraData.cacheSchema !== JIRA_CACHE_SCHEMA || !_jiraData.fetchedWithFetchAll;
+    if (isLegacyOrStaleCache) {
+      clearJiraData(PID);
+      _jiraData = {risks:[],nc:[],defects:[],resolvedDefects:[],defectsTotal:null,resolvedTotal:null,sev0Risks:[], cacheSchema:JIRA_CACHE_SCHEMA, fetchedWithFetchAll:false};
+    }
+
+    _renderJiraData();
+    _syncGrcFromJiraDefects(_jiraData.defects || [], 'Cached JIRA',
+      _jiraData.defectsTotal  ?? null,
+      _jiraData.resolvedTotal ?? null);
+    renderOverview();
+  }
+  _loadJiraCfgToForm();
+  if(cached && (cached.defects||[]).length && _jiraData.fetchedWithFetchAll){
+    _setJiraStatus('Loaded cached defects. Connect to refresh.', 'ok');
+  } else {
+    _setJiraStatus('Not connected', 'idle');
   }
 }
 
