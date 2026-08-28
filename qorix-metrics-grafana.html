@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Qorix Metrics — Grafana Dashboard</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f5f6f8;
+    color: #1a1a1a;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: #fff;
+    border-bottom: 1px solid #e2e4e8;
+  }
+  header h1 { font-size: 18px; margin: 0; }
+  header .meta { font-size: 12px; color: #6b7280; margin-top: 2px; }
+  .actions { display: flex; gap: 8px; align-items: center; }
+  button, a.btn {
+    background: #f97316;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  button.secondary, a.btn.secondary { background: #e5e7eb; color: #1a1a1a; }
+  main { padding: 24px; max-width: 1100px; margin: 0 auto; }
+  .card {
+    background: #fff;
+    border: 1px solid #e2e4e8;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .status { font-size: 13px; color: #6b7280; margin-bottom: 12px; }
+  .status.error { color: #b91c1c; background: #fef2f2; border: 1px solid #fecaca; padding: 10px; border-radius: 6px; white-space: pre-wrap; }
+  img#dashboard-img { width: 100%; border-radius: 6px; display: block; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #f0f1f3; }
+  th { color: #6b7280; font-weight: 600; }
+  footer { text-align: center; font-size: 11px; color: #9ca3af; padding: 16px; }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #d1d5db; border-top-color: #f97316; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 6px; vertical-align: -2px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Qorix Metrics</h1>
+    <div class="meta" id="last-updated">Loading…</div>
+  </div>
+  <div class="actions">
+    <button class="secondary" id="refresh-btn">Refresh</button>
+    <a class="btn" id="open-grafana-link" href="#" target="_blank" rel="noopener">Open in Grafana</a>
+  </div>
+</header>
+
+<main>
+  <div class="card">
+    <div class="status" id="image-status">
+      <span class="spinner"></span> Rendering dashboard snapshot…
+    </div>
+    <img id="dashboard-img" style="display:none;" alt="Qorix Metrics dashboard snapshot">
+  </div>
+
+  <div class="card">
+    <div class="status" id="panels-status">
+      <span class="spinner"></span> Loading panel list…
+    </div>
+    <table id="panels-table" style="display:none;">
+      <thead><tr><th>Panel</th><th>Type</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</main>
+
+<footer>
+  Data source: <span id="footer-url"></span> · This file contains an embedded Grafana API token — keep it private.
+</footer>
+
+<script>
+const CONFIG = {
+  baseUrl: 'http://10.10.0.165:3000',
+  token: 'glsa_kYpyUjAadKZb2nWy0VNe222KPrzN00yw_733144d0',
+  uid: 'ad8m24h',
+  slug: 'qorix-metrics',
+  orgId: 1,
+  query: {
+    from: 'now-6h',
+    to: 'now',
+    timezone: 'browser',
+    'var-project': '1',
+    'var-version': '1',
+    'var-module': '1',
+    'var-branch': '$__all',
+    'var-item': '$__all',
+    'var-PIPELINE_ID': '$__all'
+  }
+};
+
+const authHeaders = { Authorization: 'Bearer ' + CONFIG.token };
+
+function qs(extra) {
+  const params = new URLSearchParams({ orgId: CONFIG.orgId, ...CONFIG.query, ...extra });
+  return params.toString();
+}
+
+function dashboardUrl() {
+  return `${CONFIG.baseUrl}/d/${CONFIG.uid}/${CONFIG.slug}?${qs()}`;
+}
+
+async function loadImage() {
+  const statusEl = document.getElementById('image-status');
+  const imgEl = document.getElementById('dashboard-img');
+  const renderUrl = `${CONFIG.baseUrl}/render/d/${CONFIG.uid}/${CONFIG.slug}?${qs({ width: 1500, height: 2200, tz: 'browser' })}`;
+  try {
+    const res = await fetch(renderUrl, { headers: authHeaders });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`HTTP ${res.status} ${res.statusText}\n${text.slice(0, 300)}`);
+    }
+    const blob = await res.blob();
+    if (!blob.type.startsWith('image/')) {
+      const text = await blob.text().catch(() => '');
+      throw new Error('Response was not an image (renderer may not be installed):\n' + text.slice(0, 300));
+    }
+    imgEl.src = URL.createObjectURL(blob);
+    imgEl.style.display = 'block';
+    statusEl.style.display = 'none';
+  } catch (err) {
+    statusEl.className = 'status error';
+    statusEl.textContent =
+      'Could not render dashboard snapshot: ' + err.message +
+      '\n\nThis usually means the Grafana image-renderer plugin is not installed on this instance. ' +
+      'Use "Open in Grafana" above to view it directly, or ask me to build a data-table view instead using /api/ds/query.';
+  }
+}
+
+async function loadPanels() {
+  const statusEl = document.getElementById('panels-status');
+  const tableEl = document.getElementById('panels-table');
+  const tbody = tableEl.querySelector('tbody');
+  try {
+    const res = await fetch(`${CONFIG.baseUrl}/api/dashboards/uid/${CONFIG.uid}`, { headers: authHeaders });
+    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+    const data = await res.json();
+    const panels = (data.dashboard && data.dashboard.panels) || [];
+    tbody.innerHTML = '';
+    panels.forEach(p => {
+      if (p.type === 'row') return;
+      const tr = document.createElement('tr');
+      const tdTitle = document.createElement('td');
+      tdTitle.textContent = p.title || '(untitled)';
+      const tdType = document.createElement('td');
+      tdType.textContent = p.type;
+      tr.appendChild(tdTitle);
+      tr.appendChild(tdType);
+      tbody.appendChild(tr);
+    });
+    tableEl.style.display = panels.length ? 'table' : 'none';
+    statusEl.style.display = panels.length ? 'none' : 'block';
+    if (!panels.length) statusEl.textContent = 'No panels found.';
+  } catch (err) {
+    statusEl.className = 'status error';
+    statusEl.textContent = 'Could not load panel list: ' + err.message;
+  }
+}
+
+async function loadAll() {
+  document.getElementById('open-grafana-link').href = dashboardUrl();
+  document.getElementById('footer-url').textContent = CONFIG.baseUrl;
+  document.getElementById('last-updated').textContent = 'Loading…';
+  document.getElementById('image-status').className = 'status';
+  document.getElementById('image-status').innerHTML = '<span class="spinner"></span> Rendering dashboard snapshot…';
+  document.getElementById('panels-status').className = 'status';
+  document.getElementById('panels-status').innerHTML = '<span class="spinner"></span> Loading panel list…';
+  await Promise.all([loadImage(), loadPanels()]);
+  document.getElementById('last-updated').textContent = 'Last loaded: ' + new Date().toLocaleString();
+}
+
+document.getElementById('refresh-btn').addEventListener('click', loadAll);
+loadAll();
+</script>
+</body>
+</html>

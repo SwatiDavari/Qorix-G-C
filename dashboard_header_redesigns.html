@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Qorix Bootloader — header redesign samples</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 40px 24px 80px;
+    background: #0e0e14;
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    color: #e5e5ea;
+  }
+  .page-title {
+    max-width: 960px;
+    margin: 0 auto 8px;
+    font-size: 22px;
+    font-weight: 600;
+  }
+  .page-sub {
+    max-width: 960px;
+    margin: 0 auto 40px;
+    font-size: 14px;
+    color: #9a9aa8;
+  }
+  .sample {
+    max-width: 960px;
+    margin: 0 auto 48px;
+  }
+  .sample-label {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .sample-label .num {
+    font-size: 13px;
+    font-weight: 600;
+    color: #7c8bff;
+    letter-spacing: 0.02em;
+  }
+  .sample-label .name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .sample-note {
+    font-size: 13px;
+    color: #9a9aa8;
+    margin: 10px 2px 0;
+    line-height: 1.6;
+  }
+  .header-card {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+  }
+  .nav-row {
+    padding: 14px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: rgba(0,0,0,0.28);
+  }
+  .nav-left { display: flex; align-items: center; gap: 22px; }
+  .brand { display: flex; align-items: center; gap: 9px; }
+  .brand-mark {
+    width: 26px; height: 26px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; color: #fff;
+  }
+  .brand-name { font-weight: 600; font-size: 15px; color: #fff; }
+  .nav-link { font-size: 13px; color: rgba(255,255,255,0.55); }
+  .nav-pill {
+    font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 8px;
+  }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-dropdown { font-size: 13px; color: rgba(255,255,255,0.6); }
+  .cta-btn {
+    font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 999px;
+    color: #08111f; display: flex; align-items: center; gap: 6px;
+  }
+
+  .banner-row {
+    padding: 26px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+  .banner-left { display: flex; gap: 18px; }
+  .logo-tile {
+    width: 54px; height: 54px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; color: #fff; flex-shrink: 0;
+  }
+  .badge-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .status-pill {
+    font-size: 11px; font-weight: 600; padding: 4px 11px; border-radius: 999px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .type-pill {
+    font-size: 11px; font-weight: 600; padding: 4px 11px; border-radius: 999px;
+    background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); color: #fff;
+  }
+  .meta-text { font-size: 12px; color: rgba(255,255,255,0.68); }
+  .proj-title { font-size: 27px; font-weight: 700; color: #fff; margin: 0 0 14px; }
+  .glass-btn {
+    font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 999px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.28);
+    color: #fff;
+    backdrop-filter: blur(6px);
+  }
+  .btn-row { display: flex; gap: 10px; }
+
+  .ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .ring-box { position: relative; width: 92px; height: 92px; }
+  .ring-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #fff; }
+  .ring-caption { font-size: 11px; color: rgba(255,255,255,0.62); }
+
+  .tabs-row {
+    padding: 13px 26px;
+    display: flex;
+    gap: 26px;
+    background: #14141c;
+  }
+  .tab { font-size: 13px; color: #8a8a96; }
+  .tab.active { font-weight: 600; padding-bottom: 11px; }
+</style>
+</head>
+<body>
+
+  <div class="page-title">Qorix Bootloader header — three redesign directions</div>
+  <div class="page-sub">Same layout and same color logic (status green stays green-only, brand color stays separate from status) — the difference is background treatment and accent palette.</div>
+
+  <div class="sample">
+    <div class="sample-label"><span class="num">01</span><span class="name">Aurora glass</span></div>
+    <div class="header-card">
+      <div class="nav-row" style="background:rgba(10,6,30,0.5);">
+        <div class="nav-left">
+          <div class="brand"><div class="brand-mark" style="background:#14b8a6;">Q</div><span class="brand-name">Qorix</span></div>
+          <span class="nav-link">Portfolio dashboard</span>
+          <span class="nav-pill" style="background:rgba(255,255,255,0.85); color:#3b2e82;">Products</span>
+        </div>
+        <div class="nav-right">
+          <span class="nav-dropdown">Qorix Bootloader ⌄</span>
+          <span class="cta-btn" style="background:#22d3ee;">Full dashboard →</span>
+        </div>
+      </div>
+      <div class="banner-row" style="background:linear-gradient(135deg,#2b1b6b 0%,#4a3fb0 55%,#7c3aed 100%);">
+        <div class="banner-left">
+          <div class="logo-tile" style="background:#14b8a6; box-shadow:0 8px 20px rgba(20,184,166,0.45);">QB</div>
+          <div>
+            <div class="badge-row">
+              <span class="status-pill" style="background:rgba(74,222,128,0.16); border:1px solid rgba(74,222,128,0.4); color:#86efac;"><span class="status-dot" style="background:#4ade80;"></span>On track</span>
+              <span class="type-pill">POC</span>
+              <span class="meta-text">PM: Paula Herzog</span>
+              <span class="meta-text">Updated: 2026-07-20</span>
+            </div>
+            <p class="proj-title">Qorix bootloader</p>
+            <div class="btn-row">
+              <span class="glass-btn">Export</span>
+              <span class="glass-btn">+ Add team member</span>
+            </div>
+          </div>
+        </div>
+        <div class="ring-wrap">
+          <div class="ring-box">
+            <svg width="92" height="92" viewBox="0 0 92 92" style="filter:drop-shadow(0 0 8px rgba(74,222,128,0.55));">
+              <circle cx="46" cy="46" r="39" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="8"></circle>
+              <circle cx="46" cy="46" r="39" fill="none" stroke="#4ade80" stroke-width="8" stroke-linecap="round" stroke-dasharray="68.6 245.0" transform="rotate(-90 46 46)"></circle>
+            </svg>
+            <div class="ring-pct">28%</div>
+          </div>
+          <span class="ring-caption">Complete</span>
+        </div>
+      </div>
+      <div class="tabs-row">
+        <span class="tab">Overview</span>
+        <span class="tab">Team</span>
+        <span class="tab active" style="color:#22d3ee; border-bottom:2px solid #22d3ee;">Jira</span>
+        <span class="tab">GRC dashboard</span>
+      </div>
+    </div>
+    <p class="sample-note">Teal logo reads as brand, not status. Cyan carries every interactive element (CTA, active tab). Green is reserved for status only, with a soft glow on the ring for depth.</p>
+  </div>
+
+  <div class="sample">
+    <div class="sample-label"><span class="num">02</span><span class="name">Midnight neon</span></div>
+    <div class="header-card">
+      <div class="nav-row" style="background:rgba(0,0,0,0.35);">
+        <div class="nav-left">
+          <div class="brand"><div class="brand-mark" style="background:#22d3ee;">Q</div><span class="brand-name">Qorix</span></div>
+          <span class="nav-link">Portfolio dashboard</span>
+          <span class="nav-pill" style="background:rgba(255,255,255,0.85); color:#1e3a8a;">Products</span>
+        </div>
+        <div class="nav-right">
+          <span class="nav-dropdown">Qorix Bootloader ⌄</span>
+          <span class="cta-btn" style="background:#22d3ee;">Full dashboard →</span>
+        </div>
+      </div>
+      <div class="banner-row" style="background:linear-gradient(120deg,#0f172a 0%,#1e3a8a 55%,#312e81 100%);">
+        <div class="banner-left">
+          <div class="logo-tile" style="background:#22d3ee; color:#052e33; box-shadow:0 8px 20px rgba(34,211,238,0.4);">QB</div>
+          <div>
+            <div class="badge-row">
+              <span class="status-pill" style="background:rgba(52,211,153,0.16); border:1px solid rgba(52,211,153,0.4); color:#6ee7b7;"><span class="status-dot" style="background:#34d399;"></span>On track</span>
+              <span class="type-pill">POC</span>
+              <span class="meta-text">PM: Paula Herzog</span>
+              <span class="meta-text">Updated: 2026-07-20</span>
+            </div>
+            <p class="proj-title">Qorix bootloader</p>
+            <div class="btn-row">
+              <span class="glass-btn">Export</span>
+              <span class="glass-btn">+ Add team member</span>
+            </div>
+          </div>
+        </div>
+        <div class="ring-wrap">
+          <div class="ring-box">
+            <svg width="92" height="92" viewBox="0 0 92 92" style="filter:drop-shadow(0 0 8px rgba(52,211,153,0.5));">
+              <circle cx="46" cy="46" r="39" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="8"></circle>
+              <circle cx="46" cy="46" r="39" fill="none" stroke="#34d399" stroke-width="8" stroke-linecap="round" stroke-dasharray="68.6 245.0" transform="rotate(-90 46 46)"></circle>
+            </svg>
+            <div class="ring-pct">28%</div>
+          </div>
+          <span class="ring-caption">Complete</span>
+        </div>
+      </div>
+      <div class="tabs-row">
+        <span class="tab">Overview</span>
+        <span class="tab">Team</span>
+        <span class="tab active" style="color:#22d3ee; border-bottom:2px solid #22d3ee;">Jira</span>
+        <span class="tab">GRC dashboard</span>
+      </div>
+    </div>
+    <p class="sample-note">Cooler, deeper navy-to-indigo gradient with a single cyan accent running through logo, CTA and active tab. Status stays emerald green, fully separate from the accent.</p>
+  </div>
+
+  <div class="sample">
+    <div class="sample-label"><span class="num">03</span><span class="name">Sunset contrast</span></div>
+    <div class="header-card">
+      <div class="nav-row" style="background:rgba(0,0,0,0.3);">
+        <div class="nav-left">
+          <div class="brand"><div class="brand-mark" style="background:#f97316;">Q</div><span class="brand-name">Qorix</span></div>
+          <span class="nav-link">Portfolio dashboard</span>
+          <span class="nav-pill" style="background:rgba(255,255,255,0.85); color:#5b21b6;">Products</span>
+        </div>
+        <div class="nav-right">
+          <span class="nav-dropdown">Qorix Bootloader ⌄</span>
+          <span class="cta-btn" style="background:#22d3ee;">Full dashboard →</span>
+        </div>
+      </div>
+      <div class="banner-row" style="background:linear-gradient(135deg,#3b0764 0%,#6d28d9 55%,#9333ea 100%);">
+        <div class="banner-left">
+          <div class="logo-tile" style="background:#f97316; box-shadow:0 8px 20px rgba(249,115,22,0.4);">QB</div>
+          <div>
+            <div class="badge-row">
+              <span class="status-pill" style="background:rgba(74,222,128,0.16); border:1px solid rgba(74,222,128,0.4); color:#86efac;"><span class="status-dot" style="background:#4ade80;"></span>On track</span>
+              <span class="type-pill">POC</span>
+              <span class="meta-text">PM: Paula Herzog</span>
+              <span class="meta-text">Updated: 2026-07-20</span>
+            </div>
+            <p class="proj-title">Qorix bootloader</p>
+            <div class="btn-row">
+              <span class="glass-btn">Export</span>
+              <span class="glass-btn">+ Add team member</span>
+            </div>
+          </div>
+        </div>
+        <div class="ring-wrap">
+          <div class="ring-box">
+            <svg width="92" height="92" viewBox="0 0 92 92" style="filter:drop-shadow(0 0 8px rgba(74,222,128,0.5));">
+              <circle cx="46" cy="46" r="39" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="8"></circle>
+              <circle cx="46" cy="46" r="39" fill="none" stroke="#4ade80" stroke-width="8" stroke-linecap="round" stroke-dasharray="68.6 245.0" transform="rotate(-90 46 46)"></circle>
+            </svg>
+            <div class="ring-pct">28%</div>
+          </div>
+          <span class="ring-caption">Complete</span>
+        </div>
+      </div>
+      <div class="tabs-row">
+        <span class="tab">Overview</span>
+        <span class="tab">Team</span>
+        <span class="tab active" style="color:#22d3ee; border-bottom:2px solid #22d3ee;">Jira</span>
+        <span class="tab">GRC dashboard</span>
+      </div>
+    </div>
+    <p class="sample-note">Warm orange logo against a violet-to-purple gradient for contrast and personality. Cyan still owns all interactive elements; green still owns status only — three colors, three distinct jobs.</p>
+  </div>
+
+</body>
+</html>
