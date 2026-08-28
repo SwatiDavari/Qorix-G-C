@@ -324,24 +324,19 @@ app.get('*', (req, res) => {
 /* ── Start ─────────────────────────────────────────────────────────────── */
 const START_PORT = Number(process.env.PORT) || 3000;
 
-function link(url) {
-  // OSC 8 hyperlink — clickable in VS Code terminal and most modern terminals
-  return `\x1b]8;;${url}\x1b\\${url}\x1b]8;;\x1b\\`;
-}
-
 function startServer(port, retriesLeft = 10) {
   const server = app.listen(port, '0.0.0.0', () => {
-    const localUrl   = `http://localhost:${port}`;
-    const lanIp      = getLocalIpv4Address();
-    const networkUrl = lanIp ? `http://${lanIp}:${port}` : null;
+    const localLink = `http://localhost:${port}`;
+    const lanIp = getLocalIpv4Address();
+    const networkLink = lanIp ? `http://${lanIp}:${port}` : 'N/A';
 
-    console.log('\n╔══════════════════════════════════════════════════════════╗');
-    console.log('║  Qorix Product Management Portal                        ║');
-    console.log(`║  Local:   ${link(localUrl)}`);
-    if (networkUrl) console.log(`║  Network: ${link(networkUrl)}`);
-    console.log('║                                                          ║');
-    console.log('║  JIRA proxy active on /api/jira/*                       ║');
-    console.log('╚══════════════════════════════════════════════════════════╝\n');
+    console.log('\n╔══════════════════════════════════════════════╗');
+    console.log('║  Qorix Product Management Portal             ║');
+    console.log(`║  Local:   ${localLink}`);
+    console.log(`║  Network: ${networkLink}`);
+    console.log('║                                              ║');
+    console.log('║  JIRA proxy active on /api/jira/*            ║');
+    console.log('╚══════════════════════════════════════════════╝\n');
   });
 
   server.on('error', err => {
