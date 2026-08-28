@@ -22,6 +22,7 @@
 }
 .hero-top{display:flex;align-items:flex-start;gap:20px;position:relative;z-index:1;max-width:1300px;margin:0 auto}
 .product-badge-large{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:20px;flex-shrink:0}
+.product-badge-large.midnight-neon{background:#22d3ee;box-shadow:0 10px 24px rgba(34,211,238,.28),0 0 0 1px rgba(198,255,41,.22) inset;color:#0d0033}
 .hero-info{flex:1}
 .hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
 .hero-name{font-size:clamp(20px,3vw,30px);font-weight:800;color:#fff;margin-bottom:4px}
@@ -33,7 +34,7 @@
 .ptab{padding:11px 20px;border:none;background:none;font-size:13px;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;border-bottom:3px solid transparent;transition:all .15s}
 .ptab:hover{color:rgba(255,255,255,.85)}
 .ptab.active{color:var(--qx-lime);border-bottom-color:var(--qx-lime)}
-.ptab-pane{display:none}.ptab-pane.active{display:flex;flex-direction:column;gap:20px}
+.ptab-pane{display:none}.ptab-pane.active{display:flex;flex-direction:column;gap:24px}
 
 /* Product body */
 .product-body{padding:28px 40px;max-width:1300px;margin:0 auto}
@@ -80,19 +81,6 @@
 .editable-field:hover{border-color:var(--qx-blue);background:rgba(58,0,245,.04)}
 .editable-field:focus{outline:none;border-color:var(--qx-blue);background:rgba(58,0,245,.06)}
 
-/* ── Excel import modal ─────────────────────────────────────── */
-.excel-overlay{position:fixed;inset:0;background:rgba(13,0,51,.55);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
-.excel-overlay.open{display:flex}
-.excel-modal{background:#fff;border-radius:14px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(13,0,51,.3)}
-.excel-hdr{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2}
-.excel-hdr h3{font-size:16px;font-weight:700}
-.dropzone{border:2px dashed var(--border);border-radius:10px;padding:32px 20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;position:relative}
-.dropzone:hover,.dropzone.drag-over{border-color:var(--qx-blue);background:rgba(58,0,245,.03)}
-.dropzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.dropzone-icon{font-size:36px;margin-bottom:10px}
-.dropzone-text{font-size:14px;font-weight:600;color:var(--text)}
-.dropzone-sub{font-size:12px;color:var(--muted);margin-top:4px}
-
 /* ── JIRA tab ───────────────────────────────────────────────── */
 .jira-conn-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}
 .jira-conn-ok{background:#dcfce7;color:#15803d}
@@ -108,6 +96,27 @@
 .jira-sync-bar{background:#fff;border-radius:10px;border:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .jira-stat-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:7px;font-size:12px;font-weight:600;background:var(--bg)}
 .server-warn{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px 16px;font-size:13px;color:#92400e}
+.jira-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);padding:0}
+.jira-card-top{display:flex;align-items:flex-start;justify-content:space-between;padding:18px 20px 4px}
+.jira-card-top h3{font-size:16px;font-weight:800;color:var(--heading)}
+.jira-card-body{padding:12px 20px 20px}
+.jira-field-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#f8faff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:16px}
+.jira-field-cell{padding:12px 14px;border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0}
+.jira-field-cell:nth-child(2n){border-right:none}
+.jira-field-cell:nth-last-child(-n+2){border-bottom:none}
+.jira-field-label{font-size:10px;font-weight:700;color:#8492a6;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.jira-field-cell input{width:100%;border:none;background:transparent;font-size:13px;color:var(--text);outline:none;padding:0}
+.jira-field-cell input::placeholder{color:#b0bac9}
+.jira-query-box{background:#f8faff;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;margin-top:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;line-height:1.7;color:#475569;white-space:pre-wrap;word-break:break-word}
+.jira-btn-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.btn-jira-save{background:#fff;border:1.5px solid #cbd5e1;color:var(--heading);border-radius:7px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:border-color .15s}
+.btn-jira-save:hover{border-color:var(--qx-blue)}
+.btn-jira-connect{background:#3A00F5;border:none;color:#fff;border-radius:7px;padding:7px 18px;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.btn-jira-connect:hover{opacity:.88}
+.btn-jira-jql{background:#fff;border:1.5px solid #cbd5e1;color:var(--heading);border-radius:7px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:border-color .15s}
+.btn-jira-jql:hover{border-color:var(--qx-blue)}
+.btn-jira-clear{background:#fff;border:1.5px solid #fca5a5;color:#ef4444;border-radius:7px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:border-color .15s}
+.btn-jira-clear:hover{border-color:#ef4444}
 
 /* add risk/member btn */
 .add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:2px dashed var(--border);border-radius:var(--radius);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;background:none;width:100%;transition:border-color .15s,color .15s}
@@ -123,7 +132,7 @@
   position:relative;overflow:hidden;
 }
 .grc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.grc-card.accent-blue::before{background:var(--qx-blue)}
+.grc-card.accent-blue::before{background:none}
 .grc-card.accent-green::before{background:var(--qx-green)}
 .grc-card.accent-orange::before{background:var(--qx-orange)}
 .grc-card.accent-sky::before{background:var(--qx-sky)}
@@ -150,7 +159,7 @@
 .grc-chart-wrap{background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--border);box-shadow:var(--shadow)}
 .grc-comp-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-top:10px}
 .grc-comp-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--qx-blue),var(--qx-teal,#4FE0C4));transition:width .6s ease}
-.grc-refresh-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.grc-refresh-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
 .grc-conn-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;background:var(--bg);color:var(--muted);border:1px solid var(--border)}
 .grc-conn-badge.ok{background:#dcfce7;color:#15803d;border-color:#bbf7d0}
 .grc-conn-badge.err{background:#fee2e2;color:#991b1b;border-color:#fecaca}
@@ -160,15 +169,23 @@
 .grc-priority-Low{background:rgba(78,167,46,.12);color:#166534}
 
 /* GRC overview cards */
-.grc-overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grc-overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .grc-overview-card{
   display:flex;align-items:center;gap:20px;
   border-radius:var(--radius);padding:18px 24px;
   box-shadow:0 4px 20px rgba(58,0,245,.18);
   color:#fff;min-height:140px;
 }
+.grc-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grc-summary-grid .grc-overview-card{margin-bottom:0 !important;min-height:168px;align-items:stretch;background:var(--card);color:var(--heading);box-shadow:var(--shadow);border:1px solid var(--border)}
+.grc-summary-grid .grc-overview-card .grc-do-label{opacity:1}
+.grc-summary-grid .grc-overview-card .grc-do-sub{opacity:1;color:var(--muted)}
+.grc-summary-grid .grc-do-body{display:flex;flex-direction:column;justify-content:center}
+.grc-summary-grid .grc-do-pills{align-content:center}
 .grc-defect-overview{background:linear-gradient(135deg,var(--qx-blue) 0%,var(--qx-teal,#4FE0C4) 100%)}
 .grc-risk-overview{background:linear-gradient(135deg,var(--qx-blue) 0%,var(--qx-teal,#4FE0C4) 100%)}
+.grc-nc-overview{background:linear-gradient(135deg,var(--qx-blue) 0%,var(--qx-teal,#4FE0C4) 100%)}
+.grc-incident-overview{background:linear-gradient(135deg,var(--qx-blue) 0%,var(--qx-teal,#4FE0C4) 100%)}
 .grc-do-icon{font-size:36px;flex-shrink:0;line-height:1}
 .grc-do-body{flex:1;min-width:0}
 .grc-do-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;opacity:.8;margin-bottom:4px}
@@ -183,10 +200,80 @@
 .grc-do-pill-val{font-size:20px;font-weight:800;line-height:1}
 .grc-do-pill-lbl{font-size:10px;font-weight:600;opacity:.8;margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
 
+/* Total Open Defects — single ring view (replaces the pill badges) */
+.grc-do-ring-card{align-items:stretch}
+.grc-do-ring-inner{display:flex;flex-direction:column;width:100%}
+.grc-do-ring-row-wrap{display:flex;align-items:center;gap:14px;margin-top:4px}
+.grc-do-ring-canvas-wrap{position:relative;width:150px;height:150px;flex-shrink:0}
+.grc-do-ring-canvas-wrap canvas{width:100%!important;height:100%!important}
+.grc-do-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;text-align:center}
+.grc-do-ring-center .grc-do-count{font-size:26px}
+.grc-do-ring-total-caption{font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;opacity:.75;margin-top:2px}
+.grc-do-ring-legend{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
+.grc-do-ring-row{display:flex;align-items:center;justify-content:space-between;font-size:12px;gap:8px}
+.grc-do-ring-row-left{display:flex;align-items:center;gap:8px;min-width:0}
+.grc-do-ring-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.grc-do-ring-lbl{white-space:nowrap;opacity:.92}
+.grc-do-ring-right{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.grc-do-ring-pct{opacity:.65;font-size:11px;min-width:34px;text-align:right}
+.grc-do-ring-val{font-weight:800;min-width:20px;text-align:right}
+.grc-do-ring-empty{font-size:12px;opacity:.75;text-align:center;padding:24px 8px;width:100%}
+.grc-do-automation-stat{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.grc-do-automation-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.grc-do-automation-val{font-size:15px;font-weight:800}
+.grc-do-trend-mini{margin-top:14px;padding-top:10px;border-top:1px solid var(--border)}
+.grc-do-trend-mini-hdr{display:flex;align-items:center;justify-content:space-between;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px}
+.grc-do-trend-mini-box{position:relative;height:70px}
+
+/* Total Open Risks — bar chart (replaces the ring for this card only) */
+.grc-do-bar-card{align-items:stretch}
+.grc-do-bar-inner{display:flex;flex-direction:column;width:100%}
+.grc-do-bar-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.grc-do-bar-chart-box{position:relative;height:150px;margin-top:14px}
+
+/* Classic-only GRC theme */
+.grc-classic #grc-dashboard-title{color:#5B21FF}
+.grc-classic .grc-overview-card{background:#FFFFFF !important;color:#0D0033 !important;box-shadow:0 2px 12px rgba(0,0,0,.08);border:1px solid #E5E7EB !important}
+.grc-classic .grc-card.accent-blue::before{background:var(--qorix-violet)}
+.grc-classic .grc-card.accent-green::before{background:var(--qorix-lime)}
+.grc-classic .grc-card.accent-orange::before{background:var(--qorix-violet-dark)}
+.grc-classic .grc-card.accent-sky::before{background:var(--qorix-violet-light)}
+.grc-classic .grc-defect-overview,
+.grc-classic .grc-risk-overview,
+.grc-classic .grc-nc-overview,
+.grc-classic .grc-incident-overview{background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,.08);border:1px solid #E5E7EB}
+.grc-classic .grc-do-label{color:#5B21FF;opacity:1;font-weight:700}
+.grc-classic .grc-do-count{color:#0D0033;font-weight:900}
+.grc-classic .grc-do-sub{color:#64748B}
+.grc-classic .grc-do-pill{background:#3A00F5;border-radius:8px;color:#FFFFFF}
+.grc-classic .grc-do-pill-val{color:#FFFFFF;font-weight:800}
+.grc-classic .grc-do-pill-lbl{color:#FFFFFF;text-transform:uppercase;font-size:10px;font-weight:600;opacity:.95}
+.grc-classic .grc-conn-badge.ok{background:rgba(198,255,41,.18);color:var(--qorix-violet-dark);border-color:rgba(198,255,41,.45)}
+.grc-classic .grc-conn-badge.err{background:rgba(91,33,255,.12);color:var(--qorix-violet-dark);border-color:rgba(91,33,255,.2)}
+.grc-classic .grc-table tr:hover td{background:rgba(91,33,255,.04)}
+.grc-classic .grc-comp-fill{background:linear-gradient(90deg,var(--qorix-violet-dark),var(--qorix-violet),var(--qorix-lime))}
+.grc-classic .grc-low{background:var(--qorix-lime);color:#0d0033}
+.grc-classic .grc-medium{background:var(--qorix-violet-light)}
+.grc-classic .grc-high{background:var(--qorix-violet-dark)}
+
+/* ── GRC synced card design — Classic & Adaptive only ──────────
+   Matches all overview-card numbers to the same accent color and
+   removes the divider look between Non-Compliance/Incident cards,
+   and aligns the Total Delayed Releases card to the same style. */
+.grc-synced .grc-do-count{color:var(--qorix-lime) !important}
+.grc-synced .grc-summary-grid{gap:24px}
+.grc-synced .grc-overview-grid{gap:24px}
+.grc-synced .grc-summary-grid .grc-overview-card,
+.grc-synced .grc-overview-grid .grc-overview-card{border-radius:12px !important;box-shadow:0 2px 12px rgba(0,0,0,.08) !important}
+.grc-synced #grc-releases-section .grc-do-count{color:var(--qorix-lime) !important;font-size:32px}
+.grc-synced #grc-releases-section .grc-do-label{color:#5B21FF}
+
 /* Summary chart strip */
 .summary-charts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .sc-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);padding:16px}
 .sc-card h4{font-size:13px;font-weight:700;margin-bottom:14px}
+.sc-card-foot{padding-top:8px;text-align:right}
+.sc-show-all{font-size:11px;font-weight:600;color:var(--qx-blue);cursor:pointer;text-decoration:none;background:none;border:none;padding:0}
 .chart-sm{position:relative;height:160px}
 
 /* Fin table */
@@ -196,6 +283,103 @@
 .fin-val{font-size:14px;font-weight:700;color:var(--heading)}
 .fin-bar-r{flex:1;margin:0 16px;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
 .fin-bar-f{height:100%;border-radius:3px}
+
+/* ═══════════════════════════════════════════════════════════════
+   ▌ GRC CLASSIC ADDON STYLES - NEW ENHANCEMENTS
+   ▌ These are addon styles for Qorix Classic GRC Dashboard
+   ═══════════════════════════════════════════════════════════════ */
+
+/* GRC Classic - Table wrap enhancements */
+#pane-grc.grc-classic .grc-table-wrap {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: visible;
+  padding: 0;
+  margin-bottom: 32px;
+}
+
+/* GRC Classic - Table styling */
+#pane-grc.grc-classic .grc-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* GRC Classic - Table header */
+#pane-grc.grc-classic .grc-table th {
+  padding: 14px 0;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  color: #7c8aad;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: #f0f4f9;
+  border-bottom: none;
+}
+
+/* GRC Classic - Table cells */
+#pane-grc.grc-classic .grc-table td {
+  padding: 14px 0;
+  font-size: 13px;
+  color: var(--text);
+  border-bottom: 1px solid #f0f0f5;
+}
+
+/* GRC Classic - Table last row */
+#pane-grc.grc-classic .grc-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* GRC Classic - Table hover state (disabled) */
+#pane-grc.grc-classic .grc-table tr:hover td {
+  background: transparent;
+}
+
+/* GRC Classic - Chart wrap enhancements */
+#pane-grc.grc-classic .grc-chart-wrap {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   END: GRC CLASSIC ADDON STYLES
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── GRC Extended (Qorix Test only) — Software Quality Dashboard format ── */
+.grc-ext-topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.grc-ext-title{font-size:20px;font-weight:800;color:var(--heading)}
+.grc-ext-updated{font-size:12px;color:var(--muted);margin-top:2px}
+.grc-ext-health{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap}
+.grc-ext-health.ok{background:#dcfce7;color:#15803d}
+.grc-ext-health.warn{background:#fef3c7;color:#92400e}
+.grc-ext-health.idle{background:#f1f5f9;color:#64748b}
+.grc-ext-note{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:8px;padding:10px 14px;font-size:12px;line-height:1.6}
+.grc-ext-badge{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+.grc-ext-badge.live{background:#dcfce7;color:#15803d}
+.grc-ext-badge.static{background:#fef3c7;color:#92400e}
+.grc-ext-badge.idle{background:#f1f5f9;color:#64748b}
+.grc-ext-charts-row{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:16px}
+.grc-ext-charts-row2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grc-ext-charts-row3{display:grid;grid-template-columns:1fr 1.3fr;gap:16px}
+.grc-ext-chart-box{position:relative;height:190px;margin-top:10px}
+.grc-ext-gauge-box{position:relative;height:150px;margin-top:6px}
+.grc-ext-exec-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.grc-ext-exec-label{width:56px;font-size:12px;color:var(--muted);font-weight:600;flex-shrink:0}
+.grc-ext-exec-bar{flex:1;height:10px;background:var(--bg);border-radius:5px;overflow:hidden}
+.grc-ext-exec-fill{height:100%;border-radius:5px}
+.grc-ext-exec-val{width:40px;text-align:right;font-size:12px;font-weight:700;color:var(--heading);flex-shrink:0}
+.grc-ext-sq-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.grc-ext-sq-row:last-child{border-bottom:none}
+.grc-ext-pill{font-size:11px;font-weight:700;padding:2px 10px;border-radius:6px;white-space:nowrap}
+.grc-ext-empty{padding:24px 10px;text-align:center;color:var(--muted);font-size:12px}
+@media (max-width:1100px){
+  .grc-ext-charts-row,.grc-ext-charts-row2,.grc-ext-charts-row3{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -215,6 +399,7 @@
     <select id="product-switcher" class="filter-select" onchange="switchProduct(this.value)" style="border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;border-radius:7px;padding:6px 12px;font-size:13px;cursor:pointer">
       <option value="">Switch product…</option>
     </select>
+    <div style="width:1px;height:20px;background:rgba(255,255,255,.2);align-self:center"></div>
     <a href="dashboard.html" class="nav-cta">Full Dashboard →</a>
   </div>
 </nav>
@@ -228,13 +413,12 @@
       <div class="hero-name" id="hero-name"></div>
       <div class="hero-desc" id="hero-desc"></div>
       <div class="hero-actions-row">
-        <button class="btn btn-lime btn-sm" onclick="saveChanges()">Save Changes</button>
         <button class="btn btn-ghost btn-sm" onclick="exportProduct()">Export</button>
         <button class="btn btn-ghost btn-sm" onclick="addMember()">+ Add Team Member</button>
       </div>
     </div>
     <!-- Completion ring -->
-    <div style="text-align:center;flex-shrink:0;position:relative">
+    <div id="hero-completion-ring" style="text-align:center;flex-shrink:0;position:relative">
       <canvas id="ringChart" width="90" height="90"></canvas>
       <div id="ring-pct" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;font-weight:800;color:#fff"></div>
       <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:4px">Complete</div>
@@ -249,114 +433,106 @@
 
   <!-- ── TAB: OVERVIEW ── -->
   <div class="ptab-pane active" id="pane-overview">
-
-    <!-- KPI strip -->
-    <div class="kpi-strip" id="kpi-strip"></div>
-
-
-
-    <!-- Alerts -->
     <div id="overview-alerts"></div>
-
+    <div id="release-card" style="display:none"></div>
   </div>
 
   <!-- ── TAB: TEAM ── -->
   <div class="ptab-pane" id="pane-team">
-    <div class="section-hdr">
-      <h2>Full Roster</h2>
-    </div>
-
-    <!-- Team table -->
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Name</th><th>Role</th><th>Type</th><th>Allocation %</th><th>Ask %</th><th>Gap</th><th>Shared</th><th>Actions</th></tr></thead>
+    <div style="overflow:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow)">
+      <table class="grc-table" style="min-width:100%">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Allocation</th>
+            <th>Ask</th>
+            <th>Delta</th>
+            <th>Shared</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
         <tbody id="team-table"></tbody>
       </table>
     </div>
-  </div>
-
-  <!-- ── TAB: ACTIVITY ── -->
-  <div class="ptab-pane" id="pane-activity">
-    <div class="section-hdr"><h2>Activity Log</h2></div>
-    <div class="card card-body">
-      <div class="timeline" id="activity-timeline"></div>
+    <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:13px;color:var(--muted)">Total FTE: <strong id="total-fte">0.00</strong></div>
+      <button class="btn btn-outline btn-sm" onclick="addMember()">+ Add Team Member</button>
     </div>
   </div>
 
-  <!-- ── TAB: JIRA SYNC ── -->
+  <!-- ── TAB: JIRA ── -->
   <div class="ptab-pane" id="pane-jira">
-
-    <div class="section-hdr">
-      <h2>JIRA Integration</h2>
-      <div class="actions">
-        <span id="jira-status-pill" style="font-size:11px;padding:4px 10px;border-radius:20px;background:#f1f5f9;color:var(--muted)">Not connected</span>
+    <div class="jira-card">
+      <div class="jira-card-top">
+        <h3>JIRA Integration</h3>
+        <span class="jira-stat-chip" id="jira-status-pill">Not connected</span>
       </div>
-    </div>
-    <div class="card" style="padding:16px;margin-bottom:16px">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="form-field" style="margin:0">
-          <label>JIRA Domain</label>
-          <input id="jira-domain" placeholder="qorix.atlassian.net"/>
+      <div class="jira-card-body">
+        <div class="jira-field-grid">
+          <div class="jira-field-cell">
+            <div class="jira-field-label">JIRA Domain</div>
+            <input id="jira-domain" placeholder="qorix.atlassian.net" />
+          </div>
+          <div class="jira-field-cell">
+            <div class="jira-field-label">Project Key</div>
+            <input id="jira-project" placeholder="CP" />
+          </div>
+          <div class="jira-field-cell">
+            <div class="jira-field-label">Email</div>
+            <input id="jira-email" placeholder="name@company.com" />
+          </div>
+          <div class="jira-field-cell">
+            <div class="jira-field-label">API Token</div>
+            <input id="jira-token" type="password" placeholder="JIRA API token" />
+          </div>
         </div>
-        <div class="form-field" style="margin:0">
-          <label>Project Key</label>
-          <input id="jira-project" placeholder="CP"/>
+        <div class="jira-btn-row">
+          <button class="btn-jira-save" onclick="saveJiraConnection()">Save Config</button>
+          <button class="btn-jira-connect" onclick="connectJira()">Connect to JIRA</button>
+          <button class="btn-jira-jql" onclick="runDefectsJql()">Run Defects JQL</button>
+          <button class="btn-jira-clear" onclick="clearJiraCache()">Clear Cache</button>
         </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
-        <div class="form-field" style="margin:0">
-          <label>Email</label>
-          <input id="jira-email" placeholder="name@company.com"/>
-        </div>
-        <div class="form-field" style="margin:0">
-          <label>API Token</label>
-          <input id="jira-token" type="password" placeholder="JIRA API token"/>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
-        <button class="btn btn-outline btn-sm" onclick="saveJiraConnection()">Save Config</button>
-        <button class="btn btn-primary btn-sm" onclick="connectJira()">Connect to JIRA</button>
-        <button class="btn btn-outline btn-sm" onclick="runDefectsJql()">Run Defects JQL</button>
-        <button class="btn btn-outline btn-sm" style="color:#ef4444;border-color:#fca5a5" onclick="clearJiraCache()">Clear Cache</button>
-      </div>
-      <div id="jira-project-info" style="margin-top:10px;font-size:12px;color:var(--muted)"></div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-      <div class="card">
-        <div class="card-hdr" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <h3>Defects</h3>
-          <span id="jira-defect-count" style="font-size:11px;color:var(--muted);margin-left:auto"></span>
-          <select id="jira-defect-filter" class="filter-select" onchange="_renderJiraData()" style="padding:4px 8px;font-size:12px;min-width:130px">
-            <option value="all">All Defects</option>
-            <option value="open">Open</option>
-            <option value="resolved">Resolved</option>
-            <option value="highest">Highest Priority</option>
-            <option value="high">High Priority</option>
-          </select>
-        </div>
-        <div style="padding:12px 12px 0;font-size:12px;color:var(--muted)" id="jira-query-preview"></div>
-        <div id="jira-defects-list" style="padding:12px"></div>
-      </div>
-      <div style="display:grid;grid-template-rows:auto auto;gap:16px">
-        <div class="card">
-          <div class="card-hdr"><h3>Non-Compliance</h3><span id="jira-nc-count" style="font-size:11px;color:var(--muted)"></span></div>
-          <div id="jira-nc-list" style="padding:12px"></div>
-        </div>
-        <div class="card">
-          <div class="card-hdr"><h3>Risks</h3><span id="jira-risk-count" style="font-size:11px;color:var(--muted)"></span></div>
-          <div id="jira-risk-list" style="padding:12px"></div>
-        </div>
+        <div id="jira-project-info" style="font-size:12px;color:var(--muted);margin-top:10px"></div>
+        <div id="jira-query-preview" class="jira-query-box" style="display:none"></div>
       </div>
     </div>
 
-  </div><!-- /pane-jira -->
+    <div id="test-jql-section" style="display:none;margin-top:20px">
+      <div style="font-size:13px;font-weight:700;color:var(--heading);margin-bottom:4px">JQL Breakdown — Project CP</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Each card below is one of the JQL queries mapped for Qorix Test. N/A means the issue type doesn't exist in project CP.</div>
+      <div id="test-jql-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px"></div>
+
+      <div style="font-size:13px;font-weight:700;color:var(--heading);margin:24px 0 4px">Top 3 Upcoming Releases — Project CP</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Real releases from CP's Jira Releases page, nearest 3 by release date. All three are past their planned date while still unreleased — shown honestly as Delayed rather than On Track.</div>
+
+      <div style="display:inline-flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 18px;margin-bottom:16px;box-shadow:var(--shadow)">
+        <div style="font-size:24px;font-weight:800;color:var(--heading)" id="test-releases-total">—</div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.3" id="test-releases-total-label">Unreleased releases (last known)<br>in project CP</div>
+      </div>
+
+      <div class="table-wrap" style="overflow:hidden">
+        <table style="width:100%;border-collapse:collapse">
+          <thead style="background:var(--bg)">
+            <tr>
+              <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase">Release</th>
+              <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase">Planned Date</th>
+              <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase">Progress</th>
+              <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase">Status</th>
+              <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase">Open Issues</th>
+            </tr>
+          </thead>
+          <tbody id="test-releases-rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
   <!-- ── TAB: GRC DASHBOARD ── -->
   <div class="ptab-pane" id="pane-grc">
-
     <div class="grc-refresh-row">
-      <h2 style="margin:0;font-size:20px;font-weight:800;color:var(--heading)">GRC Executive Dashboard</h2>
+      <h2 style="color:var(--heading)" id="grc-dashboard-title">GRC Executive Dashboard</h2>
       <div style="display:flex;align-items:center;gap:10px">
         <span id="grc-conn-badge" class="grc-conn-badge">Connecting...</span>
         <button class="btn btn-sm btn-ghost" onclick="grcLoad()">Refresh</button>
@@ -364,147 +540,287 @@
     </div>
 
     <div class="grc-overview-grid">
-      <!-- Defect Overview -->
-      <div class="grc-overview-card grc-defect-overview">
-        <div class="grc-do-icon">Defect</div>
-        <div class="grc-do-body">
-          <div class="grc-do-label">Defect Overview</div>
-          <div class="grc-do-count" id="grc-total">—</div>
-          <div class="grc-do-sub">Total: project = CP AND issuetype = Bug &nbsp;|&nbsp; Resolved: status = Integrated</div>
-        </div>
-        <div class="grc-do-pills">
-          <div class="grc-do-pill"><div class="grc-do-pill-val" id="grc-resolved">—</div><div class="grc-do-pill-lbl">Resolved</div></div>
-          <div class="grc-do-pill"><div class="grc-do-pill-val" id="grc-open">—</div><div class="grc-do-pill-lbl">Open</div></div>
-          <div class="grc-do-pill"><div class="grc-do-pill-val" id="grc-avg">—</div><div class="grc-do-pill-lbl">Avg hrs</div></div>
+      <div class="grc-overview-card grc-defect-overview grc-do-ring-card">
+        <div class="grc-do-ring-inner">
+          <div class="grc-do-label">Defect Health</div>
+          <div class="grc-do-sub" id="grc-do-sub">>2 Weeks, Highest Priority, Customer, Created by Automation, Customer + Automation, Re-open, Other/Untagged</div>
+          <div class="grc-do-ring-row-wrap">
+            <div class="grc-do-ring-canvas-wrap" id="grc-defects-ring-canvas-wrap">
+              <canvas id="grc-defects-ring-chart"></canvas>
+              <div class="grc-do-ring-center">
+                <div class="grc-do-count" id="grc-total-defects">87</div>
+                <div class="grc-do-ring-total-caption">Total</div>
+              </div>
+            </div>
+            <div class="grc-do-ring-legend" id="grc-defects-ring-legend"></div>
+          </div>
+          <div class="grc-do-automation-stat" id="grc-automation-stat">
+            <span class="grc-do-automation-lbl">Automation Defect Detection</span>
+            <span class="grc-do-automation-val" id="grc-automation-defect-pct">—</span>
+          </div>
+          <div class="grc-do-trend-mini">
+            <div class="grc-do-trend-mini-hdr">
+              <span>Defect Trend</span>
+              <span class="grc-ext-badge idle" id="grc-defect-trend-badge">—</span>
+            </div>
+            <div class="grc-do-trend-mini-box" id="grc-defect-trend-wrap">
+              <canvas id="grc-defects-chart"></canvas>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Risk Overview -->
-      <div class="grc-overview-card grc-risk-overview">
-        <div class="grc-do-icon">Risk</div>
-        <div class="grc-do-body">
-          <div class="grc-do-label">Risk Overview</div>
-          <div class="grc-do-count" id="grc-risk-total">—</div>
-          <div class="grc-do-sub">Open risk items from JIRA total risks query</div>
-        </div>
-        <div class="grc-do-pills">
-          <div class="grc-do-pill"><div class="grc-do-pill-val" id="grc-risk-high">—</div><div class="grc-do-pill-lbl">High</div></div>
-          <div class="grc-do-pill"><div class="grc-do-pill-val" id="grc-risk-medium">—</div><div class="grc-do-pill-lbl">Medium</div></div>
-          <div class="grc-do-pill"><div class="grc-do-pill-val" id="grc-risk-low">—</div><div class="grc-do-pill-lbl">Low</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- KPI Cards removed – now shown in overview cards above -->
-
-    <!-- Sub-Status Grid (3-4 columns) -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:16px">
-      <!-- Priority Doughnut -->
-      <div class="grc-chart-wrap">
-        <div class="grc-section-hdr">Issues by Priority</div>
-        <div style="position:relative;height:200px"><canvas id="grcPriorityChart"></canvas></div>
-      </div>
-      <!-- Compliance % -->
-      <div class="grc-card accent-green" style="padding:20px">
-        <h3 style="margin:0 0 12px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px">Compliance %</h3>
-        <div class="grc-val grc-success" id="grc-comp-score" style="font-size:32px;font-weight:800;line-height:1;margin-bottom:12px">—</div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Done vs Total</div>
-        <div class="grc-comp-bar"><div class="grc-comp-fill" id="grc-comp-fill" style="width:0%"></div></div>
-      </div>
-      <!-- High-Priority Violations -->
-      <div class="grc-card accent-orange" style="padding:20px">
-        <h3 style="margin:0 0 12px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px">High-Priority Violations</h3>
-        <div class="grc-val grc-danger" id="grc-violations" style="font-size:32px;font-weight:800;line-height:1">—</div>
-      </div>
-    </div>
-
-    <!-- Risk Heatmap -->
-    <div class="grc-heatmap-wrap">
-      <div class="grc-section-hdr">Risk Heatmap — Likelihood × Impact</div>
-      <div class="grc-sub">Rows: Likelihood 5→1 &nbsp;|&nbsp; Cols: Impact 1→5</div>
-      <div class="grc-heatmap-outer">
-        <div class="grc-axis-y" id="grc-axis-y"></div>
-        <div style="flex:1">
-          <div class="grc-heatmap" id="grc-heatmap"></div>
-          <div class="grc-axis-x" id="grc-axis-x"></div>
+      <div class="grc-overview-card grc-risk-overview grc-do-bar-card">
+        <div class="grc-do-bar-inner">
+          <div class="grc-do-bar-header">
+            <div>
+              <div class="grc-do-label">Risks Summary</div>
+              <div class="grc-do-sub" id="grc-risk-do-sub">High, medium severity</div>
+            </div>
+            <div class="grc-do-count" id="grc-risk-total">23</div>
+          </div>
+          <div class="grc-do-bar-chart-box" id="grc-risk-bar-wrap">
+            <canvas id="grc-risk-bar-chart"></canvas>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Audit Table -->
-    <div class="grc-table-wrap">
-      <div id="grc-audit-header" style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.07)"><span class="grc-section-hdr">Audit Findings (latest 10)</span></div>
-      <table class="grc-table">
-        <thead><tr><th>Key</th><th>Summary</th><th>Status</th><th>Priority</th><th>Assignee</th></tr></thead>
-        <tbody id="grc-audit-body"></tbody>
-      </table>
+    <div class="grc-summary-grid">
+      <div class="grc-overview-card grc-nc-overview grc-do-ring-card">
+        <div class="grc-do-ring-inner">
+          <div class="grc-do-label">Total Non-Compliance</div>
+          <div class="grc-do-sub" id="grc-nc-do-sub">Highest, high, medium</div>
+          <div class="grc-do-ring-row-wrap">
+            <div class="grc-do-ring-canvas-wrap" id="grc-nc-ring-canvas-wrap">
+              <canvas id="grc-nc-ring-chart"></canvas>
+              <div class="grc-do-ring-center">
+                <div class="grc-do-count" id="grc-nc-total">19</div>
+                <div class="grc-do-ring-total-caption">Total</div>
+              </div>
+            </div>
+            <div class="grc-do-ring-legend" id="grc-nc-ring-legend"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grc-overview-card grc-incident-overview grc-do-ring-card">
+        <div class="grc-do-ring-inner">
+          <div class="grc-do-label">Total Incident</div>
+          <div class="grc-do-sub" id="grc-incident-do-sub">Highest, high, medium</div>
+          <div class="grc-do-ring-row-wrap">
+            <div class="grc-do-ring-canvas-wrap" id="grc-incident-ring-canvas-wrap">
+              <canvas id="grc-incident-ring-chart"></canvas>
+              <div class="grc-do-ring-center">
+                <div class="grc-do-count" id="grc-incident-total">0</div>
+                <div class="grc-do-ring-total-caption">Total</div>
+              </div>
+            </div>
+            <div class="grc-do-ring-legend" id="grc-incident-ring-legend"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="grc-releases-section" class="grc-overview-card" style="display:none;flex-direction:column;align-items:stretch;gap:0;padding:0;overflow:hidden">
+      <div class="grc-do-body" style="padding:18px 24px 16px">
+        <div class="grc-do-label">Total Delayed Releases <span class="grc-ext-badge idle" id="grc-releases-delayed-badge">—</span></div>
+        <div class="grc-do-count" id="grc-releases-delayed">—</div>
+      </div>
+      <div class="table-wrap" style="overflow:hidden;box-shadow:none;border:none;border-top:1px solid var(--border)">
+        <table style="width:100%;border-collapse:collapse">
+          <thead style="background:var(--bg)">
+            <tr>
+              <th style="text-align:left;padding:8px 12px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase">Latest Delayed Releases</th>
+              <th style="text-align:left;padding:8px 12px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase">Planned Date</th>
+              <th style="text-align:left;padding:8px 12px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase">Progress</th>
+              <th id="grc-releases-status-th" style="text-align:left;padding:8px 12px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase">Status</th>
+            </tr>
+          </thead>
+          <tbody id="grc-releases-rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="summary-charts">
+      <div class="sc-card">
+        <h4>Defects Summary</h4>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span class="grc-sub" style="margin:0">Filtered by priority</span>
+          <span id="grc-defects-filter-count" style="font-size:11px;font-weight:700;color:var(--muted);margin-left:auto;margin-right:10px">All: 0</span>
+          <select id="grc-defects-filter" class="filter-select" style="padding:4px 8px;font-size:12px" onchange="grcRenderDefectsSummary()">
+            <option value="">All</option>
+            <option value="Highest">Highest</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        <div id="grc-defects-list" style="font-size:12px;min-height:120px;max-height:240px;overflow-y:auto">
+          <div style="padding:20px;text-align:center;color:var(--muted)">Loading...</div>
+        </div>
+        <div class="sc-card-foot"><button class="sc-show-all" onclick="this.closest('.sc-card').querySelector('[id$=-list]').style.maxHeight=this.closest('.sc-card').querySelector('[id$=-list]').style.maxHeight==='none'?'240px':'none';this.textContent=this.textContent==='Show all ↓'?'Show less ↑':'Show all ↓'">Show all ↓</button></div>
+      </div>
+
+      <div class="sc-card">
+        <h4>Risks</h4>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span class="grc-sub" style="margin:0">Filtered by priority</span>
+          <span id="grc-risks-filter-count" style="font-size:11px;font-weight:700;color:var(--muted);margin-left:auto;margin-right:10px">All: 0</span>
+          <select id="grc-risks-filter" class="filter-select" style="padding:4px 8px;font-size:12px" onchange="_grcRenderRisksSummary()">
+            <option value="">All</option>
+            <option value="Highest">Highest</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        <div id="grc-risks-list" style="font-size:12px;min-height:120px;max-height:240px;overflow-y:auto">
+          <div style="padding:20px;text-align:center;color:var(--muted)">Loading...</div>
+        </div>
+        <div class="sc-card-foot"><button class="sc-show-all" onclick="this.closest('.sc-card').querySelector('[id$=-list]').style.maxHeight=this.closest('.sc-card').querySelector('[id$=-list]').style.maxHeight==='none'?'240px':'none';this.textContent=this.textContent==='Show all ↓'?'Show less ↑':'Show all ↓'">Show all ↓</button></div>
+      </div>
+
+      <div class="sc-card">
+        <h4>Non-Compliance</h4>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span class="grc-sub" style="margin:0">Filtered by priority</span>
+          <span id="grc-nc-filter-count" style="font-size:11px;font-weight:700;color:var(--muted);margin-left:auto;margin-right:10px">All: 0</span>
+          <select id="grc-nc-filter" class="filter-select" style="padding:4px 8px;font-size:12px" onchange="_grcRenderNCsSummary()">
+            <option value="">All</option>
+            <option value="Highest">Highest</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        <div id="grc-nc-list" style="font-size:12px;min-height:120px;max-height:240px;overflow-y:auto">
+          <div style="padding:20px;text-align:center;color:var(--muted)">Loading...</div>
+        </div>
+        <div class="sc-card-foot"><button class="sc-show-all" onclick="this.closest('.sc-card').querySelector('[id$=-list]').style.maxHeight=this.closest('.sc-card').querySelector('[id$=-list]').style.maxHeight==='none'?'240px':'none';this.textContent=this.textContent==='Show all ↓'?'Show less ↑':'Show all ↓'">Show all ↓</button></div>
+      </div>
+
+      <div class="sc-card">
+        <h4>Incidents</h4>
+        <div id="grc-incidents-list" style="font-size:12px;min-height:120px;max-height:240px;overflow-y:auto">
+          <div style="padding:20px;text-align:center;color:var(--muted)">Loading...</div>
+        </div>
+        <div class="sc-card-foot"><button class="sc-show-all" onclick="this.closest('.sc-card').querySelector('[id$=-list]').style.maxHeight=this.closest('.sc-card').querySelector('[id$=-list]').style.maxHeight==='none'?'240px':'none';this.textContent=this.textContent==='Show all ↓'?'Show less ↑':'Show all ↓'">Show all ↓</button></div>
+      </div>
     </div>
 
   </div><!-- /pane-grc -->
 
+  <!-- ── TAB: GRC EXTENDED (Qorix Test only) — Software Quality Dashboard format ── -->
+  <div class="ptab-pane" id="pane-grc-ext">
+    <div class="grc-ext-topbar">
+      <div>
+        <div class="grc-ext-title" id="grc-ext-title">Software Quality Dashboard</div>
+        <div class="grc-ext-updated" id="grc-ext-updated">Last updated —</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="grc-ext-health idle" id="grc-ext-health">○ Preview</span>
+        <button class="btn btn-sm btn-ghost" onclick="grcExtLoad()">Refresh</button>
+        <button class="btn btn-sm btn-danger" onclick="clearJiraCache()" title="Clears the same JIRA cache used by the JIRA tab (qx_jira_data_test)">Clear Cache</button>
+      </div>
+    </div>
+
+    <div class="grc-ext-note">
+      Format modeled on the Software Quality Dashboard for <strong>Qorix Test</strong> (sandbox project CP).
+      <strong>Open Bugs</strong>, <strong>Total Risk</strong>, <strong>Non-Compliance</strong>, <strong>Defect Severity Distribution</strong> and <strong>Automation Defect Detection</strong> are live from the same JIRA sync as the JIRA tab.
+      <strong>Automation Defect Detection</strong> = (Bugs reported by "Automation for Jira" ÷ Open Bugs) × 100 — note the requested JQL used
+      issuetype = Defect, but project CP has no such issue type (only Bug), so this uses issuetype = Bug instead.
+      <strong>Critical Defects</strong> here means Highest-priority open bugs (a live proxy) — the static JQL snapshot instead
+      defines "critical" via a Severity=Critical field that the current sync does not fetch, so the two numbers won't always match.
+      <strong>Test Execution Status, SonarQube Code Quality, Customer Impact
+      and Technical Debt</strong> are static placeholders — no test-management system or SonarQube integration is
+      connected for this sandbox project yet.
+    </div>
+
+    <div class="kpi-strip">
+      <div class="ks-card"><div class="ks-accent" style="background:#5B21FF"></div><div class="kv" id="ge-open-bugs">—</div><div class="kl">Open Bugs <span class="grc-ext-badge idle" id="ge-open-bugs-badge">—</span></div></div>
+      <div class="ks-card"><div class="ks-accent" style="background:#ef4444"></div><div class="kv" id="ge-critical-defects">—</div><div class="kl">Critical Defects <span class="grc-ext-badge idle" id="ge-critical-badge">—</span></div></div>
+      <div class="ks-card"><div class="ks-accent" style="background:#22c55e"></div><div class="kv" id="ge-total-risk">—</div><div class="kl">Total Risk <span class="grc-ext-badge idle" id="ge-total-risk-badge">—</span></div></div>
+      <div class="ks-card"><div class="ks-accent" style="background:#f59e0b"></div><div class="kv" id="ge-automation-defect-pct">—</div><div class="kl">Automation Defect Detection <span class="grc-ext-badge idle" id="ge-automation-defect-badge">—</span></div></div>
+      <div class="ks-card"><div class="ks-accent" style="background:#7B4DFF"></div><div class="kv" id="ge-non-compliance">—</div><div class="kl">Non-Compliance <span class="grc-ext-badge idle" id="ge-non-compliance-badge">—</span></div></div>
+      <div class="ks-card"><div class="ks-accent" style="background:#0D9488"></div><div class="kv">Pass</div><div class="kl">Quality Gate <span class="grc-ext-badge static">Static</span></div></div>
+    </div>
+
+    <div class="grc-ext-charts-row">
+      <div class="grc-card">
+        <h3>Defect Trend <span class="grc-ext-badge static">Illustrative</span></h3>
+        <div class="grc-ext-chart-box"><canvas id="ge-defect-trend-chart"></canvas></div>
+      </div>
+      <div class="grc-card">
+        <h3>Test Execution Status <span class="grc-ext-badge static">Static</span></h3>
+        <div style="margin-top:14px">
+          <div class="grc-ext-exec-row"><div class="grc-ext-exec-label">Passed</div><div class="grc-ext-exec-bar"><div class="grc-ext-exec-fill" style="width:96%;background:#22c55e"></div></div><div class="grc-ext-exec-val">96%</div></div>
+          <div class="grc-ext-exec-row"><div class="grc-ext-exec-label">Failed</div><div class="grc-ext-exec-bar"><div class="grc-ext-exec-fill" style="width:3%;background:#ef4444"></div></div><div class="grc-ext-exec-val">3%</div></div>
+          <div class="grc-ext-exec-row"><div class="grc-ext-exec-label">Blocked</div><div class="grc-ext-exec-bar"><div class="grc-ext-exec-fill" style="width:1%;background:#f59e0b"></div></div><div class="grc-ext-exec-val">1%</div></div>
+        </div>
+        <div style="margin-top:14px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--muted)">Total Tests</span><strong>12,500</strong></div>
+      </div>
+      <div class="grc-card">
+        <h3>Total Risk <span class="grc-ext-badge idle" id="ge-total-risk-chart-badge">—</span></h3>
+        <div class="grc-ext-chart-box" id="ge-total-risk-chart-wrap"><canvas id="ge-total-risk-chart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="grc-ext-charts-row2">
+      <div class="grc-card">
+        <h3>Defect Severity Distribution <span class="grc-ext-badge idle" id="ge-severity-badge">—</span></h3>
+        <div class="grc-ext-chart-box" id="ge-severity-chart-wrap"><canvas id="ge-severity-chart"></canvas></div>
+      </div>
+      <div class="grc-card">
+        <h3>Automation Defect Detection <span class="grc-ext-badge idle" id="ge-automation-defect-gauge-badge">—</span></h3>
+        <div class="grc-ext-gauge-box"><canvas id="ge-automation-defect-gauge"></canvas></div>
+        <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:-8px" id="ge-automation-defect-caption">Automation-reported Bugs ÷ Open Bugs</div>
+      </div>
+      <div class="grc-card">
+        <h3>Code Quality (SonarQube) <span class="grc-ext-badge static">Static</span></h3>
+        <div style="margin-top:6px">
+          <div class="grc-ext-sq-row"><span>Quality Gate</span><span class="grc-ext-pill" style="background:#dcfce7;color:#15803d">Passed</span></div>
+          <div class="grc-ext-sq-row"><span>Code Smells</span><strong>342</strong></div>
+          <div class="grc-ext-sq-row"><span>Vulnerabilities</span><strong style="color:#ef4444">8</strong></div>
+          <div class="grc-ext-sq-row"><span>Security Hotspots</span><strong style="color:#f59e0b">16</strong></div>
+          <div class="grc-ext-sq-row"><span>Duplications</span><strong>2.1%</strong></div>
+          <div class="grc-ext-sq-row"><span>Maintainability Rating</span><span class="grc-ext-pill" style="background:#dcfce7;color:#15803d">A</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grc-ext-charts-row3">
+      <div class="grc-card">
+        <h3>Customer Impact <span class="grc-ext-badge static">N/A for Test</span></h3>
+        <div style="margin-top:6px">
+          <div class="grc-ext-sq-row"><span>Escaped Defects</span><strong>—</strong></div>
+          <div class="grc-ext-sq-row"><span>Production Incidents</span><strong>—</strong></div>
+          <div class="grc-ext-sq-row"><span>Sev-1 Incidents</span><strong>—</strong></div>
+          <div class="grc-ext-sq-row"><span>Customer Tickets</span><strong>—</strong></div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px">Qorix Test (sandbox project CP) doesn't track customer escalations — Qorix Classic's GRC dashboard is the real source for customer-impact data.</div>
+      </div>
+      <div class="grc-card">
+        <h3>Release Health</h3>
+        <div style="margin-top:6px">
+          <div class="grc-ext-sq-row"><span>Unreleased Releases <span class="grc-ext-badge idle" id="ge-rel-badge">—</span></span><strong id="ge-rel-total">—</strong></div>
+          <div class="grc-ext-sq-row"><span>Delayed Releases</span><strong id="ge-rel-delayed">—</strong></div>
+          <div class="grc-ext-sq-row"><span>Release Success Rate <span class="grc-ext-badge static">Static</span></span><strong>96%</strong></div>
+          <div class="grc-ext-sq-row"><span>Rollbacks <span class="grc-ext-badge static">Static</span></span><strong>2</strong></div>
+          <div class="grc-ext-sq-row"><span>Change Failure Rate <span class="grc-ext-badge static">Static</span></span><strong>3%</strong></div>
+          <div class="grc-ext-sq-row"><span>Lead Time (Avg) <span class="grc-ext-badge static">Static</span></span><strong>4.2 days</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grc-card">
+      <h3>Technical Debt Trend <span class="grc-ext-badge static">Static</span></h3>
+      <div class="grc-ext-chart-box" style="height:220px"><canvas id="ge-tech-debt-chart"></canvas></div>
+    </div>
+
+  </div><!-- /pane-grc-ext -->
+
 </div><!-- /product-body -->
-
-<!-- ── Excel Import Overlay ───────────────────────────────────────── -->
-<div class="excel-overlay" id="excel-overlay" onclick="if(event.target===this)closeExcelModal()">
-  <div class="excel-modal">
-    <div class="excel-hdr">
-      <h3>Import Team from Excel / CSV</h3>
-      <button class="modal-close" onclick="closeExcelModal()">✕</button>
-    </div>
-    <div style="padding:20px">
-
-      <!-- Step 1: Upload zone -->
-      <div style="margin-bottom:16px">
-        <div class="dropzone" id="dropzone"
-          ondragover="event.preventDefault();this.classList.add('drag-over')"
-          ondragleave="this.classList.remove('drag-over')"
-          ondrop="this.classList.remove('drag-over');handleExcelDrop(event)">
-          <div class="dropzone-icon">📊</div>
-          <div class="dropzone-text">Drop your Excel or CSV file here</div>
-          <div class="dropzone-sub">Supports .xlsx, .xls, .csv — or click to browse</div>
-          <input type="file" accept=".xlsx,.xls,.csv" onchange="handleExcelFile(this.files[0])"/>
-        </div>
-      </div>
-
-      <!-- Template download row -->
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:10px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
-        <span style="font-size:18px">FILE</span>
-        <div style="flex:1">
-          <div style="font-size:13px;font-weight:600">Need a template?</div>
-          <div style="font-size:11px;color:var(--muted)">Download a pre-formatted CSV with correct column headers</div>
-        </div>
-        <button class="btn btn-outline btn-sm" onclick="downloadExcelTemplate()">Template</button>
-      </div>
-
-      <!-- Column mapping hint -->
-      <div style="margin-bottom:14px;padding:10px 12px;background:#eff6ff;border-radius:8px;border:1px solid #bfdbfe;font-size:12px;color:#1d4ed8">
-        <strong>Expected columns:</strong> Name · Initials · Role · Type (safety-manager/security-manager/quality-manager/quality-consultant/safety-consultant) · Allocation% · Ask% · Shared (Yes/No)
-        <br/>Column headers are auto-detected — order doesn't matter.
-      </div>
-
-      <!-- Preview area (populated after file load) -->
-      <div id="excel-preview" style="margin-bottom:12px"></div>
-
-      <!-- Import options (shown after file parsed) -->
-      <div id="excel-import-options" style="display:none;margin-bottom:14px;padding:12px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
-        <div class="form-field" style="margin:0">
-          <label>Import mode</label>
-          <select id="excel-import-mode" style="border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:13px;width:100%;outline:none">
-            <option value="merge">Merge — add to existing team (skip duplicates by name)</option>
-            <option value="replace">Replace — remove current team and use imported data</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Action buttons -->
-      <div style="display:flex;gap:8px;justify-content:flex-end">
-        <button class="btn btn-outline" onclick="closeExcelModal()">Cancel</button>
-        <button class="btn btn-primary" id="excel-import-btn" style="display:none" onclick="importExcelMembers()">Import Members</button>
-      </div>
-
-    </div>
-  </div>
-</div>
 
 <!-- MODALS -->
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
@@ -525,6 +841,62 @@ const params = new URLSearchParams(location.search);
 let PID = params.get('id') || 'classic';
 let P = null;
 
+// Fallback getProduct function if assets/data.js is not loaded
+function getProduct(productId){
+  const normalized = String(productId || '').trim().toLowerCase();
+
+  if (typeof PRODUCTS !== 'undefined' && Array.isArray(PRODUCTS)) {
+    const byId = PRODUCTS.find(p => p.id === normalized);
+    if (byId) return byId;
+
+    if (typeof PROGRAM_TO_PRODUCT !== 'undefined' && PROGRAM_TO_PRODUCT) {
+      const mappedId = PROGRAM_TO_PRODUCT[productId] || PROGRAM_TO_PRODUCT[String(productId).trim()];
+      if (mappedId) {
+        const mappedProduct = PRODUCTS.find(p => p.id === mappedId);
+        if (mappedProduct) return mappedProduct;
+      }
+    }
+  }
+
+  const fallbackProducts = {
+    classic: {
+      id: 'classic',
+      name: 'Qorix Classic',
+      description: 'Enterprise Risk & Compliance Management',
+      color: '#5B21FF',
+      status: 'On Track',
+      team: [],
+      roadmap: {now:[], next:[], later:[]},
+      risks: [],
+      dependencies: []
+    },
+    adaptive: {
+      id: 'adaptive',
+      name: 'Qorix Adaptive',
+      description: 'Self-tuning runtime for dynamic workloads',
+      color: '#0F9ED5',
+      status: 'At Risk',
+      team: [],
+      roadmap: {now:[], next:[], later:[]},
+      risks: [],
+      dependencies: []
+    },
+    bootloader: {
+      id: 'bootloader',
+      name: 'Qorix Bootloader',
+      description: 'Secure OTA-capable bootloader for embedded targets',
+      color: '#E97132',
+      status: 'On Track',
+      team: [],
+      roadmap: {now:[], next:[], later:[]},
+      risks: [],
+      dependencies: []
+    }
+  };
+
+  return fallbackProducts[normalized] || null;
+}
+
 function init(){
   P = getProduct(PID);
   if(!P){ document.body.innerHTML='<div style="padding:60px;text-align:center;color:#64748b">Product not found. <a href="index.html">Go home</a></div>'; return; }
@@ -534,8 +906,8 @@ function init(){
   renderTabs();
   renderOverview();
   renderTeam();
-  renderActivity();
   _loadCachedJiraData();
+  renderTestJqlCards();
   // activate tab from hash
   const hash = location.hash.replace('#','');
   if(hash) activateTab(hash);
@@ -543,31 +915,260 @@ function init(){
 
 function switchProduct(id){ if(id) location.href='product.html?id='+id; }
 
+/* ── Qorix Test: one card per JQL (project CP) ───────────────── */
+function renderTestJqlCards(){
+  if(PID !== 'test') return;
+  const section = document.getElementById('test-jql-section');
+  const grid = document.getElementById('test-jql-cards');
+  if(!section || !grid) return;
+  section.style.display = 'block';
+
+  const jqlMap = (typeof TEST_JQL !== 'undefined') ? TEST_JQL : {};
+  const j = (P && P.jira) || {};
+
+  const cards = [
+    { label:'Open Defects',            key:'openBugs',                jql:jqlMap.openBugs },
+    { label:'Critical Defects',        key:'criticalBugs',            jql:jqlMap.criticalBugs },
+    { label:'Requirements (Total)',    key:'requirementsTotal',       jql:jqlMap.requirementsTotal,       na:true },
+    { label:'Requirements Not Approved', key:'requirementsNotApproved', jql:jqlMap.requirementsNotApproved, na:true },
+    { label:'Audit Findings',          key:'auditFindings',           jql:jqlMap.auditFindings,           na:true },
+    { label:'Reviews',                 key:'reviews',                  jql:jqlMap.reviews,                 na:true },
+    { label:'Impediments',             key:'impediments',              jql:jqlMap.impediments },
+    { label:'Reopened Bugs',           key:'reopenedBugs',             jql:jqlMap.reopenedBugs },
+    { label:'Change Requests',         key:'changeRequests',           jql:jqlMap.changeRequests }
+  ];
+
+  grid.innerHTML = cards.map(c => {
+    const val = j[c.key];
+    const displayVal = c.na && !val ? 'N/A' : (val ?? 0);
+    const valColor = c.na && !val ? '#94a3b8' : '#0d0033';
+    return `
+    <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;box-shadow:var(--shadow)">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">${c.label}</div>
+      <div style="font-size:24px;font-weight:800;color:${valColor};margin-bottom:8px">${displayVal}</div>
+      <div style="font-size:10px;color:var(--muted);font-family:monospace;background:var(--bg);border-radius:6px;padding:6px 8px;word-break:break-word">${c.jql || '—'}</div>
+    </div>`;
+  }).join('');
+
+  renderTestReleases();
+}
+
+/* ── Releases: live sync (project CP) ──────────────────────────────────────
+   Fetches real unreleased-release count and nearest releases from Jira's
+   project-versions API, replacing the static assets/data.js snapshot when
+   available. Falls back to the static snapshot (and marks it as such) if
+   the user hasn't connected JIRA yet or the live fetch fails. ──────────── */
+let _liveReleases = null;
+let _liveReleasesTotal = null;
+let _liveReleasesDelayedTotal = null;
+let _releasesCacheCleared = false;
+
+async function syncReleasesLive(cfg, projectKeyOverride){
+  const projectKey = projectKeyOverride || cfg.projectKey || (typeof JIRA_CFG !== 'undefined' && JIRA_CFG.projects && JIRA_CFG.projects[PID]) || null;
+  if(!projectKey){
+    console.warn('Live release sync skipped: no project key configured for', PID);
+    return;
+  }
+  try{
+    const vResp = await fetch(`${JIRA_PROXY}/api/jira/versions`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ domain:cfg.domain, email:cfg.email, token:cfg.token, projectKey, status:'unreleased' })
+    });
+    const vData = await vResp.json();
+    if(!vResp.ok) throw new Error(vData.error || `HTTP ${vResp.status}`);
+
+    const total = typeof vData.total === 'number' ? vData.total : (vData.values || []).length;
+    const allWithDate = (vData.values || []).filter(v => v.releaseDate);
+    const delayedWithDate = allWithDate.filter(v => !!v.overdue);
+    const totalDelayed = delayedWithDate.length;
+    // "Latest Delayed Releases" — the 3 most recent delayed (overdue,
+    // unreleased) versions, not just the 3 earliest unreleased versions
+    // overall. Sorted newest-releaseDate-first so it reads as "latest".
+    const nearest = delayedWithDate
+      .sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate))
+      .slice(0, 3);
+
+    const releases = [];
+    for(const v of nearest){
+      const searchResp = await fetch(`${JIRA_PROXY}/api/jira/search`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ domain:cfg.domain, email:cfg.email, token:cfg.token, jql:`fixVersion = ${v.id}`, fields:'status', maxResults:200, fetchAll:true })
+      });
+      const searchData = await searchResp.json();
+      const issues = searchData.issues || [];
+      const totalCount = issues.length;
+      const doneCount = issues.filter(i => i.fields?.status?.statusCategory?.key === 'done').length;
+      releases.push({
+        name: v.name,
+        releaseDate: v.releaseDate,
+        progress: totalCount ? Math.round((doneCount / totalCount) * 100) : 0,
+        openIssues: totalCount - doneCount,
+        overdue: !!v.overdue,
+        jiraUrl: `https://${cfg.domain}/projects/${projectKey}/versions/${v.id}/tab/release-report-all-issues`
+      });
+    }
+
+    _liveReleases = releases;
+    _liveReleasesTotal = total;
+    _liveReleasesDelayedTotal = totalDelayed;
+    _releasesCacheCleared = false;
+    renderTestReleases();
+    renderGrcReleases();
+
+    // Persist so dashboard.html (a separate page) can read real, synced
+    // release data via qx_jira_data_<pid> instead of falling back to any
+    // static snapshot — keeps the dashboard card honest per-product.
+    const existing = getJiraData(PID) || {};
+    saveJiraData(PID, {
+      ...existing,
+      releases,
+      releasesTotal: total,
+      releasesDelayed: totalDelayed,
+      releasesSyncedAt: new Date().toISOString()
+    });
+  } catch(e){
+    console.warn('Live release sync failed, showing static snapshot instead:', e.message);
+  }
+}
+
+function _getReleasesData(){
+  if(_releasesCacheCleared){
+    return { total: 0, delayed: 0, releases: [], isLive: false, isCleared: true };
+  }
+  if(_liveReleases){
+    return { total: _liveReleasesTotal, delayed: _liveReleasesDelayedTotal, releases: _liveReleases, isLive: true };
+  }
+  // Static fallbacks below are real snapshots for project CP, kept as two
+  // fully independent constant sets (Classic's own CLASSIC_RELEASES* vs
+  // Test's own TEST_RELEASES*) even though both currently mirror the same
+  // underlying Jira project — see the ownership note in assets/data.js.
+  // This means removing either product from the codebase can't silently
+  // break the other's release card. Other products must not inherit
+  // Classic's/Test's numbers before they've synced their own JIRA project —
+  // show an honest empty state instead.
+  const today = new Date();
+  if(PID === 'classic'){
+    const rels = (typeof CLASSIC_RELEASES !== 'undefined') ? CLASSIC_RELEASES : [];
+    // Same "Delayed = past-due releaseDate, still unreleased" query used by
+    // dashboard.html's releasesDelayedForProduct() for its own Classic static
+    // fallback — kept identical so both pages report the same number for the
+    // same underlying snapshot instead of drifting via two different formulas.
+    return {
+      total: (typeof CLASSIC_RELEASES_UNRELEASED_COUNT !== 'undefined') ? CLASSIC_RELEASES_UNRELEASED_COUNT : '—',
+      delayed: rels.filter(r => new Date(r.releaseDate) < today).length,
+      releases: rels,
+      isLive: false
+    };
+  }
+  if(PID === 'test'){
+    const rels = (typeof TEST_RELEASES !== 'undefined') ? TEST_RELEASES : [];
+    return {
+      total: (typeof TEST_RELEASES_UNRELEASED_COUNT !== 'undefined') ? TEST_RELEASES_UNRELEASED_COUNT : '—',
+      delayed: rels.filter(r => new Date(r.releaseDate) < today).length,
+      releases: rels,
+      isLive: false
+    };
+  }
+  return { total: '—', delayed: null, releases: [], isLive: false, isCleared: false };
+}
+
+function renderTestReleases(){
+  const rows = document.getElementById('test-releases-rows');
+  if(!rows) return;
+  const { total, releases, isLive, isCleared } = _getReleasesData();
+
+  const totalEl = document.getElementById('test-releases-total');
+  if(totalEl) totalEl.textContent = total;
+  const totalLabelEl = document.getElementById('test-releases-total-label');
+  if(totalLabelEl) totalLabelEl.textContent = isCleared
+    ? 'Unreleased releases (cache cleared)'
+    : isLive ? 'Unreleased releases (live)' : 'Unreleased releases (last known)';
+
+  if(!releases.length){
+    const emptyMsg = isCleared ? 'Cache cleared — reconnect to JIRA to reload release data.' : 'No release data yet — connect to JIRA to load releases.';
+    rows.innerHTML = `<tr><td colspan="5" style="padding:16px 14px;font-size:13px;color:var(--muted);text-align:center">${emptyMsg}</td></tr>`;
+    return;
+  }
+
+  rows.innerHTML = releases.map(r => {
+    const releaseDate = new Date(r.releaseDate);
+    const isPast = typeof r.overdue === 'boolean' ? r.overdue : (releaseDate < new Date());
+    const isDone = r.progress >= 100;
+    let statusLabel, statusBg, statusColor;
+    if(isPast){
+      statusLabel = isDone ? 'Delayed (unreleased)' : 'Delayed';
+      statusBg = isDone ? '#fef3c7' : '#fee2e2';
+      statusColor = isDone ? '#92400e' : '#991b1b';
+    } else {
+      statusLabel = 'On Track';
+      statusBg = '#dcfce7';
+      statusColor = '#15803d';
+    }
+    const dateLabel = releaseDate.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+    const nameHtml = r.jiraUrl
+      ? `<a href="${r.jiraUrl}" target="_blank" rel="noopener" style="color:var(--qx-blue,#5B21FF);text-decoration:none">${r.name}</a>`
+      : r.name;
+    return `
+    <tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:10px 14px;font-size:13px">${nameHtml}</td>
+      <td style="padding:10px 14px;font-size:13px;color:var(--muted)">${dateLabel}</td>
+      <td style="padding:10px 14px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="flex:1;max-width:100px;height:6px;background:var(--bg);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${r.progress}%;background:#22c55e"></div>
+          </div>
+          <span style="font-size:12px;color:var(--muted)">${r.progress}%</span>
+        </div>
+      </td>
+      <td style="padding:10px 14px"><span style="background:${statusBg};color:${statusColor};padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">${statusLabel}</span></td>
+      <td style="padding:10px 14px;font-size:13px">${r.openIssues}</td>
+    </tr>`;
+  }).join('');
+}
+
 function buildSwitcher(){
   const sel = document.getElementById('product-switcher');
-  sel.innerHTML = '<option value="">Switch product…</option>' + PRODUCTS.map(p=>`<option value="${p.id}"${p.id===PID?' selected':''}>${p.name}</option>`).join('');
+  sel.innerHTML = '<option value="">Switch product…</option>' + PRODUCTS.filter(p=>p.id!=='test').map(p=>`<option value="${p.id}"${p.id===PID?' selected':''}>${p.name}</option>`).join('');
+}
+
+function heroStatusFromDelayedCount(delayedCount, fallbackStatus){
+  if(typeof delayedCount !== 'number') return fallbackStatus;
+  if(delayedCount <= 0) return 'on-track';
+  if(delayedCount <= 5) return 'at-risk';
+  return 'delayed';
 }
 
 /* ── Hero ─────────────────────────────────────────────────────── */
 function renderHero(){
   document.getElementById('product-hero').style.background=`linear-gradient(135deg,#3A00F5,#2200cc 80%)`;
-  document.getElementById('hero-badge').style.background=P.color;
-  document.getElementById('hero-badge').textContent=P.abbr;
+  const isClassicFamily = PID === 'classic' || PID === 'adaptive' || PID === 'bootloader' || PID === 'developer' || PID === 'performance' || PID === 'lightweight';
+  const badgeEl = document.getElementById('hero-badge');
+  badgeEl.classList.toggle('midnight-neon', isClassicFamily);
+  badgeEl.style.background = isClassicFamily ? '' : P.color;
+  badgeEl.textContent=P.abbr;
   document.getElementById('hero-name').textContent=P.name;
   document.getElementById('hero-desc').textContent=P.description||P.desc||'';
+
+  const releasesData = _getReleasesData();
+  const heroStatus = heroStatusFromDelayedCount(releasesData ? releasesData.delayed : null, P.status);
   document.getElementById('hero-meta').innerHTML=`
-    <span class="badge badge-${P.status}">${statusLabel(P.status)}</span>
+    <span class="badge badge-${heroStatus}">${statusLabel(heroStatus)}</span>
     <span class="badge-phase" style="background:${phaseBg(P.phase)};color:${phaseText(P.phase)}">${P.phase}</span>
     <span style="font-size:12px;color:rgba(255,255,255,.5)">PM: <strong style="color:rgba(255,255,255,.85)">${P.pm}</strong></span>
     <span style="font-size:12px;color:rgba(255,255,255,.5)">Updated: <strong style="color:rgba(255,255,255,.85)">${P.updated}</strong></span>`;
 
   // Completion ring
-  const ring = new Chart(document.getElementById('ringChart'),{
-    type:'doughnut',
-    data:{datasets:[{data:[P.completion,100-P.completion],backgroundColor:[P.color,'rgba(255,255,255,.1)'],borderWidth:0,borderRadius:4}]},
-    options:{responsive:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{enabled:false}}}
-  });
-  document.getElementById('ring-pct').textContent=P.completion+'%';
+  const showCompletionRing = !(PID === 'classic' || PID === 'adaptive' || PID === 'bootloader' || PID === 'developer' || PID === 'performance' || PID === 'lightweight');
+  const ringWrap = document.getElementById('hero-completion-ring');
+  if(ringWrap) ringWrap.style.display = showCompletionRing ? 'block' : 'none';
+  if(showCompletionRing){
+    const ring = new Chart(document.getElementById('ringChart'),{
+      type:'doughnut',
+      data:{datasets:[{data:[P.completion,100-P.completion],backgroundColor:['#22d3ee','rgba(255,255,255,.1)'],borderWidth:0,borderRadius:4}]},
+      options:{responsive:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{enabled:false}}}
+    });
+    document.getElementById('ring-pct').textContent=P.completion+'%';
+  }
 }
 
 /* ── Tabs ─────────────────────────────────────────────────────── */
@@ -577,217 +1178,1027 @@ const TABS=[
   {id:'jira',      label:'JIRA'},
   {id:'grc',       label:'GRC Dashboard'}
 ];
+// Extra tabs shown only for specific products. Qorix Test gets an additional
+// "GRC Extended" tab styled after the Software Quality Dashboard format.
+const EXTRA_TABS_TEST=[
+  {id:'grc-ext', label:'GRC Extended'}
+];
+function tabsForProduct(){
+  return PID === 'test' ? TABS.concat(EXTRA_TABS_TEST) : TABS;
+}
 function renderTabs(){
-  document.getElementById('ptabs').innerHTML = TABS.map(t=>`<button class="ptab${t.id==='overview'?' active':''}" onclick="activateTab('${t.id}')">${t.label}</button>`).join('');
+  document.getElementById('ptabs').innerHTML = tabsForProduct().map(t=>`<button class="ptab${t.id==='overview'?' active':''}" onclick="activateTab('${t.id}')">${t.label}</button>`).join('');
 }
 function activateTab(id){
-  document.querySelectorAll('.ptab').forEach(b=>b.classList.toggle('active',b.textContent.includes(TABS.find(t=>t.id===id)?.label||id)));
+  const all = tabsForProduct();
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.toggle('active',b.textContent.includes(all.find(t=>t.id===id)?.label||id)));
   document.querySelectorAll('.ptab-pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+id));
   history.replaceState(null,'','product.html?id='+PID+'#'+id);
   if(id==='grc') grcLoad();
+  if(id==='grc-ext') grcExtLoad();
+}
+
+/* ── JIRA Configuration Storage ──────────────────────────────── */
+function getJiraConfig(pid) {
+  try {
+    const stored = localStorage.getItem('qx_jira_config_' + pid);
+    return stored ? JSON.parse(stored) : null;
+  } catch(e) {
+    return null;
+  }
+}
+
+function saveJiraConfig(pid, cfg) {
+  try {
+    localStorage.setItem('qx_jira_config_' + pid, JSON.stringify(cfg));
+  } catch(e) {
+    console.warn('Failed to save JIRA config to localStorage', e);
+  }
 }
 
 /* ── GRC Dashboard ───────────────────────────────────────────── */
-const GRC_API = 'http://localhost:3000/api/dashboard';
-let _grcChart = null;
-let _grcData  = [];
+let _grcDefects = [];
+let _grcRisks = [];
+let _grcNC = [];
+let _grcIncidents = [];
+let _grcReopened = [];
+let _grcAutomationDefects = [];
 
 async function grcLoad(){
-  if(typeof _jiraData !== 'undefined' && Array.isArray(_jiraData.defects) && _jiraData.defects.length){
-    _syncGrcFromJiraDefects(_jiraData.defects,
-      _jiraConnected ? 'JIRA live' : 'Cached JIRA',
-      _jiraData.defectsTotal  ?? null,
-      _jiraData.resolvedTotal ?? null);
-    return;
-  }
   const badge = document.getElementById('grc-conn-badge');
   badge.className = 'grc-conn-badge';
   badge.textContent = 'Connecting...';
+  const pane = document.getElementById('pane-grc');
+  if (pane) pane.classList.toggle('grc-classic', PID === 'classic' || PID === 'test' || PID === 'adaptive' || PID === 'bootloader' || PID === 'developer' || PID === 'performance' || PID === 'lightweight');
+  if (pane) pane.classList.toggle('grc-synced', PID === 'classic' || PID === 'test' || PID === 'adaptive' || PID === 'bootloader' || PID === 'developer' || PID === 'performance' || PID === 'lightweight');
+  applyClassicGrcTheme();
+  const title = document.getElementById('grc-dashboard-title');
+  if (title) {
+    title.textContent = P ? `GRC ${P.name.replace(/^Qorix\s*/i, '')}` : 'GRC Executive Dashboard';
+  }
+
   try {
-    const res = await fetch(GRC_API);
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const d = await res.json();
-    _grcData = Array.isArray(d.issues) ? d.issues : [];
-    badge.className = 'grc-conn-badge ok';
-    badge.textContent = '✓ Live — '+new Date().toLocaleTimeString();
+    // Load from JIRA data if available
+    if(typeof _jiraData !== 'undefined') {
+      _grcDefects = _jiraData.defects || [];
+      _grcRisks = _jiraData.risks || [];
+      _grcNC = _jiraData.ncs || [];
+      _grcIncidents = _jiraData.incidents || [];
+      _grcReopened = _jiraData.reopenedDefects || [];
+      _grcAutomationDefects = _jiraData.automationDefects || [];
+      badge.className = 'grc-conn-badge ok';
+      badge.textContent = '✓ Live — '+new Date().toLocaleTimeString();
+    } else {
+      throw new Error('No JIRA data available');
+    }
   } catch(e) {
-    // Fall back to JIRA data already loaded in the page
-    _grcData = (typeof _jiraData !== 'undefined' && Array.isArray(_jiraData.defects)) ? _jiraData.defects : [];
     badge.className = 'grc-conn-badge err';
-    badge.textContent = 'Warning: Offline — using cached data';
+    badge.textContent = 'Warning: No data available';
+    _grcDefects = [];
+    _grcRisks = [];
+    _grcNC = [];
+    _grcIncidents = [];
+    _grcReopened = [];
+    _grcAutomationDefects = [];
   }
-  _grcBuildKPI(_grcData);
-  _grcBuildRisk(_grcData);
-  _grcBuildAudit(_grcData);
-  _grcBuildCompliance(_grcData);
+
+  _grcRenderMetrics();
+  grcRenderDefectsSummary();
+  _grcRenderRisksSummary();
+  _grcRenderNCsSummary();
+  renderGrcReleases();
 }
 
-function _grcBuildKPI(d, resolvedOverride=null, totalOverride=null){
-  const total    = totalOverride    !== null ? totalOverride
-    : d.length;
-  const resolved = resolvedOverride !== null ? resolvedOverride
-    : d.filter(x => x.resolved || String(x.status||x._status||'').toLowerCase()==='integrated').length;
-  const open     = Math.max(0, total - resolved);
-  const avgHrs   = resolved ? d.reduce((a,c)=>{
-    if(!c.resolved) return a;
-    const diff = new Date(c.resolved) - new Date(c.created);
-    return a + (isNaN(diff) ? 0 : diff/3600000);
-  }, 0) / resolved : 0;
+/* Releases card — real Jira data for project CP, only shown on Qorix Classic's
+   GRC dashboard (this is Classic's own project; Qorix Test reuses the same
+   data elsewhere for sandbox validation, but it originates here). */
+function renderGrcReleases(){
+  const section = document.getElementById('grc-releases-section');
+  if(!section) return;
+  if(PID !== 'classic' && PID !== 'test' && PID !== 'adaptive' && PID !== 'bootloader' && PID !== 'developer' && PID !== 'performance'){ section.style.display = 'none'; return; }
+  section.style.display = 'flex';
 
-  document.getElementById('grc-total').textContent    = total    || '—';
-  document.getElementById('grc-resolved').textContent = resolved || '—';
-  document.getElementById('grc-open').textContent     = open     || '—';
-  document.getElementById('grc-avg').textContent      = total ? avgHrs.toFixed(1) : '—';
+  const { delayed, releases, isLive, isCleared } = _getReleasesData();
 
-  const p = {High:0, Medium:0, Low:0};
-  d.forEach(i => {
-    const pr = i.priority || i._priority || 'Low';
-    if(p[pr] !== undefined) p[pr]++; else p['Low']++;
-  });
+  // Classic gets the simpler reference-screenshot format (no freshness badge,
+  // no Status column) — every other product sharing this same section keeps
+  // the badge + Status column as-is. This is a display-only split; the data
+  // and delayed-count query behind it are identical for all products.
+  const isClassicView = (PID === 'classic');
 
-  if(_grcChart) _grcChart.destroy();
-  const ctx = document.getElementById('grcPriorityChart');
-  if(ctx && total) {
-    _grcChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: Object.keys(p),
-        datasets: [{ data: Object.values(p), backgroundColor: ['#EF4444','#E97132','#4EA72E'], borderColor: ['#fff','#fff','#fff'], borderWidth: 2 }]
-      },
-      options: { cutout: '68%', plugins: { legend: { position: 'bottom', labels: { color: '#64748b', font: { size: 11, weight: '600' }, padding: 16, boxWidth: 10, boxHeight: 10 } } } }
-    });
-  }
-}
-
-function _grcBuildRisk(d){
-  const map  = document.getElementById('grc-heatmap');
-  const axY  = document.getElementById('grc-axis-y');
-  const axX  = document.getElementById('grc-axis-x');
-  if(!map) return;
-  map.innerHTML = ''; axY.innerHTML = ''; axX.innerHTML = '';
-
-  for(let i=5; i>=1; i--){
-    axY.innerHTML += `<span>${i}</span>`;
-    for(let j=1; j<=5; j++){
-      const score = i * j;
-      const cls   = score > 12 ? 'grc-high' : score > 6 ? 'grc-medium' : 'grc-low';
-      const count = d.filter(x=>{
-        const pr = (x.priority||x._priority||'').toLowerCase();
-        return (i>=4 && pr==='high') || (i===3 && pr==='medium') || (i<=2 && pr==='low');
-      }).length;
-      map.innerHTML += `<div class="grc-cell ${cls}" title="L${i} × I${j} = ${score}">${count||''}</div>`;
+  // Update summary pill values
+  const delayedEl = document.getElementById('grc-releases-delayed');
+  const delayedBadgeEl = document.getElementById('grc-releases-delayed-badge');
+  const statusThEl = document.getElementById('grc-releases-status-th');
+  if(delayedEl) delayedEl.textContent = (delayed !== null && delayed !== undefined) ? delayed : '—';
+  if(delayedBadgeEl){
+    if(isClassicView){
+      delayedBadgeEl.style.display = 'none';
+    } else {
+      // Same live/static/cleared badge convention used everywhere else in
+      // this file (see _geBadge in GRC Extended).
+      delayedBadgeEl.style.display = '';
+      delayedBadgeEl.textContent = isCleared ? 'Cleared' : (isLive ? 'Live' : 'Last known');
+      delayedBadgeEl.className = 'grc-ext-badge ' + (isLive ? 'live' : 'static');
     }
   }
-  for(let j=1; j<=5; j++) axX.innerHTML += `<span>${j}</span>`;
+  if(statusThEl) statusThEl.style.display = isClassicView ? 'none' : '';
+
+  const rows = document.getElementById('grc-releases-rows');
+  if(!rows) return;
+
+  const colCount = isClassicView ? 3 : 4;
+  if(!releases.length){
+    const emptyMsg = isCleared
+      ? 'Cache cleared — reconnect to JIRA to reload release data.'
+      : 'No release data yet — connect to JIRA to load releases.';
+    rows.innerHTML = `<tr><td colspan="${colCount}" style="padding:16px 12px;font-size:12px;color:var(--muted);text-align:center">${emptyMsg}</td></tr>`;
+    return;
+  }
+
+  let delayedRowCount = 0;
+  rows.innerHTML = releases.map(r => {
+    const releaseDate = new Date(r.releaseDate);
+    const isPast = typeof r.overdue === 'boolean' ? r.overdue : (releaseDate < new Date());
+    const isDone = r.progress >= 100;
+    let statusLabel, statusBg, statusColor;
+    if(isPast){
+      statusLabel = isDone ? 'Delayed (unreleased)' : 'Delayed';
+      statusBg = isDone ? '#fef3c7' : '#fee2e2';
+      statusColor = isDone ? '#92400e' : '#991b1b';
+      delayedRowCount++;
+    } else {
+      statusLabel = 'On Track';
+      statusBg = '#dcfce7';
+      statusColor = '#15803d';
+    }
+    const dateLabel = releaseDate.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+    const nameHtml = r.jiraUrl
+      ? `<a href="${r.jiraUrl}" target="_blank" rel="noopener" style="color:var(--qx-blue,#5B21FF);text-decoration:none">${r.name}</a>`
+      : r.name;
+    const statusTd = isClassicView ? '' : `
+      <td style="padding:8px 12px"><span style="background:${statusBg};color:${statusColor};padding:3px 9px;border-radius:6px;font-size:10px;font-weight:700">${statusLabel}</span></td>`;
+    return `
+    <tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:8px 12px;font-size:12px">${nameHtml}</td>
+      <td style="padding:8px 12px;font-size:12px;color:var(--muted)">${dateLabel}</td>
+      <td style="padding:8px 12px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="flex:1;max-width:90px;height:6px;background:var(--bg);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${r.progress}%;background:#22c55e"></div>
+          </div>
+          <span style="font-size:11px;color:var(--muted)">${r.progress}%</span>
+        </div>
+      </td>${statusTd}
+    </tr>`;
+  }).join('');
+
+  // If full-list delayed count wasn't available, fall back to count from shown rows
+  if((delayed === null || delayed === undefined) && delayedEl){
+    delayedEl.textContent = delayedRowCount;
+  }
 }
 
-function _grcBuildAudit(d){
-  const tb = document.getElementById('grc-audit-body');
-  if(!tb) return;
-  
-  // Get the JIRA config to build links
+function applyClassicGrcTheme(){
+  if (PID !== 'classic' && PID !== 'test' && PID !== 'adaptive' && PID !== 'bootloader' && PID !== 'developer' && PID !== 'performance' && PID !== 'lightweight') return;
+
+  const pane = document.getElementById('pane-grc');
+  if (!pane) return;
+
+  pane.style.setProperty('--qorix-violet', '#5B21FF');
+  pane.style.setProperty('--qorix-violet-dark', '#2B00E8');
+  pane.style.setProperty('--qorix-violet-light', '#7C52FF');
+  pane.style.setProperty('--qorix-lime', '#C6FF29');
+
+  const sectionBlocks = pane.querySelectorAll(':scope > div');
+  const topCards = sectionBlocks[1]?.querySelectorAll(':scope > div') || [];
+  if (topCards[0]) {
+    topCards[0].style.background = 'linear-gradient(135deg,#3D00FF 0%,#3300F1 40%,#2400CF 100%)';
+    topCards[0].style.boxShadow = '0 12px 30px rgba(0,0,0,.15)';
+  }
+  if (topCards[1]) {
+    topCards[1].style.background = 'linear-gradient(135deg,#5B21FF 0%,#3300F1 100%)';
+    topCards[1].style.boxShadow = '0 12px 30px rgba(0,0,0,.15)';
+  }
+
+  const ncCard = sectionBlocks[2];
+  if (ncCard) {
+    // ncCard here is the .grc-summary-grid wrapper, not a card itself — painting
+    // it purple shows through the gap between its two child cards as a bar.
+    // For the synced design, leave the wrapper transparent. (The function's own
+    // early-return above already guarantees PID is one of the synced products
+    // by this point, so there's no other case to handle here.)
+    ncCard.style.background = 'none';
+    ncCard.style.boxShadow = 'none';
+  }
+
+  const totalDefects = document.getElementById('grc-total-defects');
+  const riskTotal = document.getElementById('grc-risk-total');
+  const ncTotal = document.getElementById('grc-nc-total');
+  if (totalDefects) totalDefects.style.color = '#C6FF29';
+  if (riskTotal) riskTotal.style.color = '#C6FF29';
+  if (ncTotal) ncTotal.style.color = '#C6FF29';
+
+  const title = pane.querySelector('.grc-refresh-row h2');
+  if (title) title.style.color = '#2B00E8';
+
+  const smallSections = pane.querySelectorAll(':scope > div:nth-of-type(4) > div');
+  smallSections.forEach(card => {
+    card.style.borderColor = 'rgba(91,33,255,.14)';
+    card.style.boxShadow = '0 12px 30px rgba(0,0,0,.08)';
+  });
+
+  const filter = document.getElementById('grc-defects-filter');
+  if (filter) {
+    filter.style.borderColor = '#2B00E8';
+    filter.style.color = '#0F172A';
+  }
+}
+
+function _grcRenderMetrics(){
+  const totalDefects = _grcDefects.length;
+  const totalRisks = _grcRisks.length;
+  const totalNC = _grcNC.length;
+  const totalIncidents = _grcIncidents.length;
+
+  // Update defects card
+  const _set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+  _set('grc-total-defects', totalDefects || '—');
+  _set('grc-risk-total',  totalRisks   || '—');
+  _set('grc-nc-total',    totalNC      || '—');
+  _set('grc-incident-total', totalIncidents || '—');
+
+  // Initialize defects trend chart + the ring/bar views
+  setTimeout(() => _grcInitDefectsTrendChart(), 100);
+  setTimeout(() => _grcInitDefectsRingChart(), 100);
+  setTimeout(() => _grcInitPriorityBarChart({
+    wrapId:'grc-risk-bar-wrap', canvasId:'grc-risk-bar-chart',
+    subId:'grc-risk-do-sub', chartKey:'grcRiskBarChart',
+    items:_grcRisks, order:['High','Medium','Low'], emptyMsg:'No open risks loaded yet.'
+  }), 100);
+  setTimeout(() => _grcInitPriorityRingChart({
+    wrapId:'grc-nc-ring-canvas-wrap', legendId:'grc-nc-ring-legend', canvasId:'grc-nc-ring-chart',
+    centerId:'grc-nc-total', subId:'grc-nc-do-sub', chartKey:'grcNcRingChart',
+    items:_grcNC, order:['Highest','High','Medium'], emptyMsg:'No non-compliance items loaded yet.'
+  }), 100);
+  setTimeout(() => _grcInitPriorityRingChart({
+    wrapId:'grc-incident-ring-canvas-wrap', legendId:'grc-incident-ring-legend', canvasId:'grc-incident-ring-chart',
+    centerId:'grc-incident-total', subId:'grc-incident-do-sub', chartKey:'grcIncidentRingChart',
+    items:_grcIncidents, order:['Highest','High','Medium'], emptyMsg:'No incidents loaded yet.'
+  }), 100);
+}
+
+function grcRenderDefectsSummary(){
+  const filterVal = document.getElementById('grc-defects-filter')?.value || '';
   const cfg = getJiraConfig(PID) || {};
   const jiraDomain = cfg.domain || JIRA_CFG.domain || 'qorix.atlassian.net';
   const jiraBaseUrl = `https://${jiraDomain}/browse`;
-  
-  // Build summary stats
-  const total = d.length;
-  const high = d.filter(i=>(i.priority||i._priority||'').toLowerCase()==='high').length;
-  const medium = d.filter(i=>(i.priority||i._priority||'').toLowerCase()==='medium').length;
-  const low = d.filter(i=>(i.priority||i._priority||'').toLowerCase()==='low').length;
-  const open = d.filter(i=>(i.status||i._status||'').toLowerCase()!=='integrated'&&(i.status||i._status||'').toLowerCase()!=='done').length;
-  
-  // Update header with summary
-  const headerEl = document.getElementById('grc-audit-header');
-  if(headerEl) {
-    headerEl.innerHTML = `<span class="grc-section-hdr">Audit Findings (latest 10)</span>
-      <div style="font-size:11px;color:var(--muted);margin-top:4px;display:flex;gap:12px">
-        <span><strong>${total}</strong> total</span>
-        <span style="color:#ef4444"><strong>${high}</strong> High</span>
-        <span style="color:#f59e0b"><strong>${medium}</strong> Medium</span>
-        <span style="color:#22c55e"><strong>${low}</strong> Low</span>
-        <span><strong>${open}</strong> open</span>
-      </div>`;
+
+  let filtered = _grcDefects;
+  if(filterVal) {
+    filtered = _grcDefects.filter(d => (d.priority || d._priority || 'Low') === filterVal);
   }
-  
-  const priorityColor = {High:'grc-danger', Medium:'grc-warning', Low:'grc-success'};
-  tb.innerHTML = d.slice(0,10).map(i=>{
-    const key      = i.key  || i.id  || '—';
-    const summary  = i.summary || i.title || i.name || key;
-    const status   = i.status || i._status || '—';
-    const priority = i.priority || i._priority || '—';
-    const assignee = i.assignee || '—';
-    const priorityPill = `<span class="grc-priority-pill grc-priority-${priority}">${priority}</span>`;
-    const keyLink = key !== '—' ? `<a href="${jiraBaseUrl}/${key}" target="_blank" style="color:var(--qx-blue);text-decoration:none;font-weight:700;cursor:pointer">${key}</a>` : '—';
-    return `<tr><td>${keyLink}</td><td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${summary}</td><td>${status}</td><td>${priorityPill}</td><td>${assignee}</td></tr>`;
+
+  const filterCountEl = document.getElementById('grc-defects-filter-count');
+  if(filterCountEl) {
+    filterCountEl.textContent = filterVal ? `${filterVal}: ${filtered.length}` : `All: ${filtered.length}`;
+  }
+
+  const listEl = document.getElementById('grc-defects-list');
+  if(!filtered.length) {
+    listEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">No defects found</div>';
+    return;
+  }
+
+  listEl.innerHTML = filtered.map(d => {
+    const key = d.key || d.id || '—';
+    const brief = d.summary || d.title || '—';
+    const keyLink = key !== '—' ? `<a href="${jiraBaseUrl}/${key}" target="_blank" style="color:#667eea;text-decoration:none;font-weight:600;font-size:11px">${key}</a>` : key;
+    return `<div style="padding:8px 0;border-bottom:1px solid var(--border)">
+      ${keyLink}
+      <div style="color:var(--text-primary);font-size:11px;margin-top:2px">${brief}</div>
+    </div>`;
   }).join('');
-  if(!d.length) tb.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px">No data — connect to GRC API or JIRA</td></tr>';
 }
 
-function _grcBuildCompliance(d, resolvedOverride=null, totalOverride=null){
-  const total = totalOverride    !== null ? totalOverride    : d.length;
-  if(!total){ return; }
-  const done  = resolvedOverride !== null ? resolvedOverride
-    : d.filter(x=>String(x.status||x._status||'').toLowerCase()==='integrated').length;
-  const pct  = Math.round((done / total) * 100);
-  const viol = d.filter(x=>(x.priority||x._priority||'').toLowerCase()==='high').length;
+function _grcRenderRisksSummary(){
+  const cfg = getJiraConfig(PID) || {};
+  const jiraDomain = cfg.domain || JIRA_CFG.domain || 'qorix.atlassian.net';
+  const jiraBaseUrl = `https://${jiraDomain}/browse`;
+  const filterVal = document.getElementById('grc-risks-filter')?.value || '';
 
-  document.getElementById('grc-comp-score').textContent  = pct + '%';
-  document.getElementById('grc-violations').textContent  = viol;
-  const fill = document.getElementById('grc-comp-fill');
-  if(fill) fill.style.width = pct + '%';
+  const filtered = filterVal ? _grcRisks.filter(r => (r.priority || r._priority || 'Low') === filterVal) : _grcRisks;
+  const countEl = document.getElementById('grc-risks-filter-count');
+  if(countEl) countEl.textContent = filterVal ? `${filterVal}: ${filtered.length}` : `All: ${filtered.length}`;
+
+  const listEl = document.getElementById('grc-risks-list');
+  if(!filtered.length) {
+    listEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">No risks found</div>';
+    return;
+  }
+
+  listEl.innerHTML = filtered.slice(0, 10).map(r => {
+    const key = r.key || r.id || '—';
+    const brief = r.summary || r.title || '—';
+    const keyLink = key !== '—' ? `<a href="${jiraBaseUrl}/${key}" target="_blank" style="color:#667eea;text-decoration:none;font-weight:600;font-size:11px">${key}</a>` : key;
+    return `<div style="padding:8px 0;border-bottom:1px solid var(--border)">
+      ${keyLink}
+      <div style="color:var(--text-primary);font-size:11px;margin-top:2px">${brief}</div>
+    </div>`;
+  }).join('') + (filtered.length > 10 ? `<div style="padding:8px;text-align:center;font-size:11px;color:var(--muted)">+${filtered.length-10} more</div>` : '');
 }
 
-/* Auto-refresh GRC every 60 s when the pane is active */
+function _grcRenderNCsSummary(){
+  const cfg = getJiraConfig(PID) || {};
+  const jiraDomain = cfg.domain || JIRA_CFG.domain || 'qorix.atlassian.net';
+  const jiraBaseUrl = `https://${jiraDomain}/browse`;
+  const filterVal = document.getElementById('grc-nc-filter')?.value || '';
+
+  const filtered = filterVal ? _grcNC.filter(n => (n.priority || n._priority || 'Low') === filterVal) : _grcNC;
+  const countEl = document.getElementById('grc-nc-filter-count');
+  if(countEl) countEl.textContent = filterVal ? `${filterVal}: ${filtered.length}` : `All: ${filtered.length}`;
+
+  const listEl = document.getElementById('grc-nc-list');
+  if(!filtered.length) {
+    listEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">No non-compliance items found</div>';
+    return;
+  }
+
+  listEl.innerHTML = filtered.slice(0, 10).map(n => {
+    const key = n.key || n.id || '—';
+    const brief = n.summary || n.title || '—';
+    const keyLink = key !== '—' ? `<a href="${jiraBaseUrl}/${key}" target="_blank" style="color:#667eea;text-decoration:none;font-weight:600;font-size:11px">${key}</a>` : key;
+    return `<div style="padding:8px 0;border-bottom:1px solid var(--border)">
+      ${keyLink}
+      <div style="color:var(--text-primary);font-size:11px;margin-top:2px">${brief}</div>
+    </div>`;
+  }).join('') + (filtered.length > 10 ? `<div style="padding:8px;text-align:center;font-size:11px;color:var(--muted)">+${filtered.length-10} more</div>` : '');
+}
+
+// Real trend proxy: counts *currently open* defects by the month they were
+// created, for the last 6 months. This is honest about what it is — it can't
+// show historical volume for defects already closed (JIRA wasn't queried for
+// that here), only how the current open backlog was created over time.
+function _grcComputeDefectsTrend(defects){
+  const months = [];
+  const now = new Date();
+  for(let i = 5; i >= 0; i--){
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({ key: `${d.getFullYear()}-${d.getMonth()}`, label: d.toLocaleDateString('en-GB',{month:'short'}), count: 0 });
+  }
+  (Array.isArray(defects) ? defects : []).forEach(d => {
+    if(!d.created || d.created === '—') return;
+    const created = new Date(d.created);
+    if(isNaN(created.getTime())) return;
+    const key = `${created.getFullYear()}-${created.getMonth()}`;
+    const bucket = months.find(m => m.key === key);
+    if(bucket) bucket.count++;
+  });
+  return months;
+}
+
+function _grcInitDefectsTrendChart(){
+  try {
+    const wrap = document.getElementById('grc-defect-trend-wrap');
+    const badge = document.getElementById('grc-defect-trend-badge');
+    if(!wrap) return;
+
+    const liveFetched = !!(typeof _jiraData !== 'undefined' && _jiraData.fetchedWithFetchAll);
+    const defects = Array.isArray(_grcDefects) ? _grcDefects : [];
+
+    if(badge){
+      badge.textContent = liveFetched ? 'Live' : 'No data yet';
+      badge.className = 'grc-ext-badge ' + (liveFetched ? 'live' : 'idle');
+    }
+
+    if(!liveFetched || !defects.length){
+      if(window.grcDefectsChart){ try{ window.grcDefectsChart.destroy(); }catch(e){} window.grcDefectsChart = null; }
+      const msg = liveFetched ? 'No open defects returned by the live JQL.' : 'Connect JIRA on the JIRA tab to populate this chart live.';
+      wrap.innerHTML = `<div class="grc-ext-empty">${msg}</div>`;
+      return;
+    }
+
+    if(typeof Chart === 'undefined') return;
+
+    if(!document.getElementById('grc-defects-chart')){
+      wrap.innerHTML = '<canvas id="grc-defects-chart"></canvas>';
+    }
+    const canvas = document.getElementById('grc-defects-chart');
+    const months = _grcComputeDefectsTrend(defects);
+
+    if(window.grcDefectsChart){ try{ window.grcDefectsChart.destroy(); }catch(e){} }
+    window.grcDefectsChart = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: months.map(m => m.label),
+        datasets: [{
+          label: 'Open defects created',
+          data: months.map(m => m.count),
+          borderColor: '#5B21FF',
+          backgroundColor: 'rgba(91, 33, 255, 0.08)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 2.5,
+          pointBackgroundColor: '#5B21FF',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 1,
+          pointHoverRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: { padding: { top: 4, bottom: 0 } },
+        plugins: {
+          legend: { display: false },
+          tooltip: { backgroundColor: 'rgba(91, 33, 255, 0.9)', padding: 8, titleFont: { size: 11, weight: 'bold' }, bodyFont: { size: 11 } }
+        },
+        scales: {
+          y: { display: false, beginAtZero: true },
+          x: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { display: false } }
+        }
+      }
+    });
+  } catch(err) {
+    console.error('Error initializing defects trend chart:', err);
+  }
+}
+
+/* ── Total Open Defects — single ring view ──────────────────────
+   Combines every open defect into one mutually-exclusive ring: each
+   defect is bucketed into exactly one category (first match wins, in
+   this precedence order), so the segments always sum to the total:
+     1. Highest     — Highest-priority open bugs
+     2. Customer    — matches the live Customer Defects JQL (Classic
+                       project only today; empty for other products,
+                       which is correct — they don't track this field)
+     3. Automation  — matches the live "Automation for Jira" reporter JQL
+     4. Re-open     — currently in Reopened status
+     5. > 2 Weeks   — created more than 14 days ago (still open) and none
+                       of the above
+     6. Other/Untagged — everything else (remainder)
+   Specific tags are checked before the "aged" catch-all — otherwise a
+   ticket that's both 2+ weeks old and e.g. automation-reported would
+   always get swallowed by >2 Weeks, since most open defects skew old.
+   Re-open/Customer/Automation are matched by issue key against the
+   master open-defects list so a defect is never double-counted. */
+const GRC_RING_COLORS = {
+  '>2 Weeks':              '#5B21FF',
+  'Highest':               '#C00000',
+  'Customer':              '#0D9488',
+  'Automation':            '#F59E0B',
+  'Customer + Automation': '#0EA5E9',
+  'Re-open':               '#FB7185',
+  'Other/Untagged':        '#CBD5E1'
+};
+const GRC_RING_ORDER = ['>2 Weeks','Highest','Customer','Automation','Customer + Automation','Re-open','Other/Untagged'];
+// Display-only labels shown in the ring/legend/tooltip. Internal bucket keys
+// above (GRC_RING_ORDER) are left unchanged so the bucketing logic and color
+// map keys don't need to move in lockstep with copy changes.
+const GRC_RING_LABELS = {
+  '>2 Weeks':              '>2 Weeks',
+  'Highest':               'Highest Priority',
+  'Customer':              'Customer',
+  'Automation':            'Created by Automation',
+  'Customer + Automation': 'Customer + Automation',
+  'Re-open':               'Re-open',
+  'Other/Untagged':        'Other/Untagged'
+};
+
+function _grcComputeDefectRingBuckets(){
+  const defects = Array.isArray(_grcDefects) ? _grcDefects : [];
+  const reopenedKeys    = new Set((_grcReopened || []).map(d => d.key));
+  const automationKeys  = new Set((_grcAutomationDefects || []).map(d => d.key));
+  const customerKeys    = new Set(((typeof _jiraData !== 'undefined' && _jiraData.customerDefects) || []).map(d => d.key));
+  const AGE_MS = 14 * 24 * 60 * 60 * 1000;
+  const now = Date.now();
+
+  const buckets = {'>2 Weeks':0, 'Highest':0, 'Customer':0, 'Automation':0, 'Customer + Automation':0, 'Re-open':0, 'Other/Untagged':0};
+
+  defects.forEach(d => {
+    const createdTime = (d.created && d.created !== '—') ? new Date(d.created).getTime() : NaN;
+    const isAged = !isNaN(createdTime) && (now - createdTime) > AGE_MS;
+    const pri = d.priority || d._priority || 'Low';
+    const isCustomer   = customerKeys.has(d.key);
+    const isAutomation = automationKeys.has(d.key);
+
+    // Specific tags (priority/customer/automation/re-open) take precedence
+    // over the generic "aged" catch-all — otherwise, since most open
+    // defects tend to be 2+ weeks old anyway, a ticket that's e.g. both
+    // aged AND automation-reported would always get swallowed by >2 Weeks
+    // and the Automation/Re-open segments would never show real counts.
+    // Customer and Automation are kept SEPARATE: a ticket matching both
+    // gets its own "Customer + Automation" segment instead of being
+    // silently absorbed into just "Customer" (which would hide it from
+    // the Automation count entirely).
+    if(pri === 'Highest')                  buckets['Highest']++;
+    else if(isCustomer && isAutomation)    buckets['Customer + Automation']++;
+    else if(isCustomer)                    buckets['Customer']++;
+    else if(isAutomation)                  buckets['Automation']++;
+    else if(reopenedKeys.has(d.key))       buckets['Re-open']++;
+    else if(isAged)                        buckets['>2 Weeks']++;
+    else                                   buckets['Other/Untagged']++;
+  });
+
+  // Automation Defect Detection % (per user formula: automation-reported ÷
+  // total open defects × 100) must be an INDEPENDENT count, not the ring's
+  // "Automation" bucket. The ring bucket is mutually-exclusive precedence
+  // (Highest/Customer claim a ticket before Automation ever gets checked),
+  // so a ticket that's both Customer-tagged and automation-reported would
+  // zero out the ring's Automation bucket even though it's a real
+  // automation-reported defect. Count intersection with automationKeys
+  // directly, independent of Highest/Customer/Re-open/Aged classification.
+  const automationOpenCount = defects.filter(d => automationKeys.has(d.key)).length;
+
+  return { total: defects.length, buckets, automationOpenCount };
+}
+
+function _grcInitDefectsRingChart(){
+  try{
+    const wrap = document.getElementById('grc-defects-ring-canvas-wrap');
+    const legendEl = document.getElementById('grc-defects-ring-legend');
+    const subEl = document.getElementById('grc-do-sub');
+    const automationPctEl = document.getElementById('grc-automation-defect-pct');
+    if(!wrap) return;
+
+    const { total, buckets, automationOpenCount } = _grcComputeDefectRingBuckets();
+
+    if(subEl){
+      subEl.textContent = total
+        ? `All categories combined into one ring, segmented proportionally out of ${total} total`
+        : 'Connect JIRA on the JIRA tab to populate this ring live.';
+    }
+
+    // Automation Defect Detection = (Defects reported by Automation ÷ Total
+    // Defects) × 100. Uses the independent automationOpenCount, NOT the
+    // ring's "Automation" bucket — the ring bucket can be zeroed out by
+    // Highest/Customer precedence even when automation-reported defects
+    // exist (e.g. a ticket that's both automation-reported and a Customer
+    // Problem gets claimed by the Customer segment in the ring, but must
+    // still count here).
+    if(automationPctEl){
+      automationPctEl.textContent = total ? `${(automationOpenCount / total * 100).toFixed(1)}%` : '—';
+    }
+
+    if(!total){
+      if(window.grcDefectsRingChart){ try{ window.grcDefectsRingChart.destroy(); }catch(e){} window.grcDefectsRingChart = null; }
+      wrap.innerHTML = '<div class="grc-do-ring-empty">No open defects loaded yet.</div>';
+      if(legendEl) legendEl.innerHTML = '';
+      return;
+    }
+
+    if(typeof Chart === 'undefined') return;
+
+    // Ensure the canvas + center-total markup exist — the empty state above may have replaced them
+    if(!document.getElementById('grc-defects-ring-chart')){
+      wrap.innerHTML = `<canvas id="grc-defects-ring-chart"></canvas>
+        <div class="grc-do-ring-center">
+          <div class="grc-do-count" id="grc-total-defects">${total}</div>
+          <div class="grc-do-ring-total-caption">Total</div>
+        </div>`;
+    }
+    const canvas = document.getElementById('grc-defects-ring-chart');
+    const data = GRC_RING_ORDER.map(k => buckets[k]);
+    const colors = GRC_RING_ORDER.map(k => GRC_RING_COLORS[k]);
+
+    if(window.grcDefectsRingChart){ try{ window.grcDefectsRingChart.destroy(); }catch(e){} }
+    window.grcDefectsRingChart = new Chart(canvas, {
+      type:'doughnut',
+      data:{ labels:GRC_RING_ORDER.map(k => GRC_RING_LABELS[k]), datasets:[{ data, backgroundColor:colors, borderWidth:0 }] },
+      options:{
+        responsive:true, maintainAspectRatio:false, cutout:'68%',
+        plugins:{
+          legend:{ display:false },
+          tooltip:{ callbacks:{ label:(ctx) => {
+            const v = ctx.parsed;
+            const pct = total ? (v / total * 100).toFixed(1) : '0.0';
+            return `${ctx.label}: ${v} (${pct}%)`;
+          } } }
+        }
+      }
+    });
+
+    if(legendEl){
+      legendEl.innerHTML = GRC_RING_ORDER.map(k => {
+        const v = buckets[k];
+        const pct = total ? (v / total * 100).toFixed(1) : '0.0';
+        return `<div class="grc-do-ring-row">
+          <div class="grc-do-ring-row-left"><span class="grc-do-ring-dot" style="background:${GRC_RING_COLORS[k]}"></span><span class="grc-do-ring-lbl">${GRC_RING_LABELS[k]}</span></div>
+          <div class="grc-do-ring-right"><span class="grc-do-ring-pct">${pct}%</span><span class="grc-do-ring-val">${v}</span></div>
+        </div>`;
+      }).join('');
+    }
+  }catch(err){ console.error('Error initializing defects ring chart:', err); }
+}
+
+/* ── Total Open Risks / Non-Compliance / Incident — single ring view ──
+   Same visual pattern as the Defects ring, but a straight priority
+   breakdown (no cross-referencing other JQLs needed): Highest/High/
+   Medium/Low as tracked for that item type, plus "Other" for anything
+   outside the expected priority values (keeps segments summing to total). */
+const GRC_PRIORITY_COLORS = {
+  Highest: '#C00000',
+  High:    '#ED7D31',
+  Medium:  '#FFC000',
+  Low:     '#00B050',
+  Other:   '#CBD5E1'
+};
+
+function _grcComputePriorityBuckets(items, order){
+  const buckets = {};
+  order.forEach(k => { buckets[k] = 0; });
+  buckets['Other'] = 0;
+  (Array.isArray(items) ? items : []).forEach(it => {
+    const pri = it.priority || it._priority || 'Low';
+    if(order.includes(pri)) buckets[pri]++;
+    else buckets['Other']++;
+  });
+  return { total: (Array.isArray(items) ? items.length : 0), buckets };
+}
+
+function _grcInitPriorityRingChart(opts){
+  try{
+    const wrap = document.getElementById(opts.wrapId);
+    const legendEl = document.getElementById(opts.legendId);
+    const subEl = document.getElementById(opts.subId);
+    if(!wrap) return;
+
+    const { total, buckets } = _grcComputePriorityBuckets(opts.items, opts.order);
+    const fullOrder = [...opts.order, 'Other'];
+
+    if(subEl){
+      subEl.textContent = total
+        ? `All priorities combined into one ring, segmented proportionally out of ${total} total`
+        : 'Connect JIRA on the JIRA tab to populate this ring live.';
+    }
+
+    if(!total){
+      if(window[opts.chartKey]){ try{ window[opts.chartKey].destroy(); }catch(e){} window[opts.chartKey] = null; }
+      wrap.innerHTML = `<div class="grc-do-ring-empty">${opts.emptyMsg || 'No items loaded yet.'}</div>`;
+      if(legendEl) legendEl.innerHTML = '';
+      return;
+    }
+
+    if(typeof Chart === 'undefined') return;
+
+    if(!document.getElementById(opts.canvasId)){
+      wrap.innerHTML = `<canvas id="${opts.canvasId}"></canvas>
+        <div class="grc-do-ring-center">
+          <div class="grc-do-count" id="${opts.centerId}">${total}</div>
+          <div class="grc-do-ring-total-caption">Total</div>
+        </div>`;
+    }
+    const canvas = document.getElementById(opts.canvasId);
+    const data = fullOrder.map(k => buckets[k]);
+    const colors = fullOrder.map(k => GRC_PRIORITY_COLORS[k] || '#CBD5E1');
+
+    if(window[opts.chartKey]){ try{ window[opts.chartKey].destroy(); }catch(e){} }
+    window[opts.chartKey] = new Chart(canvas, {
+      type:'doughnut',
+      data:{ labels:fullOrder, datasets:[{ data, backgroundColor:colors, borderWidth:0 }] },
+      options:{
+        responsive:true, maintainAspectRatio:false, cutout:'68%',
+        plugins:{
+          legend:{ display:false },
+          tooltip:{ callbacks:{ label:(ctx) => {
+            const v = ctx.parsed;
+            const pct = total ? (v / total * 100).toFixed(1) : '0.0';
+            return `${ctx.label}: ${v} (${pct}%)`;
+          } } }
+        }
+      }
+    });
+
+    if(legendEl){
+      legendEl.innerHTML = fullOrder.map(k => {
+        const v = buckets[k];
+        const pct = total ? (v / total * 100).toFixed(1) : '0.0';
+        return `<div class="grc-do-ring-row">
+          <div class="grc-do-ring-row-left"><span class="grc-do-ring-dot" style="background:${GRC_PRIORITY_COLORS[k] || '#CBD5E1'}"></span><span class="grc-do-ring-lbl">${k}</span></div>
+          <div class="grc-do-ring-right"><span class="grc-do-ring-pct">${pct}%</span><span class="grc-do-ring-val">${v}</span></div>
+        </div>`;
+      }).join('');
+    }
+  }catch(err){ console.error('Error initializing priority ring chart:', err); }
+}
+
+/* ── Total Open Risks — bar chart (this card only; NC/Incident/Defects
+   stay as rings). Reuses the same bucket logic and priority colors. */
+function _grcInitPriorityBarChart(opts){
+  try{
+    const wrap = document.getElementById(opts.wrapId);
+    const subEl = document.getElementById(opts.subId);
+    if(!wrap) return;
+
+    const { total, buckets } = _grcComputePriorityBuckets(opts.items, opts.order);
+    const fullOrder = [...opts.order, 'Other'];
+
+    if(subEl){
+      subEl.textContent = total
+        ? `Breakdown across ${total} total`
+        : 'Connect JIRA on the JIRA tab to populate this chart live.';
+    }
+
+    if(!total){
+      if(window[opts.chartKey]){ try{ window[opts.chartKey].destroy(); }catch(e){} window[opts.chartKey] = null; }
+      wrap.innerHTML = `<div class="grc-do-ring-empty">${opts.emptyMsg || 'No items loaded yet.'}</div>`;
+      return;
+    }
+
+    if(typeof Chart === 'undefined') return;
+
+    if(!document.getElementById(opts.canvasId)){
+      wrap.innerHTML = `<canvas id="${opts.canvasId}"></canvas>`;
+    }
+    const canvas = document.getElementById(opts.canvasId);
+    const data = fullOrder.map(k => buckets[k]);
+    const colors = fullOrder.map(k => GRC_PRIORITY_COLORS[k] || '#CBD5E1');
+
+    if(window[opts.chartKey]){ try{ window[opts.chartKey].destroy(); }catch(e){} }
+    window[opts.chartKey] = new Chart(canvas, {
+      type:'bar',
+      data:{ labels:fullOrder, datasets:[{ label:opts.label || 'Count', data, backgroundColor:colors, borderRadius:6, maxBarThickness:48 }] },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{
+          legend:{ display:false },
+          tooltip:{ callbacks:{ label:(ctx) => {
+            const v = ctx.parsed.y;
+            const pct = total ? (v / total * 100).toFixed(1) : '0.0';
+            return `${ctx.label}: ${v} (${pct}%)`;
+          } } }
+        },
+        scales:{
+          y:{ beginAtZero:true, ticks:{ precision:0, color:'#64748b', font:{size:11} }, grid:{ color:'rgba(226,232,240,.6)' } },
+          x:{ ticks:{ color:'#64748b', font:{size:11} }, grid:{ display:false } }
+        }
+      }
+    });
+  }catch(err){ console.error('Error initializing priority bar chart:', err); }
+}
+
 setInterval(()=>{ if(document.getElementById('pane-grc')?.classList.contains('active')) grcLoad(); }, 60000);
+setInterval(()=>{ if(document.getElementById('pane-grc-ext')?.classList.contains('active')) grcExtLoad(); }, 60000);
 
-function isOpenIssueStatus(issue){
-  const statusCat = String(issue?._statusCat || '').toLowerCase();
-  const status = String(issue?.status || issue?._status || '').toLowerCase();
-  return statusCat !== 'done' && statusCat !== 'closed' && status !== 'done' && status !== 'closed';
+/* ── GRC Extended (Qorix Test only) ─────────────────────────────
+   Reuses the same _grcDefects / _grcRisks / _grcNC / _jiraData / _getReleasesData()
+   that already power the JIRA and GRC Dashboard tabs — no separate fetch.
+   Metrics with no live source in the current JIRA sync (SonarQube, technical
+   debt, customer impact, test execution status) are shown as clearly-badged
+   static placeholders so the tab is honest about what's real vs illustrative. */
+function _geSet(id, v){ const el = document.getElementById(id); if(el) el.textContent = v; }
+function _geBadge(id, isLive, liveLabel='Live', staticLabel='Last known'){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = isLive ? liveLabel : staticLabel;
+  el.className = 'grc-ext-badge ' + (isLive ? 'live' : 'static');
 }
 
-function getNonComplianceItems(data){
-  if(!data) return [];
-  const candidates =
-    (Array.isArray(data.ncs) && data.ncs.length ? data.ncs : null) ||
-    (Array.isArray(data.nc) && data.nc.length ? data.nc : null) ||
-    (Array.isArray(data.sev0Risks) && data.sev0Risks.length ? data.sev0Risks : null) ||
-    [];
-  return candidates.filter(isOpenIssueStatus);
+// Set by clearJiraCache() so GRC Extended shows 0/dash right after a cache
+// clear instead of silently reverting to the static assets/data.js snapshot
+// (same "cleared means 0, not last-known-good" rule Releases already uses).
+// Cleared automatically the next time a real JQL fetch succeeds.
+let _grcExtCacheCleared = false;
+
+function grcExtLoad(){
+  if(PID !== 'test') return;
+
+  const title = document.getElementById('grc-ext-title');
+  if(title) title.textContent = `Software Quality Dashboard — ${P.name}`;
+  const updated = document.getElementById('grc-ext-updated');
+  if(updated) updated.textContent = 'Last updated ' + new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+
+  // A real JQL fetch (live or restored from cache) sets fetchedWithFetchAll=true;
+  // until then, _grcDefects is empty and we either fall back to the static
+  // assets/data.js snapshot (never connected) or show a zeroed cleared state
+  // (cache was just explicitly cleared).
+  const liveFetched = !!(typeof _jiraData !== 'undefined' && _jiraData.fetchedWithFetchAll);
+  if(liveFetched) _grcExtCacheCleared = false; // self-heals once a real fetch happens again
+  const cacheCleared = _grcExtCacheCleared && !liveFetched;
+  const liveDefects = Array.isArray(_grcDefects) ? _grcDefects : [];
+
+  const openBugs = liveFetched ? liveDefects.length : (cacheCleared ? 0 : (P.jira?.openBugs ?? '—'));
+  const criticalHighest = liveDefects.filter(d => (d.priority || d._priority) === 'Highest').length;
+  const criticalCount = liveFetched ? criticalHighest : (cacheCleared ? 0 : (P.jira?.criticalBugs ?? '—'));
+
+  _geSet('ge-open-bugs', openBugs);
+  _geBadge('ge-open-bugs-badge', liveFetched, 'Live', cacheCleared ? 'Cleared' : 'Last known');
+  _geSet('ge-critical-defects', criticalCount);
+  _geBadge('ge-critical-badge', liveFetched, 'Live (proxy)', cacheCleared ? 'Cleared' : 'Last known');
+
+  // Overall health — the one signal we can honestly compute live
+  const healthEl = document.getElementById('grc-ext-health');
+  if(healthEl){
+    if(cacheCleared){
+      healthEl.className = 'grc-ext-health idle';
+      healthEl.textContent = '○ Cache cleared — reconnect to JIRA on the JIRA tab';
+    } else if(!liveFetched){
+      healthEl.className = 'grc-ext-health idle';
+      healthEl.textContent = '○ Preview — connect JIRA on the JIRA tab for live health';
+    } else if(criticalHighest > 0){
+      healthEl.className = 'grc-ext-health warn';
+      healthEl.textContent = `● At Risk (${criticalHighest} critical)`;
+    } else {
+      healthEl.className = 'grc-ext-health ok';
+      healthEl.textContent = '● Healthy';
+    }
+  }
+
+  _geBadge('ge-severity-badge', liveFetched, 'Live', cacheCleared ? 'Cleared' : 'No data yet');
+  _geInitSeverityChart(liveDefects, liveFetched, cacheCleared);
+
+  // Total Risk — same _grcRisks used by the GRC Dashboard tab (populated by
+  // the same JQL run, not gated to a single product like customerDefects is).
+  const liveRisks = Array.isArray(_grcRisks) ? _grcRisks : [];
+  const totalRisk = liveFetched ? liveRisks.length : (cacheCleared ? 0 : '—');
+  _geSet('ge-total-risk', totalRisk);
+  _geBadge('ge-total-risk-badge', liveFetched, 'Live', cacheCleared ? 'Cleared' : 'No data yet');
+  _geBadge('ge-total-risk-chart-badge', liveFetched, 'Live', cacheCleared ? 'Cleared' : 'No data yet');
+  _geInitTotalRiskChart(liveRisks, liveFetched, cacheCleared);
+
+  // Non-Compliance — same _grcNC used by the GRC Dashboard tab (populated by
+  // the same JQL run, not a separate fetch). Replaces the old static MTTR tile.
+  const liveNC = Array.isArray(_grcNC) ? _grcNC : [];
+  const totalNC = liveFetched ? liveNC.length : (cacheCleared ? 0 : '—');
+  _geSet('ge-non-compliance', totalNC);
+  _geBadge('ge-non-compliance-badge', liveFetched, 'Live', cacheCleared ? 'Cleared' : 'No data yet');
+
+  // Automation Defect Detection = (Bugs reported by "Automation for Jira" ÷ Open Bugs) × 100.
+  // Verified against project CP directly: issuetype = Defect doesn't exist there (only Bug),
+  // so the JQL uses issuetype = Bug. Denominator is the same live Open Bugs count above.
+  const liveAutomationDefects = Array.isArray(_grcAutomationDefects) ? _grcAutomationDefects : [];
+  let automationDefectPct = '—';
+  if(liveFetched){
+    automationDefectPct = liveDefects.length > 0 ? Math.round((liveAutomationDefects.length / liveDefects.length) * 100) : 0;
+  } else if(cacheCleared){
+    automationDefectPct = 0;
+  }
+  _geSet('ge-automation-defect-pct', typeof automationDefectPct === 'number' ? automationDefectPct + '%' : automationDefectPct);
+  _geBadge('ge-automation-defect-badge', liveFetched, 'Live', cacheCleared ? 'Cleared' : 'No data yet');
+  _geBadge('ge-automation-defect-gauge-badge', liveFetched, 'Live', cacheCleared ? 'Cleared' : 'No data yet');
+  _geInitAutomationDefectGauge(automationDefectPct, liveFetched, cacheCleared, liveAutomationDefects.length, liveDefects.length);
+
+  const { total: relTotal, delayed: relDelayed, isLive: relIsLive, isCleared: relIsCleared } = _getReleasesData();
+  _geSet('ge-rel-total', relTotal ?? '—');
+  _geSet('ge-rel-delayed', (relDelayed === null || relDelayed === undefined) ? '—' : relDelayed);
+  _geBadge('ge-rel-badge', !!relIsLive, 'Live', relIsCleared ? 'Cleared' : 'Last known');
+
+  _geInitDefectTrendChart();
+  _geInitTechDebtChart();
 }
 
-function getTotalRiskItems(data){
-  if(!data) return [];
-  const candidates =
-    (Array.isArray(data.risks) && data.risks.length ? data.risks : null) ||
-    (Array.isArray(data.sev0Risks) && data.sev0Risks.length ? data.sev0Risks : null) ||
-    [];
-  return candidates.filter(isOpenIssueStatus);
+function _geInitSeverityChart(defects, liveFetched, cacheCleared){
+  try{
+    const wrap = document.getElementById('ge-severity-chart-wrap');
+    if(typeof Chart === 'undefined' || !wrap) return;
+
+    if(!liveFetched || !defects.length){
+      if(window.geSeverityChart){ try{ window.geSeverityChart.destroy(); }catch(e){} window.geSeverityChart=null; }
+      const msg = cacheCleared
+        ? 'Cache cleared — reconnect to JIRA on the JIRA tab to reload this chart.'
+        : (liveFetched ? 'No open defects returned by the live JQL.' : 'Connect JIRA on the JIRA tab to populate this chart live.');
+      wrap.innerHTML = `<div class="grc-ext-empty">${msg}</div>`;
+      return;
+    }
+
+    // Ensure the canvas exists — an earlier empty-state message may have replaced it
+    if(!document.getElementById('ge-severity-chart')){
+      wrap.innerHTML = '<canvas id="ge-severity-chart"></canvas>';
+    }
+    const canvas = document.getElementById('ge-severity-chart');
+    const counts = {Highest:0, High:0, Medium:0, Low:0};
+    defects.forEach(d => {
+      const p = d.priority || d._priority || 'Low';
+      if(counts.hasOwnProperty(p)) counts[p]++;
+    });
+
+    if(window.geSeverityChart){ try{ window.geSeverityChart.destroy(); }catch(e){} }
+    window.geSeverityChart = new Chart(canvas, {
+      type:'doughnut',
+      data:{
+        labels:['Critical (Highest)','Major (High)','Medium','Minor (Low)'],
+        datasets:[{ data:[counts.Highest, counts.High, counts.Medium, counts.Low], backgroundColor:['#ef4444','#f59e0b','#fbbf24','#5B21FF'], borderWidth:0 }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false, cutout:'62%',
+        plugins:{ legend:{ position:'right', labels:{ boxWidth:10, font:{size:11} } } }
+      }
+    });
+  }catch(err){ console.error('Error initializing severity chart:', err); }
+}
+
+function _geInitDefectTrendChart(){
+  try{
+    const ctx = document.getElementById('ge-defect-trend-chart');
+    if(!ctx || typeof Chart === 'undefined') return;
+    if(window.geDefectTrendChart){ try{ window.geDefectTrendChart.destroy(); }catch(e){} }
+    window.geDefectTrendChart = new Chart(ctx, {
+      type:'line',
+      data:{
+        labels:['Jan','Feb','Mar','Apr','May','Jun'],
+        datasets:[{ label:'Open Defects', data:[210,180,165,150,142,148], borderColor:'#5B21FF', backgroundColor:'rgba(91,33,255,.08)', borderWidth:3, fill:true, tension:.4, pointRadius:4, pointBackgroundColor:'#5B21FF' }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ y:{ beginAtZero:true, grid:{color:'rgba(226,232,240,.5)'} }, x:{ grid:{display:false} } } }
+    });
+  }catch(err){ console.error('Error initializing defect trend chart:', err); }
+}
+
+function _geInitTotalRiskChart(risks, liveFetched, cacheCleared){
+  try{
+    const wrap = document.getElementById('ge-total-risk-chart-wrap');
+    if(typeof Chart === 'undefined' || !wrap) return;
+
+    if(!liveFetched || !risks.length){
+      if(window.geTotalRiskChart){ try{ window.geTotalRiskChart.destroy(); }catch(e){} window.geTotalRiskChart=null; }
+      const msg = cacheCleared
+        ? 'Cache cleared — reconnect to JIRA on the JIRA tab to reload this chart.'
+        : (liveFetched ? 'No open risks returned by the live JQL.' : 'Connect JIRA on the JIRA tab to populate this chart live.');
+      wrap.innerHTML = `<div class="grc-ext-empty">${msg}</div>`;
+      return;
+    }
+
+    // Ensure the canvas exists — an earlier empty-state message may have replaced it
+    if(!document.getElementById('ge-total-risk-chart')){
+      wrap.innerHTML = '<canvas id="ge-total-risk-chart"></canvas>';
+    }
+    const canvas = document.getElementById('ge-total-risk-chart');
+    const counts = {High:0, Medium:0, Low:0};
+    risks.forEach(r => {
+      const p = r.priority || r._priority || 'Low';
+      if(counts.hasOwnProperty(p)) counts[p]++;
+    });
+
+    if(window.geTotalRiskChart){ try{ window.geTotalRiskChart.destroy(); }catch(e){} }
+    window.geTotalRiskChart = new Chart(canvas, {
+      type:'bar',
+      data:{
+        labels:['High','Medium','Low'],
+        datasets:[{ label:'Risks', data:[counts.High, counts.Medium, counts.Low], backgroundColor:['#ef4444','#f59e0b','#5B21FF'], borderRadius:6, maxBarThickness:56 }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ y:{ beginAtZero:true, ticks:{ precision:0 }, grid:{color:'rgba(226,232,240,.5)'} }, x:{ grid:{display:false} } } }
+    });
+  }catch(err){ console.error('Error initializing total risk chart:', err); }
+}
+
+function _geInitAutomationDefectGauge(pct, liveFetched, cacheCleared, automationCount, openBugsCount){
+  try{
+    const ctx = document.getElementById('ge-automation-defect-gauge');
+    const caption = document.getElementById('ge-automation-defect-caption');
+    if(caption){
+      caption.textContent = cacheCleared
+        ? 'Cache cleared — reconnect to JIRA on the JIRA tab to reload this.'
+        : (!liveFetched
+          ? 'Connect JIRA on the JIRA tab to populate this live.'
+          : `${automationCount} automation-reported ÷ ${openBugsCount} open Bugs`);
+    }
+    if(!ctx || typeof Chart === 'undefined') return;
+    if(window.geAutomationDefectGauge){ try{ window.geAutomationDefectGauge.destroy(); }catch(e){} }
+    const value = (liveFetched && typeof pct === 'number') ? pct : 0;
+    const displayLabel = (liveFetched && typeof pct === 'number') ? value + '%' : '—';
+    window.geAutomationDefectGauge = new Chart(ctx, {
+      type:'doughnut',
+      data:{ datasets:[{ data:[value, 100-value], backgroundColor:[liveFetched ? '#f59e0b' : '#e2e8f0','#e2e8f0'], borderWidth:0 }] },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        circumference:180, rotation:270, cutout:'75%',
+        plugins:{ legend:{display:false}, tooltip:{enabled:false} }
+      },
+      plugins:[{
+        id:'geAutomationDefectGaugeCenterText',
+        afterDraw(chart){
+          const {ctx: c, chartArea} = chart;
+          if(!chartArea) return;
+          c.save();
+          c.font = '700 22px Inter, sans-serif';
+          c.fillStyle = '#0D0033';
+          c.textAlign = 'center';
+          c.fillText(displayLabel, (chartArea.left + chartArea.right) / 2, chartArea.bottom - 6);
+          c.restore();
+        }
+      }]
+    });
+  }catch(err){ console.error('Error initializing automation defect gauge:', err); }
+}
+
+function _geInitTechDebtChart(){
+  try{
+    const ctx = document.getElementById('ge-tech-debt-chart');
+    if(!ctx || typeof Chart === 'undefined') return;
+    if(window.geTechDebtChart){ try{ window.geTechDebtChart.destroy(); }catch(e){} }
+    window.geTechDebtChart = new Chart(ctx, {
+      type:'line',
+      data:{
+        labels:['Jan','Feb','Mar','Apr','May','Jun'],
+        datasets:[{ label:'Technical Debt (SP)', data:[520,500,480,450,390,324], borderColor:'#A02B93', backgroundColor:'rgba(160,43,147,.08)', borderWidth:3, fill:true, tension:.4, pointRadius:4, pointBackgroundColor:'#A02B93' }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ y:{ beginAtZero:true }, x:{ grid:{display:false} } } }
+    });
+  }catch(err){ console.error('Error initializing technical debt chart:', err); }
 }
 
 /* ── Overview ─────────────────────────────────────────────────── */
 function renderOverview(){
-  const nonCompliances = getNonComplianceItems(_jiraData);
-  const totalRiskCount = getTotalRiskItems(_jiraData).length;
-  const sev0RiskCount = nonCompliances.length;
-  const highestDefectCount = (_jiraData.defects || []).filter(d => (d.priority || '').toLowerCase() === 'highest').length;
-
-  // KPIs
-  const kpis=[
-    {val:P.users,    label:'Users',      accent:QX.green},
-    {val:totalRiskCount, label:'Total Risks', accent:'#ef4444'},
-    {val:sev0RiskCount, label:'Non-Compliance ( Sev -0 )', accent:QX.orange},
-    {val:productFTE(PID)+' FTE',label:'Team Size', accent:QX.steel},
-    {val:highestDefectCount, label:'Highest Defects', accent:'#991b1b'}
-  ];
-  document.getElementById('kpi-strip').innerHTML=kpis.map(k=>`
-    <div class="ks-card">
-      <div class="ks-accent" style="background:#3C08F5"></div>
-      <div class="kv">${k.val}</div>
-      <div class="kl">${k.label}</div>
-    </div>`).join('');
-
   // Team members highlighted box
   const members = (TEAM[PID]||[]);
   const uniqueMembers = {};
@@ -827,29 +2238,59 @@ function renderOverview(){
 
   document.getElementById('overview-alerts').innerHTML = teamMembersHtml;
 
-  // Alerts — sourced from JIRA cache
-  const cfg = getJiraConfig(PID) || {};
-  const jiraDomain = cfg.domain || JIRA_CFG.domain || 'qorix.atlassian.net';
-  const jiraBaseUrl = `https://${jiraDomain}/browse`;
-  const riskAlerts = (_jiraData.risks||[]).filter(r=>r.status!=='Done'&&r.status!=='Closed').slice(0,3);
-  const ncAlerts   = nonCompliances.slice(0,3);
-  const alerts = [
-    ...riskAlerts.map(r=>({type:'danger', icon:'!', title:'Risk: '+r.title, key:r.key, keyUrl:`${jiraBaseUrl}/${r.key}`, desc:`${r.priority} · ${r.assignee}`})),
-    ...ncAlerts.map(c=>({type:'warning', icon:'NC', title:'NC: '+c.title, key:c.key, keyUrl:`${jiraBaseUrl}/${c.key}`, desc:`${c.status}`}))
-  ];
-  const alertsHtml = alerts.length ? `
-    <div class="section-hdr"><h3>Product Flags</h3></div>
-    <div style="display:flex;flex-direction:column;gap:8px">
-      ${alerts.map(a=>`<div class="alert alert-${a.type}"><div class="alert-icon">${a.icon}</div><div class="alert-body"><div class="at">${a.title}</div><div class="ad"><a href="${a.keyUrl}" target="_blank" style="color:var(--qx-blue);text-decoration:none;font-weight:600">${a.key}</a> · ${a.desc}</div></div></div>`).join('')}
-    </div>` : '<div class="alert alert-info"><div class="alert-icon">OK</div><div class="alert-body"><div class="at">No critical flags</div><div class="ad">This product has no high-severity open issues.</div></div></div>';
-  
-  document.getElementById('overview-alerts').innerHTML += alertsHtml;
+  // Upcoming Release Details
+  const roadmapItems = (ROADMAP[PID] || []);
+  const nextMilestone = roadmapItems.find(item => item.type === 'milestone' && (item.col === 'now' || item.col === 'next'));
+  const releaseCardEl = document.getElementById('release-card');
+
+  if (nextMilestone && releaseCardEl) {
+    const versionMatch = nextMilestone.title.match(/v[\d.]+/);
+    const version = versionMatch ? versionMatch[0] : 'TBD';
+    const releaseDate = nextMilestone.date || 'TBD';
+    const featureCount = roadmapItems.filter(item => item.col === 'now' || item.col === 'next').length;
+    const progress = nextMilestone.col === 'now' ? 65 : 30;
+    const statusLabel = nextMilestone.col === 'now' ? 'ON TRACK' : 'UPCOMING';
+
+    releaseCardEl.style.display = 'block';
+    releaseCardEl.innerHTML = `
+      <div style="margin-top:24px;padding:16px;background:#fff;border-radius:10px;border:1px solid #e2e8f0;box-shadow:0 1px 4px rgba(13,0,51,.08)">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;border-bottom:1px solid #e2e8f0;padding-bottom:12px">
+          <h3 style="margin:0;font-size:14px;font-weight:700;color:#0d0033">Upcoming Release</h3>
+          <div style="margin-left:auto;background:#dcfce7;color:#15803d;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700">${statusLabel}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <div style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;margin-bottom:4px">Version</div>
+            <div style="font-size:18px;font-weight:700;color:#0d0033">${version}</div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;margin-bottom:4px">Target Date</div>
+            <div style="font-size:14px;font-weight:600;color:#0d0033">${releaseDate}</div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;margin-bottom:4px">Features</div>
+            <div style="font-size:18px;font-weight:700;color:#3A00F5">${featureCount} Items</div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;margin-bottom:4px">Progress</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="flex:1;height:6px;background:#e2e8f0;border-radius:3px">
+                <div style="height:100%;background:#3A00F5;border-radius:3px;width:${progress}%"></div>
+              </div>
+              <span style="font-size:12px;font-weight:600;color:#0d0033">${progress}%</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  } else if (releaseCardEl) {
+    releaseCardEl.style.display = 'none';
+    releaseCardEl.innerHTML = '';
+  }
 }
 
 /* ── Team ─────────────────────────────────────────────────────── */
 /* ── type colour map ──────────────────────────────────────────── */
 const TC = {'safety-manager':'#dc2626','security-manager':'#1d4ed8','quality-manager':'#15803d','quality-consultant':'#7e22ce','safety-consultant':'#c2410c'};
-const TYPE_LABEL = {'safety-manager':'Safety Mgr','security-manager':'Security Mgr','quality-manager':'Quality Mgr','quality-consultant':'Quality Con','safety-consultant':'Safety Con'};
 const TYPE_BG    = {'safety-manager':'#fee2e2','security-manager':'#dbeafe','quality-manager':'#dcfce7','quality-consultant':'#ede9fe','safety-consultant':'#fff7ed'};
 const TYPE_TXT   = {'safety-manager':'#991b1b','security-manager':'#1d4ed8','quality-manager':'#15803d','quality-consultant':'#6d28d9','safety-consultant':'#9a3412'};
 
@@ -892,6 +2333,7 @@ function renderTeam(){
       ${(m.askAllocation||0)-m.allocation > 0 ? '+' : ''}${(m.askAllocation||0)-m.allocation}%
     </td>
     <td>${m.shared?'<span class="shared-tag">Shared</span>':'<span style="color:var(--muted);font-size:12px">—</span>'}</td>
+    <td>${m.status?`<span style="font-size:11px;padding:4px 8px;background:#fef3c7;color:#92400e;border-radius:4px;font-weight:600">${m.status}</span>`:'<span style="color:var(--muted);font-size:12px">—</span>'}</td>
     <td>
       <div style="display:flex;gap:6px">
         <button class="btn btn-outline btn-sm" onclick="editMember(${m._idx})">✏ Edit</button>
@@ -900,26 +2342,14 @@ function renderTeam(){
       </div>
     </td>
   </tr>`).join('');
+
+  /* ── Total FTE ───────────────────────────────────────────────── */
+  const totalFTE = members.reduce((sum, m) => sum + (m.allocation || 0) / 100, 0);
+  const totalFTEEl = document.getElementById('total-fte');
+  if (totalFTEEl) totalFTEEl.textContent = totalFTE.toFixed(2);
 }
 
 /* ── Activity ─────────────────────────────────────────────────── */
-function renderActivity(){
-  const items=ACTIVITY.filter(a=>a.product===PID);
-  const typeColor={risk:'#ef4444',roadmap:QX.blue,team:QX.sky,flag:'#f59e0b',financial:QX.orange,compliance:'#22c55e',milestone:QX.blue};
-  const typeIcon={risk:'!',roadmap:'>',team:'@',flag:'*',financial:'$',compliance:'NC',milestone:'+'};
-  document.getElementById('activity-timeline').innerHTML=items.length?items.map((a,i)=>`
-    <div class="tl-item">
-      <div class="tl-dot-wrap">
-        <div class="tl-dot" style="background:${typeColor[a.type]||QX.blue}"></div>
-      </div>
-      <div style="flex:1">
-        <div class="tl-ts">${typeIcon[a.type]||'•'} ${a.ts}</div>
-        <div class="tl-msg">${a.msg}</div>
-      </div>
-    </div>`).join(''):
-    '<div style="padding:20px;text-align:center;color:var(--muted)">No recent activity for this product.</div>';
-}
-
 /* ── Modal helpers ────────────────────────────────────────────── */
 function openModal(title,html){
   document.getElementById('modal-title').textContent=title;
@@ -1273,8 +2703,6 @@ function exportProduct(){
   const a=document.createElement('a');a.href=url;a.download=P.id+'-team.csv';a.click();URL.revokeObjectURL(url);
   showToast('Team exported as CSV');
 }
-function exportTeam(){ exportProduct(); }
-
 /* ── Toast ────────────────────────────────────────────────────── */
 function showToast(msg){
   const t=document.getElementById('toast');
@@ -1283,235 +2711,186 @@ function showToast(msg){
 }
 
 /* ════════════════════════════════════════════════════════════════
-   EXCEL IMPORT
-   ════════════════════════════════════════════════════════════════ */
-let _parsedMembers = [];
-
-function openExcelImport(){
-  _parsedMembers = [];
-  document.getElementById('excel-overlay').classList.add('open');
-  document.getElementById('excel-preview').innerHTML = '';
-  document.getElementById('excel-import-btn').style.display = 'none';
-  document.getElementById('excel-import-options').style.display = 'none';
-}
-function closeExcelModal(){
-  document.getElementById('excel-overlay').classList.remove('open');
-}
-
-function downloadExcelTemplate(){
-  const header = 'Name,Initials,Role,Type,Allocation%,Ask%,Shared';
-  const rows = [
-    'Aisha Rahman,AR,Safety Manager,safety-manager,100,100,No',
-    'Bjorn Svendsen,BS,Security Manager,security-manager,100,100,No',
-    'Clara Weiss,CW,Quality Manager,quality-manager,100,100,No',
-    'David Osei,DO,Quality Consultant,quality-consultant,80,100,Yes',
-    'Elena Moris,EM,Safety Consultant,safety-consultant,80,100,No'
-  ];
-  const csv = [header, ...rows].join('\n');
-  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'qorix-team-template.csv'; a.click();
-  URL.revokeObjectURL(url);
-  showToast('Template downloaded');
-}
-
-function handleExcelDrop(e){
-  e.preventDefault();
-  const file = e.dataTransfer?.files?.[0];
-  if(file) handleExcelFile(file);
-}
-
-function handleExcelFile(file){
-  if(!file) return;
-  const ext = file.name.split('.').pop().toLowerCase();
-  if(!['xlsx','xls','csv'].includes(ext)){
-    showToast('Error: Please upload .xlsx, .xls or .csv');
-    return;
-  }
-  const reader = new FileReader();
-  if(ext === 'csv'){
-    reader.onload = e => parseExcelCSV(e.target.result);
-    reader.readAsText(file);
-  } else {
-    reader.onload = e => {
-      if(!window.XLSX){ showToast('Error: Excel parser not loaded — use CSV instead'); return; }
-      const wb = XLSX.read(e.target.result, {type:'binary'});
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
-      _processExcelRows(rows);
-    };
-    reader.readAsBinaryString(file);
-  }
-}
-
-function parseExcelCSV(text){
-  const lines = text.trim().split(/\r?\n/);
-  const rows = lines.map(l => {
-    // Handle quoted CSV fields
-    const result = []; let cur = ''; let inQ = false;
-    for(let i=0; i<l.length; i++){
-      if(l[i]==='"') inQ=!inQ;
-      else if(l[i]===','&&!inQ){ result.push(cur.trim()); cur=''; }
-      else cur+=l[i];
-    }
-    result.push(cur.trim());
-    return result;
-  });
-  _processExcelRows(rows);
-}
-
-const TYPE_MAP = {
-  'safety-manager':'safety-manager','safety manager':'safety-manager','sm':'safety-manager',
-  'security-manager':'security-manager','security manager':'security-manager','sec':'security-manager',
-  'quality-manager':'quality-manager','quality manager':'quality-manager','qm':'quality-manager',
-  'quality-consultant':'quality-consultant','quality consultant':'quality-consultant','qc':'quality-consultant',
-  'safety-consultant':'safety-consultant','safety consultant':'safety-consultant','sc':'safety-consultant',
-  // backward compat
-  'pm':'quality-manager','product manager':'quality-manager',
-  'eng':'safety-manager','engineer':'safety-manager','engineering':'safety-manager',
-  'design':'safety-consultant','designer':'safety-consultant',
-  'qa':'quality-consultant','quality':'quality-consultant',
-  'ops':'security-manager','devops':'security-manager','sre':'security-manager'
-};
-
-function _processExcelRows(rows){
-  if(!rows||rows.length < 2){ showToast('Error: File appears empty'); return; }
-  const headers = rows[0].map(h => String(h).toLowerCase().trim());
-  const idx = k => headers.findIndex(h => h.includes(k));
-
-  const cols = {
-    name:     [idx('name')].find(i=>i>=0) ?? 0,
-    initials: idx('initial'),
-    role:     [idx('role'),idx('position'),idx('title')].find(i=>i>=0),
-    type:     [idx('type'),idx('department'),idx('team')].find(i=>i>=0),
-    alloc:    [idx('alloc%'),idx('allocation'),idx('alloc'),idx('capacity')].find(i=>i>=0),
-    ask:      [idx('ask%'),idx('ask'),idx('request')].find(i=>i>=0),
-    shared:   [idx('shared'),idx('cross')].find(i=>i>=0)
-  };
-
-  _parsedMembers = rows.slice(1)
-    .filter(r => r[cols.name]?.toString().trim())
-    .map(r => {
-      const name = r[cols.name]?.toString().trim() || '';
-      const rawInit = cols.initials >= 0 ? r[cols.initials]?.toString().trim() : '';
-      const initials = rawInit || name.split(/\s+/).map(w=>w[0]||'').join('').toUpperCase().slice(0,2) || 'XX';
-      const rawType = cols.type >= 0 ? r[cols.type]?.toString().toLowerCase().trim() : 'safety-manager';
-      const type = TYPE_MAP[rawType] || 'safety-manager';
-      const rawAlloc = cols.alloc >= 0 ? r[cols.alloc]?.toString().replace(/[^0-9]/g,'') : '100';
-      const allocation = Math.min(100, Math.max(1, parseInt(rawAlloc) || 100));
-      const rawAsk = cols.ask >= 0 ? r[cols.ask]?.toString().replace(/[^0-9]/g,'') : '';
-      const askAllocation = rawAsk ? Math.min(100, Math.max(0, parseInt(rawAsk) || allocation)) : allocation;
-      const rawShared = cols.shared >= 0 ? r[cols.shared]?.toString().toLowerCase() : '';
-      const shared = rawShared.includes('yes') || rawShared.includes('true') || rawShared === '1';
-      return {
-        name, initials,
-        role: cols.role >= 0 ? r[cols.role]?.toString().trim() || 'Team Member' : 'Team Member',
-        type, allocation, askAllocation, shared
-      };
-    });
-
-  if(!_parsedMembers.length){ showToast('Error: No valid rows found'); return; }
-  _renderExcelPreview();
-}
-
-function _renderExcelPreview(){
-  const preview = document.getElementById('excel-preview');
-  const typeColor = {'safety-manager':'#dc2626','security-manager':'#1d4ed8','quality-manager':'#15803d','quality-consultant':'#7e22ce','safety-consultant':'#c2410c'};
-  preview.innerHTML = `
-    <div style="margin-bottom:10px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:13px;font-weight:700;color:var(--heading)">${_parsedMembers.length} members parsed</span>
-      <span style="font-size:11px;color:var(--muted)">Preview (first 8 rows)</span>
-    </div>
-    <div style="overflow-x:auto;border-radius:8px;border:1px solid var(--border)">
-    <table style="width:100%;border-collapse:collapse;font-size:12px">
-    <thead><tr style="background:var(--bg)">
-      ${['Name','Initials','Role','Type','Alloc%','Ask%','Shared'].map(h=>`<th style="padding:7px 12px;text-align:left;font-weight:600;color:var(--muted);font-size:11px;border-bottom:1px solid var(--border);white-space:nowrap">${h}</th>`).join('')}
-    </tr></thead>
-    <tbody>
-    ${_parsedMembers.slice(0,8).map(m=>`<tr>
-      <td style="padding:7px 12px;border-bottom:1px solid var(--border);font-weight:500">${m.name}</td>
-      <td style="padding:7px 12px;border-bottom:1px solid var(--border)">
-        <div style="width:26px;height:26px;border-radius:50%;background:${typeColor[m.type]||'#3A00F5'};color:#fff;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">${m.initials}</div>
-      </td>
-      <td style="padding:7px 12px;border-bottom:1px solid var(--border);color:var(--muted)">${m.role}</td>
-      <td style="padding:7px 12px;border-bottom:1px solid var(--border)">
-        <span style="background:${typeColor[m.type]}20;color:${typeColor[m.type]};border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;text-transform:uppercase">${m.type}</span>
-      </td>
-      <td style="padding:7px 12px;border-bottom:1px solid var(--border);font-weight:700;color:${m.allocation<50?'#ef4444':'var(--heading)'}">${m.allocation}%</td>
-      <td style="padding:7px 12px;border-bottom:1px solid var(--border);font-weight:700;color:${(m.askAllocation||0)>m.allocation?'#f59e0b':'var(--heading)'}">${m.askAllocation||m.allocation}%</td>
-      <td style="padding:7px 12px;border-bottom:1px solid var(--border)">${m.shared?'<span style="color:#7e22ce;font-size:11px;font-weight:600">Yes</span>':'<span style="color:var(--muted);font-size:11px">No</span>'}</td>
-    </tr>`).join('')}
-    ${_parsedMembers.length>8?`<tr><td colspan="7" style="padding:8px 12px;color:var(--muted);font-size:11px;font-style:italic">…and ${_parsedMembers.length-8} more rows</td></tr>`:''}
-    </tbody></table></div>`;
-
-  document.getElementById('excel-import-options').style.display = 'block';
-  document.getElementById('excel-import-btn').style.display = 'inline-flex';
-  document.getElementById('excel-import-btn').textContent = `Import ${_parsedMembers.length} Members`;
-}
-
-function importExcelMembers(){
-  const mode = document.getElementById('excel-import-mode').value;
-  if(mode === 'replace'){
-    TEAM[PID] = _parsedMembers;
-  } else {
-    const existing = TEAM[PID] || [];
-    const existingNames = new Set(existing.map(m=>m.name.toLowerCase()));
-    const newOnes = _parsedMembers.filter(m => !existingNames.has(m.name.toLowerCase()));
-    TEAM[PID] = [...existing, ...newOnes];
-    if(_parsedMembers.length - newOnes.length > 0)
-      showToast(`Info: Skipped ${_parsedMembers.length - newOnes.length} duplicate names`);
-  }
-  persistData();
-  markChanged();
-  closeExcelModal();
-  renderTeam();
-  renderOverview();
-  showToast(`Success: ${_parsedMembers.length} members imported successfully`);
-}
-
-/* ════════════════════════════════════════════════════════════════
    JIRA SYNC — per-product config with JIRA API
    ════════════════════════════════════════════════════════════════ */
 const JIRA_PROXY = 'http://localhost:3000';
-const JIRA_CACHE_SCHEMA = 2;
-let _jiraData = {risks:[], nc:[], defects:[], resolvedDefects:[], defectsTotal:null, resolvedTotal:null, sev0Risks:[], cacheSchema:JIRA_CACHE_SCHEMA, fetchedWithFetchAll:false};
+const JIRA_CACHE_SCHEMA = 4;
+let _jiraData = {risks:[], nc:[], defects:[], resolvedDefects:[], reopenedDefects:[], reopenedTotal:null, automationDefects:[], automationDefectsTotal:null, customerDefects:[], lastMonthDefects:[], lastMonthOpenDefects:[], defectsTotal:null, resolvedTotal:null, sev0Risks:[], cacheSchema:JIRA_CACHE_SCHEMA, fetchedWithFetchAll:false};
 let _jiraConnected = false;
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   PROGRAM-BASED JQL HELPERS (for Risk & Non-Compliance issues)
+───────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Get program name for a product ID
+ * @param {string} productId - Product ID (e.g., 'classic', 'adaptive')
+ * @returns {string} Program name (e.g., 'Classic', 'Adaptive')
+ */
+function _getProgramName(productId) {
+  return PROGRAM_NAMES[productId] || PROGRAM_NAMES.classic;
+}
+
+/**
+ * Normalize program name(s) into JQL filter clause
+ * Examples:
+ *   'Classic' → Program = "Classic"
+ *   ['Classic', 'Adaptive'] → Program IN ("Classic", "Adaptive")
+ */
+function _normalizeProgramFilter(programNameOrArray) {
+  const DEFAULT_PROGRAM = 'Classic';
+
+  if (!programNameOrArray) {
+    return `Programs = "${DEFAULT_PROGRAM}"`;
+  }
+
+  if (typeof programNameOrArray === 'string') {
+    return `Programs = "${programNameOrArray}"`;
+  }
+
+  if (Array.isArray(programNameOrArray)) {
+    const names = programNameOrArray.filter(p => p);
+    if (names.length === 0) {
+      return `Programs = "${DEFAULT_PROGRAM}"`;
+    }
+    if (names.length === 1) {
+      return `Programs = "${names[0]}"`;
+    }
+    return `Programs IN (${names.map(p => `"${p}"`).join(', ')})`;
+  }
+
+  return `Programs = "${DEFAULT_PROGRAM}"`;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RISK JQL FUNCTIONS
+───────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Build Risk JQL for single program (by name)
+ */
+function _riskJqlForProgram(cfg) {
+  const programName = cfg?.programName || 'Classic';
+  const programFilter = _normalizeProgramFilter(programName);
+  return `issuetype = Risk AND ${programFilter} AND status IN ("IN PROGRESS", "PARTIALLY APPROVED", "DELAYED") ORDER BY priority DESC, created DESC`;
+}
+
+/**
+ * Build Risk JQL for single product (by product ID)
+ */
+function _riskJqlForProductId(productId = 'classic') {
+  const programName = _getProgramName(productId);
+  return _riskJqlForProgram({ programName });
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   NON-COMPLIANCE JQL FUNCTIONS
+───────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Build Non-Compliance JQL for single program (by name)
+ */
+function _nonComplianceJqlForProgram(cfg) {
+  const programName = cfg?.programName || 'Classic';
+  const programFilter = _normalizeProgramFilter(programName);
+  return `issuetype = "Non-Compliance" AND ${programFilter} AND status IN ("IN PROGRESS", "PARTIALLY APPROVED", "DELAYED") ORDER BY priority DESC, created DESC`;
+}
+
+/**
+ * Build Non-Compliance JQL for single product (by product ID)
+ */
+function _nonComplianceJqlForProductId(productId = 'classic') {
+  const programName = _getProgramName(productId);
+  return _nonComplianceJqlForProgram({ programName });
+}
+
+/**
+ * Build Customer Defects JQL for Classic product
+ * Project: Qorix Classic, Bug issues, Reported by External (not Internal/VnV), Open status
+ */
+function _customerDefectsJqlForClassic() {
+  // Same issue type as the main defects list (see _defectIssueTypeForProduct)
+  // so Customer-reported tickets are a real subset of the total and actually
+  // show up in the Total Open Defects ring, instead of always matching 0.
+  const issueType = _defectIssueTypeForProduct();
+  return `project = "Qorix Classic" AND issuetype IN (${issueType}) AND "Reported By[Select List (cascading)]" NOT IN (Internal, VnV) AND status NOT IN (Completed, Integrated, Closed)`;
+}
+
+/**
+ * Build Last Month Defects JQL (bugs created in last month)
+ * Filters by creation date and open/in-progress statuses
+ */
+function _lastMonthDefectsJql(projectName) {
+  const issueType = _defectIssueTypeForProduct();
+  return `project = "${projectName}" AND issuetype = ${issueType} AND created >= startOfMonth(-1) AND status IN ("In Progress", "Partially Verified", "QA Initiated", "RCA In Progress", "Ready for Integration", "Reopened", "To Do", "Verification in Progress") ORDER BY priority DESC, created DESC`;
+}
+
+/**
+ * Build Last Month Open Defects JQL (all bugs open in last month)
+ * Uses the exact user-provided query
+ */
+function _lastMonthOpenDefectsJql(projectName) {
+  const issueType = _defectIssueTypeForProduct();
+  return `project = "${projectName}" AND issuetype = ${issueType} AND created >= startOfMonth(-1) AND status IN ("In Progress", "Partially Verified", "QA Initiated", "RCA In Progress", "Ready for Integration", "Reopened", "To Do", "Verification in Progress") ORDER BY priority DESC, created DESC`;
+}
+
+// Single source of truth for which issue type holds "defects" for the
+// current product. REVERTED: switching Classic to issuetype = Defect
+// caused Total/Resolved/Open/Reopened to all come back 0 — confirms
+// project CP genuinely has no "Defect" issue type, only "Bug" (this
+// matches the original, previously-verified comment on the automation
+// JQL below). Back to Bug for every product, including Classic, until
+// we know which real project key actually has a Defect issue type.
+function _defectIssueTypeForProduct() {
+  return 'Bug';
+}
+
 function _defectsJqlForProduct(cfg) {
-  const projectKey = cfg?.projectKey || '';
-  if (!projectKey) return `issuetype = Bug ORDER BY priority DESC, created DESC`;
-  return `project = "${projectKey}" AND issuetype = Bug ORDER BY priority DESC, created DESC`;
+  const projectKey = cfg?.projectKey || 'CP';
+  const issueType = _defectIssueTypeForProduct();
+  if (projectKey === 'CP' || projectKey === 'AP' || projectKey === 'QB' || projectKey === 'QD') {
+    return `project = ${projectKey} AND issuetype = ${issueType} AND status NOT IN (Completed, Rejected) ORDER BY priority DESC, created DESC`;
+  }
+  return `project = ${projectKey} AND issuetype = ${issueType} AND status IN ("In Progress", "Partially Verified", "QA Initiated", "RCA In Progress", "Ready for Integration", "Reopened", "To Do", "Verification in Progress") ORDER BY priority DESC, created DESC`;
 }
 
 function _resolvedJqlForProduct(cfg) {
-  const projectKey = cfg?.projectKey || '';
-  if (!projectKey) return `issuetype = Bug AND status = Integrated`;
-  return `project = "${projectKey}" AND issuetype = Bug AND status = Integrated`;
+  const projectKey = cfg?.projectKey || 'CP';
+  const issueType = _defectIssueTypeForProduct();
+  return `project = ${projectKey} AND issuetype = ${issueType} AND status IN ("In Progress", "Partially Verified", "QA Initiated", "RCA In Progress", "Ready for Integration", "Reopened", "To Do", "Verification in Progress") ORDER BY priority DESC, created DESC`;
 }
 
-function _programNameForProduct() {
-  const byId = {
-    classic: 'Classic',
-    adaptive: 'Adaptive',
-    bootloader: 'Bootloader',
-    developer: 'Qorix Developer',
-    performance: 'Performance',
-    osporting: 'Qorix OS Porting',
-    lightweight: 'Qorix Light weight',
-    processdef: 'Qorix Process Definition'
-  };
-  return byId[PID] || (P?.name || '') || '<PROGRAM_NAME>';
+function _nonComplianceJqlForProduct(cfg) {
+  const projectKey = cfg?.projectKey || 'CP';
+  return `project = ${projectKey} AND issuetype = "Non-Compliance" AND status IN ("In Progress", "Partially Verified", "QA Initiated", "RCA In Progress", "Ready for Integration", "Reopened", "To Do", "Verification in Progress") ORDER BY priority DESC, created DESC`;
 }
 
-function _nonComplianceJqlForProduct() {
-  const programName = _programNameForProduct();
-  return `issuetype = "Non-Compliance" AND "Programs" = "${programName}" AND "Severity" = "Sev-0" AND status != "DONE" ORDER BY created DESC`;
+function _totalRiskJqlForProduct(cfg) {
+  const projectKey = cfg?.projectKey || 'CP';
+  return `project = ${projectKey} AND issuetype = Risk AND status IN ("In Progress", "Partially Verified", "QA Initiated", "RCA In Progress", "Ready for Integration", "Reopened", "To Do", "Verification in Progress") ORDER BY priority DESC, created DESC`;
 }
 
-function _totalRiskJqlForProduct() {
-  const programName = _programNameForProduct();
-  return `issuetype = "Risk" AND "Programs" = "${programName}" AND (Priority = "Highest" OR Priority = "High") AND status != "DONE" ORDER BY created DESC`;
+function _incidentJqlForProductId(productId = 'classic') {
+  const programName = _getProgramName(productId);
+  return `issuetype = Incident AND Program = "${programName}" ORDER BY priority DESC, created DESC`;
+}
+
+// Same JQL shape for every product — only the project key (and, for
+// Classic, the issue type) changes. See _defectIssueTypeForProduct().
+function _reopenedJqlForProduct(cfg) {
+  const projectKey = cfg?.projectKey || 'CP';
+  const issueType = _defectIssueTypeForProduct();
+  return `project = ${projectKey} AND issuetype = ${issueType} AND status IN ("Reopened") ORDER BY priority DESC, created DESC`;
+}
+
+// "Automation Defect Detection" = (Defects reported by Automation ÷ Total
+// Defects) × 100. Same issue type as the main defects list — see
+// _defectIssueTypeForProduct() — so automation-reported tickets are a real
+// subset of the total and actually show up in the Total Open Defects ring.
+function _automationDefectsJqlForProduct(cfg) {
+  const projectKey = cfg?.projectKey || 'CP';
+  const issueType = _defectIssueTypeForProduct();
+  return `project = ${projectKey} AND issuetype = ${issueType} AND reporter = "Automation for Jira" ORDER BY priority DESC, created DESC`;
 }
 
 function _defaultJiraCfgForProduct() {
@@ -1540,7 +2919,16 @@ function _readJiraCfgFromForm() {
 
 function _loadJiraCfgToForm() {
   const saved = getJiraConfig(PID);
-  const cfg = saved || _defaultJiraCfgForProduct();
+  const defaults = _defaultJiraCfgForProduct();
+  // Merge instead of fully trusting the cache: a stale saved config (e.g. from
+  // before this product's project key was set in JIRA_CFG) should not silently
+  // override a real default — only user-entered values should win.
+  const cfg = saved ? {
+    domain:     saved.domain     || defaults.domain,
+    email:      saved.email      || defaults.email,
+    token:      saved.token      || defaults.token,
+    projectKey: saved.projectKey || defaults.projectKey
+  } : defaults;
   const domainEl = document.getElementById('jira-domain');
   const emailEl = document.getElementById('jira-email');
   const tokenEl = document.getElementById('jira-token');
@@ -1552,7 +2940,7 @@ function _loadJiraCfgToForm() {
   const info = document.getElementById('jira-project-info');
   if(info) info.textContent = cfg.projectKey ? `Product ${P.name} mapped to project ${cfg.projectKey}` : `No JIRA project configured for ${P.name}`;
   const preview = document.getElementById('jira-query-preview');
-  if(preview) preview.textContent = `Defects JQL: ${_defectsJqlForProduct(cfg)}\nResolved JQL: ${_resolvedJqlForProduct(cfg)}\nNon-Compliance JQL: ${_nonComplianceJqlForProduct()}\nTotal Risks JQL: ${_totalRiskJqlForProduct()}`;
+  if(preview){ preview.textContent = `Defects JQL: ${_defectsJqlForProduct(cfg)}\nResolved JQL: ${_resolvedJqlForProduct(cfg)}\nNon-Compliance JQL: ${_nonComplianceJqlForProduct(cfg)}\nTotal Risks JQL: ${_totalRiskJqlForProduct(cfg)}`; preview.style.display='block'; }
 }
 
 function _setJiraStatus(text, tone='idle') {
@@ -1566,40 +2954,99 @@ function _setJiraStatus(text, tone='idle') {
   pill.textContent = text;
 }
 
-function _syncGrcFromJiraDefects(defects, sourceLabel='JIRA', defectsTotal=null, resolvedTotal=null) {
-  _grcData = Array.isArray(defects) ? defects : [];
-  // Fall back to cached totals if not explicitly passed
-  const trueTotal    = defectsTotal  !== null ? defectsTotal
-    : (typeof _jiraData.defectsTotal  === 'number' ? _jiraData.defectsTotal  : _grcData.length);
-  const trueResolved = resolvedTotal !== null ? resolvedTotal
-    : (typeof _jiraData.resolvedTotal === 'number' ? _jiraData.resolvedTotal : null);
+function _syncGrcFromJiraDefects(defects, sourceLabel='JIRA') {
+  _grcDefects = _jiraData.defects || [];
+  _grcRisks = _jiraData.risks || [];
+  _grcNC = _jiraData.ncs || [];
+  _grcIncidents = _jiraData.incidents || [];
+
   const badge = document.getElementById('grc-conn-badge');
   if (badge) {
     badge.className = 'grc-conn-badge ok';
-    badge.textContent = `✓ ${sourceLabel} — ${trueTotal} issues`;
+    badge.textContent = `✓ ${sourceLabel} — ${new Date().toLocaleTimeString()}`;
   }
-  _grcBuildKPI(_grcData, trueResolved, trueTotal);
-  _grcBuildRisk(_grcData);
-  _grcBuildAudit(_grcData);
-  _grcBuildCompliance(_grcData, trueResolved, trueTotal);
-  const riskItems = getTotalRiskItems(_jiraData);
-  const totalRiskEl = document.getElementById('grc-risk-total');
-  const riskHighEl = document.getElementById('grc-risk-high');
-  const riskMediumEl = document.getElementById('grc-risk-medium');
-  const riskLowEl = document.getElementById('grc-risk-low');
-  if(totalRiskEl) totalRiskEl.textContent = riskItems.length || 0;
-  if(riskHighEl) riskHighEl.textContent = riskItems.filter(r => String(r.priority || r._priority || '').toLowerCase() === 'high').length || 0;
-  if(riskMediumEl) riskMediumEl.textContent = riskItems.filter(r => String(r.priority || r._priority || '').toLowerCase() === 'medium').length || 0;
-  if(riskLowEl) riskLowEl.textContent = riskItems.filter(r => String(r.priority || r._priority || '').toLowerCase() === 'low' || !String(r.priority || r._priority || '').trim()).length || 0;
+  _grcRenderMetrics();
+  grcRenderDefectsSummary();
+  _grcRenderRisksSummary();
+  _grcRenderNCsSummary();
+  grcRenderIncidentsSummary();
+}
+
+function grcRenderIncidentsSummary(){
+  const listEl = document.getElementById('grc-incidents-list');
+  if(!listEl) return;
+
+  function dedupeIssues(items){
+    const seen = new Set();
+    return (Array.isArray(items) ? items : []).filter(issue => {
+      const key = String(issue?.key || '').trim();
+      if(!key) return true;
+      if(seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  const incidents = dedupeIssues(_grcIncidents || []);
+
+  const totalEl = document.getElementById('grc-incident-total');
+  if(totalEl) totalEl.textContent = incidents.length || '—';
+
+  listEl.innerHTML = incidents.length
+    ? incidents.slice(0, 10).map(issue => `
+      <div style="padding:10px;border:1px solid var(--border);border-radius:7px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div style="font-weight:600;font-size:13px;flex:1">${issue.title}</div>
+          <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:#fb923c20;color:#c2410c;white-space:nowrap">${issue.priority || 'Medium'}</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:5px;display:flex;gap:12px;flex-wrap:wrap">
+          <span><a href="${issue.url}" target="_blank" style="color:var(--qx-blue);text-decoration:none">${issue.key}</a></span>
+          <span>${issue.status}</span>
+          <span>👤 ${issue.assignee}</span>
+          <span>${issue.created}</span>
+        </div>
+      </div>`).join('')
+    : '<div style="color:var(--muted);font-size:13px;padding:8px">No Incident items loaded yet.</div>';
 }
 
 function clearJiraCache() {
   try { localStorage.removeItem('qx_jira_data_' + PID); } catch(e) {}
-  _jiraData = {risks:[],nc:[],defects:[],resolvedDefects:[],defectsTotal:null,resolvedTotal:null,sev0Risks:[], cacheSchema:JIRA_CACHE_SCHEMA, fetchedWithFetchAll:false};
+  _jiraData = {risks:[],nc:[],defects:[],resolvedDefects:[],reopenedDefects:[],reopenedTotal:null,automationDefects:[],automationDefectsTotal:null,customerDefects:[],lastMonthDefects:[],lastMonthOpenDefects:[],defectsTotal:null,resolvedTotal:null,sev0Risks:[], cacheSchema:JIRA_CACHE_SCHEMA, fetchedWithFetchAll:false};
   _jiraConnected = false;
   _renderJiraData();
   _syncGrcFromJiraDefects([], 'Cache cleared', null, null);
   renderOverview();
+
+  // Zero out the GRC dashboard immediately rather than waiting for the next
+  // grcLoad() tick (which would otherwise keep showing stale numbers until
+  // the tab is revisited or the 60s refresh fires).
+  _grcDefects = [];
+  _grcRisks = [];
+  _grcNC = [];
+  _grcIncidents = [];
+  _grcReopened = [];
+  _grcAutomationDefects = [];
+  if(typeof _grcRenderMetrics === 'function') _grcRenderMetrics();
+  if(typeof grcRenderDefectsSummary === 'function') grcRenderDefectsSummary();
+  if(typeof _grcRenderRisksSummary === 'function') _grcRenderRisksSummary();
+  if(typeof _grcRenderNCsSummary === 'function') _grcRenderNCsSummary();
+  if(typeof grcRenderIncidentsSummary === 'function') grcRenderIncidentsSummary();
+
+  // Releases card: drop any live-synced data and force a zeroed state instead
+  // of silently falling back to the static assets/data.js snapshot — cache
+  // cleared should mean 0, not "last known good" numbers.
+  _liveReleases = null;
+  _liveReleasesTotal = null;
+  _releasesCacheCleared = true;
+  if(typeof renderGrcReleases === 'function') renderGrcReleases();
+  if(typeof renderTestReleases === 'function') renderTestReleases();
+
+  // GRC Extended (Qorix Test only): same rule as Releases above — cache
+  // cleared should show 0/dash immediately, not silently fall back to the
+  // static assets/data.js snapshot until the next 60s tick or tab revisit.
+  if(typeof _grcExtCacheCleared !== 'undefined') _grcExtCacheCleared = true;
+  if(PID === 'test' && typeof grcExtLoad === 'function') grcExtLoad();
+
   _setJiraStatus('Cache cleared — reconnect to JIRA to reload data', 'warn');
 }
 
@@ -1634,6 +3081,7 @@ async function connectJira() {
     _jiraConnected = true;
     _setJiraStatus(`Connected as ${data.user || cfg.email}`, 'ok');
     await runDefectsJql();
+    if(PID === 'test' || PID === 'classic' || PID === 'adaptive' || PID === 'developer' || PID === 'bootloader' || PID === 'performance') await syncReleasesLive(cfg);
   } catch(e) {
     _jiraConnected = false;
     _setJiraStatus(`Connection failed: ${e.message}`, 'fail');
@@ -1641,79 +3089,12 @@ async function connectJira() {
 }
 
 function _renderJiraData() {
-  const sevColor = {Highest:'#991b1b',High:'#dc2626',Medium:'#d97706',Low:'#16a34a',Lowest:'#6b7280'};
-
-  function filterDefects(defects){
-    const filterEl = document.getElementById('jira-defect-filter');
-    const mode = (filterEl?.value || 'all').toLowerCase();
-    if(mode === 'all') return defects;
-    if(mode === 'resolved') return defects.filter(d => String(d.status||'').toLowerCase() === 'integrated' || String(d.status||'').toLowerCase() === 'done');
-    if(mode === 'open') return defects.filter(d => {
-      const st = String(d.status||'').toLowerCase();
-      return st !== 'integrated' && st !== 'done' && st !== 'closed';
-    });
-    if(mode === 'highest') return defects.filter(d => String(d.priority||'').toLowerCase() === 'highest');
-    if(mode === 'high') return defects.filter(d => String(d.priority||'').toLowerCase() === 'high');
-    return defects;
-  }
-
-  function issueCard(issue){
-    const c = sevColor[issue.priority]||'#64748b';
-    return `<div style="padding:10px;border:1px solid var(--border);border-radius:7px;margin-bottom:8px">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
-        <div style="font-weight:600;font-size:13px;flex:1">${issue.title}</div>
-        <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:${c}20;color:${c};white-space:nowrap">${issue.priority}</span>
-      </div>
-      <div style="font-size:11px;color:var(--muted);margin-top:5px;display:flex;gap:12px;flex-wrap:wrap">
-        <span><a href="${issue.url}" target="_blank" style="color:var(--qx-blue);text-decoration:none">${issue.key}</a></span>
-        <span>${issue.status}</span>
-        <span>👤 ${issue.assignee}</span>
-        <span>${issue.created}</span>
-      </div>
-    </div>`;
-  }
-
-  function dedupeIssues(items){
-    const seen = new Set();
-    return (Array.isArray(items) ? items : []).filter(issue => {
-      const key = String(issue?.key || '').trim();
-      if(!key) return true;
-      if(seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-  }
-
-  const defectsEl = document.getElementById('jira-defects-list');
-  const defectsCountEl = document.getElementById('jira-defect-count');
-  const ncEl = document.getElementById('jira-nc-list');
-  const ncCountEl = document.getElementById('jira-nc-count');
-  const riskEl = document.getElementById('jira-risk-list');
-  const riskCountEl = document.getElementById('jira-risk-count');
-  const defects = dedupeIssues(_jiraData.defects || []);
-  const filteredDefects = dedupeIssues(filterDefects(defects));
-  const defectsTotalRaw = typeof _jiraData.defectsTotal === 'number' ? _jiraData.defectsTotal : defects.length;
-  const defectsTotal = Math.max(defectsTotalRaw, defects.length);
-  const nonCompliances = dedupeIssues(getNonComplianceItems(_jiraData));
-  const risks = dedupeIssues(getTotalRiskItems(_jiraData));
-  if(defectsCountEl) defectsCountEl.textContent = defectsTotal ? `${filteredDefects.length}/${defectsTotal} defects` : '';
-  if(ncCountEl) ncCountEl.textContent = nonCompliances.length ? `${nonCompliances.length} items` : '';
-  if(riskCountEl) riskCountEl.textContent = risks.length ? `${risks.length} items` : '';
-  if(defectsEl){
-    defectsEl.innerHTML = filteredDefects.length
-      ? filteredDefects.map(issueCard).join('')
-      : '<div style="color:var(--muted);font-size:13px;padding:8px">No defects loaded yet.</div>';
-  }
-  if(ncEl){
-    ncEl.innerHTML = nonCompliances.length
-      ? nonCompliances.map(issueCard).join('')
-      : '<div style="color:var(--muted);font-size:13px;padding:8px">No Non-Compliance items loaded yet.</div>';
-  }
-  if(riskEl){
-    riskEl.innerHTML = risks.length
-      ? risks.map(issueCard).join('')
-      : '<div style="color:var(--muted);font-size:13px;padding:8px">No Risk items loaded yet.</div>';
-  }
+  // JIRA tab no longer has standalone list elements (jira-defects-list /
+  // jira-nc-list / jira-risk-list) — data feeds the GRC dashboard directly
+  // (see grcLoad/renderGrcReleases/etc). Kept as a no-op stub rather than
+  // removing the function outright, since it's still called from a few
+  // places below; removing those call sites wasn't part of the scoped
+  // cleanup and isn't necessary — calling a no-op is harmless.
 }
 
 async function runDefectsJql() {
@@ -1730,11 +3111,11 @@ async function runDefectsJql() {
   try {
     const defectsJql = _defectsJqlForProduct(cfg);
     const resolvedJql = _resolvedJqlForProduct(cfg);
-    const nonComplianceJql = _nonComplianceJqlForProduct();
-    const totalRiskJql = _totalRiskJqlForProduct();
-    const PAGE = 100; // JIRA Cloud hard cap per page
+    const nonComplianceJql = _nonComplianceJqlForProduct(cfg);
+    const totalRiskJql = _riskJqlForProductId(PID);  // Use new Program-based Risk JQL
+    const reopenedJql = _reopenedJqlForProduct(cfg); // Same shape for every product, only project key changes
+    const automationDefectsJql = _automationDefectsJqlForProduct(cfg); // GRC Extended (Qorix Test): Automation Defect Detection
     const MAX_ISSUES = 2000;
-    const MAX_PAGES = Math.ceil(MAX_ISSUES / PAGE);
 
     // Backend handles token-based pagination via fetchAll=true
     async function fetchAllJql(jql, label) {
@@ -1757,16 +3138,18 @@ async function runDefectsJql() {
       return { issues, total: typeof data.total === 'number' ? data.total : issues.length };
     }
 
-    // Run defects + resolved sequentially (with live status), then Non-Compliance and Total Risks
+    // Run defects + resolved + reopened sequentially (with live status), then Non-Compliance and Total Risks
     const defectsResult  = await fetchAllJql(defectsJql,  'Defects');
     const resolvedResult = await fetchAllJql(resolvedJql, 'Resolved');
+    const reopenedResult = await fetchAllJql(reopenedJql, 'Reopened');
+    const automationDefectsResult = await fetchAllJql(automationDefectsJql, 'Automation-reported Defects');
     _setJiraStatus('Fetching Non-Compliance…', 'run');
     const ncResp = await fetch(`${JIRA_PROXY}/api/jira/search`, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         domain: cfg.domain, email: cfg.email, token: cfg.token,
-        jql: nonComplianceJql,
+        jql: _nonComplianceJqlForProductId(PID),  // Use new Program-based Non-Compliance JQL
         fields: 'summary,status,priority,assignee,created',
         maxResults: 500,
         startAt: 0,
@@ -1792,6 +3175,76 @@ async function runDefectsJql() {
     const totalRiskData = await totalRiskResp.json();
     if (!totalRiskResp.ok) throw new Error(totalRiskData.error || `HTTP ${totalRiskResp.status}`);
 
+    _setJiraStatus('Fetching Incidents…', 'run');
+    const incidentResp = await fetch(`${JIRA_PROXY}/api/jira/search`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        domain: cfg.domain, email: cfg.email, token: cfg.token,
+        jql: _incidentJqlForProductId(PID),
+        fields: 'summary,status,priority,assignee,created',
+        maxResults: 500,
+        startAt: 0,
+        fetchAll: true
+      })
+    });
+    const incidentData = await incidentResp.json();
+    if (!incidentResp.ok) throw new Error(incidentData.error || `HTTP ${incidentResp.status}`);
+
+    // Fetch customer defects for Classic product
+    let customerDefectsData = { issues: [] };
+    let lastMonthDefectsData = { issues: [] };
+    let lastMonthOpenDefectsData = { issues: [] };
+    if (PID === 'classic') {  // eslint-disable-line no-unused-vars
+      _setJiraStatus('Fetching Customer Defects…', 'run');
+      const customerDefectsResp = await fetch(`${JIRA_PROXY}/api/jira/search`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          domain: cfg.domain, email: cfg.email, token: cfg.token,
+          jql: _customerDefectsJqlForClassic(),
+          fields: 'summary,status,priority,assignee,created',
+          maxResults: 500,
+          startAt: 0,
+          fetchAll: true
+        })
+      });
+      customerDefectsData = await customerDefectsResp.json();
+      if (!customerDefectsResp.ok) throw new Error(customerDefectsData.error || `HTTP ${customerDefectsResp.status}`);
+
+      _setJiraStatus('Fetching Last Month Defects…', 'run');
+      const lastMonthResp = await fetch(`${JIRA_PROXY}/api/jira/search`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          domain: cfg.domain, email: cfg.email, token: cfg.token,
+          jql: _lastMonthDefectsJql('Qorix Classic'),
+          fields: 'summary,status,priority,assignee,created',
+          maxResults: 500,
+          startAt: 0,
+          fetchAll: true
+        })
+      });
+      lastMonthDefectsData = await lastMonthResp.json();
+      if (!lastMonthResp.ok) throw new Error(lastMonthDefectsData.error || `HTTP ${lastMonthResp.status}`);
+
+      _setJiraStatus('Fetching Last Month Open Defects…', 'run');
+      const lastMonthOpenResp = await fetch(`${JIRA_PROXY}/api/jira/search`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          domain: cfg.domain, email: cfg.email, token: cfg.token,
+          jql: _lastMonthOpenDefectsJql('Qorix Classic'),
+          fields: 'summary,status,priority,assignee,created',
+          maxResults: 500,
+          startAt: 0,
+          fetchAll: true
+        })
+      });
+      lastMonthOpenDefectsData = await lastMonthOpenResp.json();
+      if (!lastMonthOpenResp.ok) throw new Error(lastMonthOpenDefectsData.error || `HTTP ${lastMonthOpenResp.status}`);
+    }
+
     const mapIssue = (i) => ({
       key:      i.key,
       title:    i.fields.summary,
@@ -1815,21 +3268,45 @@ async function runDefectsJql() {
 
     const defects         = uniqueByKey(defectsResult.issues.map(mapIssue));
     const resolvedDefects = uniqueByKey(resolvedResult.issues.map(mapIssue));
+    const reopenedDefects = uniqueByKey(reopenedResult.issues.map(mapIssue));
+    const automationDefects = uniqueByKey(automationDefectsResult.issues.map(mapIssue));
     const nonCompliances  = uniqueByKey((ncData.issues || []).map(mapIssue));
     const totalRisks      = uniqueByKey((totalRiskData.issues || []).map(mapIssue));
+    const incidents       = uniqueByKey((incidentData.issues || []).map(mapIssue));
+    const customerDefects = uniqueByKey((customerDefectsData.issues || []).map(mapIssue));
+    const lastMonthDefects = uniqueByKey((lastMonthDefectsData.issues || []).map(mapIssue));
+    const lastMonthOpenDefects = uniqueByKey((lastMonthOpenDefectsData.issues || []).map(mapIssue));
     const defectsTotalRaw = defectsResult.total  ?? defects.length;
     const defectsTotal    = Math.max(defectsTotalRaw, defects.length);
     const resolvedTotalRaw = resolvedResult.total ?? resolvedDefects.length;
     const resolvedTotal   = Math.max(resolvedTotalRaw, resolvedDefects.length);
+    const reopenedTotalRaw = reopenedResult.total ?? reopenedDefects.length;
+    const reopenedTotal   = Math.max(reopenedTotalRaw, reopenedDefects.length);
+    const automationDefectsTotalRaw = automationDefectsResult.total ?? automationDefects.length;
+    const automationDefectsTotal   = Math.max(automationDefectsTotalRaw, automationDefects.length);
 
-    _jiraData = { ..._jiraData, defects, resolvedDefects, defectsTotal, resolvedTotal,
-            sev0Risks: nonCompliances, ncs: nonCompliances, nc: nonCompliances, risks: totalRisks,
+    _jiraData = { ..._jiraData, defects, resolvedDefects, defectsTotal, resolvedTotal, reopenedDefects, reopenedTotal, automationDefects, automationDefectsTotal, customerDefects, lastMonthDefects, lastMonthOpenDefects,
+          sev0Risks: nonCompliances, ncs: nonCompliances, nc: nonCompliances, risks: totalRisks, incidents,
                   cacheSchema: JIRA_CACHE_SCHEMA, fetchedWithFetchAll: true };
     saveJiraData(PID, _jiraData);
     _renderJiraData();
+
+    // Update GRC Dashboard with all data
+    _grcDefects = defects;
+    _grcRisks = totalRisks;
+    _grcNC = nonCompliances;
+    _grcIncidents = incidents;
+    _grcReopened = reopenedDefects;
+    _grcAutomationDefects = automationDefects;
+    _grcRenderMetrics();
+    grcRenderDefectsSummary();
+    _grcRenderRisksSummary();
+    _grcRenderNCsSummary();
+    grcRenderIncidentsSummary();
+
     _syncGrcFromJiraDefects(defects, 'JIRA query', defectsTotal, resolvedTotal);
     renderOverview();
-    _setJiraStatus(`Total: ${defectsTotal} · Resolved (Integrated): ${resolvedTotal} · Open: ${defectsTotal - resolvedTotal} · Non-Compliances: ${nonCompliances.length} · Total Risks: ${totalRisks.length}`, 'ok');
+    _setJiraStatus(`Total: ${defectsTotal} · Resolved (Integrated): ${resolvedTotal} · Open: ${defectsTotal - resolvedTotal} · Reopened: ${reopenedTotal} · Non-Compliances: ${nonCompliances.length} · Total Risks: ${totalRisks.length} · Incidents: ${incidents.length}`, 'ok');
   } catch(e) {
     const prefix = _jiraConnected ? 'Warning: Connected, but JQL failed:' : 'JQL failed:';
     _setJiraStatus(`${prefix} ${e.message}`, _jiraConnected ? 'warn' : 'fail');
@@ -1839,25 +3316,56 @@ async function runDefectsJql() {
 function _loadCachedJiraData() {
   const cached = getJiraData(PID);
   if(cached){
-    _jiraData={risks:[],nc:[],defects:[],resolvedDefects:[],defectsTotal:null,resolvedTotal:null,sev0Risks:[], cacheSchema:JIRA_CACHE_SCHEMA, fetchedWithFetchAll:false, ...cached};
+    _jiraData={risks:[],nc:[],defects:[],resolvedDefects:[],reopenedDefects:[],reopenedTotal:null,automationDefects:[],automationDefectsTotal:null,customerDefects:[],lastMonthDefects:[],lastMonthOpenDefects:[],defectsTotal:null,resolvedTotal:null,sev0Risks:[], cacheSchema:JIRA_CACHE_SCHEMA, fetchedWithFetchAll:false, ...cached};
 
     const isLegacyOrStaleCache = _jiraData.cacheSchema !== JIRA_CACHE_SCHEMA || !_jiraData.fetchedWithFetchAll;
     if (isLegacyOrStaleCache) {
       clearJiraData(PID);
-      _jiraData = {risks:[],nc:[],defects:[],resolvedDefects:[],defectsTotal:null,resolvedTotal:null,sev0Risks:[], cacheSchema:JIRA_CACHE_SCHEMA, fetchedWithFetchAll:false};
+      _jiraData = {risks:[],nc:[],defects:[],resolvedDefects:[],reopenedDefects:[],reopenedTotal:null,automationDefects:[],automationDefectsTotal:null,customerDefects:[],lastMonthDefects:[],lastMonthOpenDefects:[],defectsTotal:null,resolvedTotal:null,sev0Risks:[], cacheSchema:JIRA_CACHE_SCHEMA, fetchedWithFetchAll:false};
     }
 
     _renderJiraData();
+
+    // Update GRC Dashboard with cached data
+    _grcDefects = _jiraData.defects || [];
+    _grcRisks = _jiraData.risks || [];
+    _grcNC = _jiraData.ncs || [];
+    _grcIncidents = _jiraData.incidents || [];
+    _grcReopened = _jiraData.reopenedDefects || [];
+    _grcAutomationDefects = _jiraData.automationDefects || [];
+
+    // Restore live release data too (syncReleasesLive() persists releases /
+    // releasesTotal / releasesDelayed into this same cache) — without this,
+    // _liveReleases stays null after every fresh page load and
+    // _getReleasesData() silently falls back to the static CLASSIC_RELEASES/
+    // TEST_RELEASES snapshot, even though dashboard.html's product card reads
+    // this exact cache directly and would show the real synced number. Keeps
+    // "Total Delayed Releases" here consistent with dashboard.html's card.
+    if(Array.isArray(_jiraData.releases) && _jiraData.releases.length){
+      _liveReleases = _jiraData.releases;
+      _liveReleasesTotal = (typeof _jiraData.releasesTotal === 'number') ? _jiraData.releasesTotal : _jiraData.releases.length;
+      _liveReleasesDelayedTotal = (typeof _jiraData.releasesDelayed === 'number') ? _jiraData.releasesDelayed : _jiraData.releases.filter(r => r.overdue).length;
+      _releasesCacheCleared = false;
+    }
+
+    _grcRenderMetrics();
+    grcRenderDefectsSummary();
+    _grcRenderRisksSummary();
+    _grcRenderNCsSummary();
+    grcRenderIncidentsSummary();
+    renderGrcReleases();
+    renderTestReleases();
+
     _syncGrcFromJiraDefects(_jiraData.defects || [], 'Cached JIRA',
       _jiraData.defectsTotal  ?? null,
       _jiraData.resolvedTotal ?? null);
     renderOverview();
-  }
-  _loadJiraCfgToForm();
-  if(cached && (cached.defects||[]).length && _jiraData.fetchedWithFetchAll){
+    renderHero();
+    _loadJiraCfgToForm();
     _setJiraStatus('Loaded cached defects. Connect to refresh.', 'ok');
   } else {
-    _setJiraStatus('Not connected', 'idle');
+    _loadJiraCfgToForm();
+    _setJiraStatus('Not connected to JIRA', 'idle');
   }
 }
 
@@ -1866,3 +3374,4 @@ document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
