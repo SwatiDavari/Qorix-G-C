@@ -65,12 +65,29 @@ function jiraGet(domain, email, token, apiPath, cb) {
     const chunks = [];
     res.on('data', c => chunks.push(c));
     res.on('end', () => {
-      try {
-        const body = JSON.parse(Buffer.concat(chunks).toString());
-        cb(null, body, res.statusCode);
-      } catch (e) {
-        cb(new Error('Invalid JSON from JIRA: ' + e.message));
+      const text = Buffer.concat(chunks).toString();
+      const contentType = String(res.headers['content-type'] || '').toLowerCase();
+      const looksLikeJson = contentType.includes('application/json') || /^[\s]*[\[{]/.test(text || '');
+
+      if (!text) return cb(null, {}, res.statusCode);
+
+      if (looksLikeJson) {
+        try {
+          const body = JSON.parse(text);
+          return cb(null, body, res.statusCode);
+        } catch (e) {
+          if (res.statusCode && res.statusCode >= 400) {
+            return cb(null, { message: text.trim() || 'JIRA returned invalid JSON', raw: text }, res.statusCode);
+          }
+          return cb(new Error('Invalid JSON from JIRA: ' + e.message));
+        }
       }
+
+      if (res.statusCode && res.statusCode >= 400) {
+        return cb(null, { message: text.trim() || `HTTP ${res.statusCode}`, raw: text }, res.statusCode);
+      }
+
+      cb(new Error('Invalid response from JIRA: expected JSON'));
     });
   });
   req.on('error', cb);
@@ -97,13 +114,29 @@ function jiraPost(domain, email, token, apiPath, payload, cb) {
     const chunks = [];
     res.on('data', c => chunks.push(c));
     res.on('end', () => {
-      try {
-        const text = Buffer.concat(chunks).toString() || '{}';
-        const parsed = JSON.parse(text);
-        cb(null, parsed, res.statusCode);
-      } catch (e) {
-        cb(new Error('Invalid JSON from JIRA: ' + e.message));
+      const text = Buffer.concat(chunks).toString();
+      const contentType = String(res.headers['content-type'] || '').toLowerCase();
+      const looksLikeJson = contentType.includes('application/json') || /^[\s]*[\[{]/.test(text || '');
+
+      if (!text) return cb(null, {}, res.statusCode);
+
+      if (looksLikeJson) {
+        try {
+          const parsed = JSON.parse(text);
+          return cb(null, parsed, res.statusCode);
+        } catch (e) {
+          if (res.statusCode && res.statusCode >= 400) {
+            return cb(null, { message: text.trim() || 'JIRA returned invalid JSON', raw: text }, res.statusCode);
+          }
+          return cb(new Error('Invalid JSON from JIRA: ' + e.message));
+        }
       }
+
+      if (res.statusCode && res.statusCode >= 400) {
+        return cb(null, { message: text.trim() || `HTTP ${res.statusCode}`, raw: text }, res.statusCode);
+      }
+
+      cb(new Error('Invalid response from JIRA: expected JSON'));
     });
   });
   req.on('error', cb);
@@ -202,19 +235,6 @@ app.post('/api/jira/test', (req, res) => {
   });
 });
 
-/* ── POST /api/jira/projects — list accessible projects ────────────────── */
-app.post('/api/jira/projects', (req, res) => {
-  const { domain, email, token } = req.body || {};
-  if (!domain || !email || !token)
-    return res.status(400).json({ error: 'Missing credentials' });
-
-  jiraGet(domain, email, token, '/rest/api/3/project?maxResults=50', (err, data, status) => {
-    if (err)       return res.status(500).json({ error: err.message });
-    if (status !== 200) return res.status(status).json({ error: data?.message || `HTTP ${status}` });
-    res.json(data);
-  });
-});
-
 /* ── POST /api/jira/search — JQL issue search ──────────────────────────── */
 app.post('/api/jira/search', (req, res) => {
   const {
@@ -239,75 +259,26 @@ app.post('/api/jira/search', (req, res) => {
   });
 });
 
-/* ── GET /api/jira — legacy compatibility wrapper ─────────────────────── */
-app.get('/api/jira', (req, res) => {
-  const {
-    domain,
-    email,
-    token,
-    jql = 'ORDER BY created DESC',
-    fields = 'summary,status,priority,description,assignee,created,updated,issuetype,labels,comment,duedate',
-    maxResults = 2000,
-    startAt = 0,
-    fetchAll = false
-  } = req.query || {};
+/* ── POST /api/jira/versions — list project releases/versions ─────────────
+   Proxies Jira's real project-versions endpoint so release counts (e.g.
+   "unreleased releases") and per-release overdue/date data are pulled live
+   instead of hardcoded. Jira computes `overdue` itself per version, which we
+   use directly rather than re-deriving delayed status client-side. ────── */
+app.post('/api/jira/versions', (req, res) => {
+  const { domain, email, token, projectKey, status } = req.body || {};
+  if (!domain || !email || !token || !projectKey)
+    return res.status(400).json({ error: 'domain, email, token and projectKey are required' });
 
-  if (!domain || !email || !token)
-    return res.status(400).json({ error: 'domain, email and token are required' });
+  const statusParam = status ? `&status=${encodeURIComponent(status)}` : '';
+  const apiPath = `/rest/api/3/project/${encodeURIComponent(projectKey)}/version?maxResults=200&orderBy=releaseDate${statusParam}`;
 
-  runJiraSearch(String(domain), String(email), String(token), { jql: String(jql), fields, maxResults, startAt, fetchAll: String(fetchAll).toLowerCase() === 'true' }, (err, data, status) => {
+  jiraGet(domain, email, token, apiPath, (err, data, statusCode) => {
     if (err) return res.status(500).json({ error: err.message });
-    if (status !== 200) {
-      const msg = (data?.errorMessages || []).join('; ') || data?.message || `HTTP ${status}`;
-      return res.status(status).json({ error: msg });
-    }
+    if (statusCode !== 200) return res.status(statusCode).json({ error: data?.message || `HTTP ${statusCode}` });
     res.json(data);
   });
 });
 
-/* ── POST /api/jira/issue — single issue detail ────────────────────────── */
-app.post('/api/jira/issue', (req, res) => {
-  const { domain, email, token, issueKey } = req.body || {};
-  if (!domain || !email || !token || !issueKey)
-    return res.status(400).json({ error: 'domain, email, token and issueKey are required' });
-
-  jiraGet(domain, email, token, `/rest/api/3/issue/${issueKey}`, (err, data, status) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (status !== 200) return res.status(status).json({ error: data?.message || `HTTP ${status}` });
-    res.json(data);
-  });
-});
-/* ── GET /api/dashboard — GRC stub (returns data from data.js shape) ────── */
-app.get('/api/dashboard', (req, res) => {
-  // Return a realistic mock payload so the GRC tab works without a real GRC backend
-  const now  = new Date();
-  const priorities = ['High', 'Medium', 'Low'];
-  const statuses   = ['Open', 'In Progress', 'Done', 'Closed'];
-  const assignees  = ['Alice', 'Bob', 'Carol', 'David', 'Eve'];
-
-  const issues = Array.from({ length: 40 }, (_, i) => {
-    const priority = priorities[i % 3];
-    const status   = statuses[i % 4];
-    const created  = new Date(now - (i + 1) * 86400000 * 3).toISOString();
-    const resolved = status === 'Done' || status === 'Closed'
-      ? new Date(now - i * 86400000).toISOString() : null;
-    return {
-      key:      `GRC-${1000 + i}`,
-      id:       String(1000 + i),
-      summary:  `GRC Issue ${i + 1} — ${priority} priority`,
-      title:    `GRC Issue ${i + 1}`,
-      status,
-      _status:  status,
-      priority,
-      _priority: priority,
-      assignee: assignees[i % assignees.length],
-      created,
-      resolved
-    };
-  });
-
-  res.json({ ok: true, total: issues.length, issues });
-});
 /* ── GET /api/health ───────────────────────────────────────────────────── */
 app.get('/api/health', (_, res) =>
   res.json({ ok: true, ts: new Date().toISOString(), version: '1.0.0' })

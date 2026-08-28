@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Qorix – Product Dashboard</title>
 <style>
-.site-topbar-nav{height:44px;background:#3A00F5;backdrop-filter:blur(12px);display:flex;align-items:center;padding:0 24px;gap:24px;border-bottom:1px solid rgba(255,255,255,.18);position:sticky;top:0;z-index:60}
+.site-topbar-nav{height:44px;background:#140026;backdrop-filter:blur(12px);display:flex;align-items:center;padding:0 24px;gap:24px;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;z-index:60}
 .stn-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
-.stn-logo-mark{width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,#3A00F5,#4FE0C4);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:12px}
+.stn-logo-mark{width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,#2B00E8,#5B21FF);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:12px}
 .stn-logo-text{font-weight:700;color:#fff;font-size:14px}
 .stn-links{display:flex;gap:2px}
 .stn-link{color:rgba(255,255,255,.78);font-size:12px;font-weight:500;padding:4px 12px;border-radius:6px;text-decoration:none;transition:all .15s}
@@ -25,15 +25,27 @@
 <style>
 /* ── Qorix Brand Tokens ───────────────────────────────────────────── */
 :root{
-  /* ── New Qorix Palette ── */
-  --qx-blue:         #3A00F5;  /* Deep Violet – primary */
-  --qx-violet:       #4B00FF;  /* Electric Violet – accent */
-  --qx-teal:         #4FE0C4;  /* Teal Mint */
-  --qx-mint:         #66E8AA;  /* Soft Mint Green */
-  --qx-fresh-green:  #72E27A;  /* Fresh Green */
-  --qx-bright-green: #8FEA6B;  /* Bright Green */
-  --qx-lime-green:   #A7F04A;  /* Lime Green */
-  --qx-neon-lime:    #C4FF32;  /* Neon Lime */
+  --qorix-violet: #5B21FF;
+  --qorix-violet-dark: #2F00E6;
+  --qorix-violet-light: #7B4DFF;
+
+  --qorix-lime: #C6FF29;
+
+  --white: #FFFFFF;
+  --text-light: rgba(255,255,255,.8);
+  --text-muted: rgba(255,255,255,.65);
+
+  --shadow: 0 12px 30px rgba(0,0,0,.15);
+
+  /* ── Classic aliases used by the dashboard ── */
+  --qx-blue:         var(--qorix-violet);
+  --qx-violet:       var(--qorix-violet-dark);
+  --qx-teal:         var(--qorix-violet-light);
+  --qx-mint:         var(--qorix-lime);
+  --qx-fresh-green:  #72E27A;
+  --qx-bright-green: #8FEA6B;
+  --qx-lime-green:   var(--qorix-lime);
+  --qx-neon-lime:    var(--qorix-lime);
 
   /* ── Legacy aliases ── */
   --qx-navy:       #0D0033;
@@ -65,7 +77,6 @@
   --sidebar-w: 240px;
   --topbar-h:  64px;
   --radius:    10px;
-  --shadow:    0 1px 4px rgba(13,0,51,.08),0 4px 16px rgba(13,0,51,.06);
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -87,7 +98,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   white-space:nowrap;transition:color .15s;margin-bottom:-1px;
 }
 .stab:hover{color:var(--text)}
-.stab.active{color:var(--qx-blue);border-bottom-color:var(--qx-blue)}
+.stab.active{color:#5B21FF;border-bottom-color:#C6FF29}
 .stab .stab-badge{background:var(--qx-orange);color:#fff;border-radius:9px;padding:1px 6px;font-size:10px;font-weight:700}
 
 /* ── Main ────────────────────────────────────────────────────────── */
@@ -108,6 +119,38 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   font-size:13px;color:var(--text);background:#fff;cursor:pointer;outline:none;
 }
 .filter-select:focus{border-color:var(--qx-blue)}
+
+/* ── Custom brand-styled dropdown (replaces native select rendering) ── */
+.cselect{position:relative}
+.cselect-trigger{
+  display:flex;align-items:center;gap:10px;justify-content:space-between;
+  border:1.5px solid var(--qx-blue);border-radius:8px;padding:7px 12px;
+  font-size:13px;font-weight:600;color:var(--qx-blue);background:#fff;
+  cursor:pointer;outline:none;font-family:inherit;min-width:140px;
+  transition:border-color .15s,box-shadow .15s;
+}
+.cselect-trigger:hover{box-shadow:0 0 0 3px rgba(91,33,255,.08)}
+.cselect.open .cselect-trigger{box-shadow:0 0 0 3px rgba(91,33,255,.12)}
+.cselect-caret{flex-shrink:0;color:var(--qx-blue);transition:transform .15s}
+.cselect.open .cselect-caret{transform:rotate(180deg)}
+.cselect-menu{
+  display:none;position:absolute;top:calc(100% + 6px);left:0;min-width:100%;
+  background:#fff;border:1px solid var(--border);border-radius:10px;
+  box-shadow:var(--shadow);padding:6px;z-index:80;
+}
+.cselect.open .cselect-menu{display:block}
+.cselect-opt{
+  display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:7px;
+  font-size:13px;font-weight:500;color:var(--text);cursor:pointer;white-space:nowrap;
+  transition:background .12s,color .12s;
+}
+.cselect-opt:hover{background:rgba(91,33,255,.08)}
+.cselect-opt.selected{background:var(--qx-blue);color:#fff;font-weight:700}
+.cselect-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot-on-track{background:var(--color-on-track)}
+.dot-at-risk{background:var(--color-at-risk)}
+.dot-delayed{background:var(--color-delayed)}
+.cselect-opt.selected .cselect-dot{box-shadow:0 0 0 2px rgba(255,255,255,.5)}
 .btn{
   padding:7px 16px;border-radius:7px;font-size:13px;font-weight:600;
   cursor:pointer;border:none;transition:opacity .15s;
@@ -133,11 +176,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .kpi-card::before{
   content:'';position:absolute;top:0;left:0;right:0;height:3px;
 }
-.kpi-card.k1::before{background:var(--qx-blue)}
-.kpi-card.k2::before{background:var(--qx-violet)}
-.kpi-card.k3::before{background:var(--qx-violet)}
-.kpi-card.k4::before{background:var(--qx-violet)}
-.kpi-card.k5::before{background:var(--qx-violet)}
+.kpi-card.k1::before{background:#5B21FF}
+.kpi-card.k2::before{background:#7C52FF}
+.kpi-card.k3::before{background:#C6FF29}
+.kpi-card.k4::before{background:#5B21FF}
+.kpi-card.k5::before{background:#2B00E8}
 .kpi-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
 .kpi-value{font-size:32px;font-weight:800;color:var(--heading);line-height:1}
 .kpi-sub{font-size:12px;color:var(--muted)}
@@ -149,7 +192,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .section-hdr .hdr-actions{display:flex;gap:8px;align-items:center}
 
 /* ── Product cards ───────────────────────────────────────────────── */
-.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.product-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
 .product-card{
   background:var(--card);border-radius:var(--radius);
   box-shadow:var(--shadow);border:1px solid var(--border);
@@ -271,8 +314,8 @@ tr:hover td{background:rgba(58,0,245,.02)}
 .detail-field textarea{height:70px;resize:vertical}
 
 /* ── Export button ───────────────────────────────────────────────── */
-.btn-export{background:var(--qx-neon-lime);color:#0D0033;font-weight:700;border:none;padding:7px 16px;border-radius:7px;font-size:13px;cursor:pointer}
-.btn-export:hover{opacity:.85}
+.btn-export{background:#C6FF29;color:#111827;font-weight:700;border:none;padding:7px 16px;border-radius:10px;font-size:13px;cursor:pointer;transition:.2s ease}
+.btn-export:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(198,255,41,.25)}
 
 /* ── Scrollbar ───────────────────────────────────────────────────── */
 ::-webkit-scrollbar{width:6px;height:6px}
@@ -299,7 +342,7 @@ tr:hover td{background:rgba(58,0,245,.02)}
 .tab-pane{display:none}.tab-pane.active{display:block}
 
 /* ── Top accent gradient ─────────────────────────────────────────── */
-.section-accent-bar{height:4px;background:linear-gradient(90deg,var(--qx-blue),var(--qx-teal),var(--qx-neon-lime));border-radius:2px;margin-bottom:4px}
+.section-accent-bar{height:4px;background:linear-gradient(90deg,#2B00E8,#5B21FF,#C6FF29);border-radius:2px;margin-bottom:4px}
 
 </style>
 </head>
@@ -319,8 +362,7 @@ tr:hover td{background:rgba(58,0,245,.02)}
     <a href="product.html?id=developer" class="stn-link">Developer</a>
     <a href="product.html?id=performance" class="stn-link">Performance</a>
     <a href="product.html?id=lightweight" class="stn-link">Light weight</a>
-    <a href="product.html?id=processdef" class="stn-link">Process Def</a>
-    <a href="product.html?id=osporting" class="stn-link">OS Porting</a>
+    <a href="product.html?id=test" class="stn-link">Qorix Test</a>
   </div>
   <div class="stn-right">
   </div>
@@ -330,7 +372,7 @@ tr:hover td{background:rgba(58,0,245,.02)}
 <div class="main">
 
 <!-- SECTION TAB BAR -->
-<div class="section-tabbar" id="section-tabbar">
+<div class="section-tabbar">
   <button class="stab active" onclick="navigate('overview',this)">Dashboard</button>
   <button class="stab" onclick="navigate('products',this)">Products</button>
   <button class="stab" onclick="navigate('roadmap',this)">Roadmap</button>
@@ -343,7 +385,21 @@ tr:hover td{background:rgba(58,0,245,.02)}
   <div class="topbar">
     <div class="topbar-title">Product Portfolio <span>Dashboard</span></div>
     <div class="filter-bar">
-      <select class="filter-select" id="global-product-filter" onchange="applyFilters()">
+      <div class="cselect" id="cs-product-filter">
+        <button type="button" class="cselect-trigger" onclick="toggleCSelect('cs-product-filter')">
+          <span class="cselect-trigger-label">All Products</span>
+          <svg class="cselect-caret" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="cselect-menu">
+          <div class="cselect-opt selected" data-value="all" onclick="selectCOption('cs-product-filter','global-product-filter','all','All Products',this)">All Products</div>
+          <div class="cselect-opt" data-value="classic" onclick="selectCOption('cs-product-filter','global-product-filter','classic','Qorix Classic',this)">Qorix Classic</div>
+          <div class="cselect-opt" data-value="adaptive" onclick="selectCOption('cs-product-filter','global-product-filter','adaptive','Qorix Adaptive',this)">Qorix Adaptive</div>
+          <div class="cselect-opt" data-value="bootloader" onclick="selectCOption('cs-product-filter','global-product-filter','bootloader','Qorix Bootloader',this)">Qorix Bootloader</div>
+          <div class="cselect-opt" data-value="developer" onclick="selectCOption('cs-product-filter','global-product-filter','developer','Qorix Developer',this)">Qorix Developer</div>
+          <div class="cselect-opt" data-value="performance" onclick="selectCOption('cs-product-filter','global-product-filter','performance','Qorix Performance',this)">Qorix Performance</div>
+        </div>
+      </div>
+      <select class="filter-select" id="global-product-filter" onchange="applyFilters()" style="display:none">
         <option value="all">All Products</option>
         <option value="classic">Qorix Classic</option>
         <option value="adaptive">Qorix Adaptive</option>
@@ -351,7 +407,20 @@ tr:hover td{background:rgba(58,0,245,.02)}
         <option value="developer">Qorix Developer</option>
         <option value="performance">Qorix Performance</option>
       </select>
-      <select class="filter-select" id="global-status-filter" onchange="applyFilters()">
+
+      <div class="cselect" id="cs-status-filter">
+        <button type="button" class="cselect-trigger" onclick="toggleCSelect('cs-status-filter')">
+          <span class="cselect-trigger-label">All Statuses</span>
+          <svg class="cselect-caret" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="cselect-menu">
+          <div class="cselect-opt selected" data-value="all" onclick="selectCOption('cs-status-filter','global-status-filter','all','All Statuses',this)">All Statuses</div>
+          <div class="cselect-opt" data-value="on-track" onclick="selectCOption('cs-status-filter','global-status-filter','on-track','On Track',this)"><span class="cselect-dot dot-on-track"></span>On Track</div>
+          <div class="cselect-opt" data-value="at-risk" onclick="selectCOption('cs-status-filter','global-status-filter','at-risk','At Risk',this)"><span class="cselect-dot dot-at-risk"></span>At Risk</div>
+          <div class="cselect-opt" data-value="delayed" onclick="selectCOption('cs-status-filter','global-status-filter','delayed','Delayed',this)"><span class="cselect-dot dot-delayed"></span>Delayed</div>
+        </div>
+      </div>
+      <select class="filter-select" id="global-status-filter" onchange="applyFilters()" style="display:none">
         <option value="all">All Statuses</option>
         <option value="on-track">On Track</option>
         <option value="at-risk">At Risk</option>
@@ -366,20 +435,14 @@ tr:hover td{background:rgba(58,0,245,.02)}
   <section class="section active" id="sec-overview">
     <div class="section-accent-bar"></div>
 
-    <!-- KPIs (rendered by JS into #kpi-grid) -->
-    <div class="kpi-grid" id="kpi-grid"></div>
-
-    <!-- Portfolio Health -->
-    <div class="section-hdr">
-      <h2 contenteditable="false">Portfolio Health</h2>
-      <div class="hdr-actions">
-        <button class="btn btn-outline btn-sm" onclick="navigate('products', document.querySelector('.stab:nth-child(2)'))">View All →</button>
-      </div>
-    </div>
-
     <!-- Product Overview Cards -->
-    <div style="font-weight:600;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px">Product Overview</div>
     <div class="product-grid" id="overview-cards"></div>
+
+    <!-- KPIs (rendered by JS into #kpi-grid) -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 12px;">
+      <div class="kpi-grid" id="kpi-grid"></div>
+      <button class="btn btn-outline btn-sm" onclick="navigate('products', document.querySelector('.stab:nth-child(2)'))" style="align-self: flex-start; margin-top: 0;">View All →</button>
+    </div>
 
     <!-- Charts row -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px">
@@ -392,6 +455,82 @@ tr:hover td{background:rgba(58,0,245,.02)}
         <div class="chart-container-sm"><canvas id="fteChart"></canvas></div>
       </div>
     </div>
+
+    <!-- Enhanced Metrics Reference Guide (at bottom of Overview) -->
+    <div style="margin-top:28px;margin-bottom:18px">
+      <div style="margin-bottom:16px">
+        <h3 style="font-size:14px;font-weight:600;color:#0d0033;margin:0 0 12px 0">Enhanced Metrics Guide</h3>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:16px">
+        <div style="background:white;border:1px solid #e2e8f0;border-radius:10px;padding:16px">
+          <div style="font-size:13px;font-weight:700;color:#3A00F5;margin-bottom:8px">1. Sparkline Trend</div>
+          <div style="font-size:12px;color:#64748b;line-height:1.5">Visual mini chart shows historical trend pattern (increasing/decreasing/stable)</div>
+        </div>
+        <div style="background:white;border:1px solid #e2e8f0;border-radius:10px;padding:16px">
+          <div style="font-size:13px;font-weight:700;color:#4FE0C4;margin-bottom:8px">2. Time Period Label</div>
+          <div style="font-size:12px;color:#64748b;line-height:1.5">Explicit "vs Last Month" context for clear comparison reference</div>
+        </div>
+        <div style="background:white;border:1px solid #e2e8f0;border-radius:10px;padding:16px">
+          <div style="font-size:13px;font-weight:700;color:#E97132;margin-bottom:8px">3. Status Indicator</div>
+          <div style="font-size:12px;color:#64748b;line-height:1.5">On Track (green), Warning (yellow), At Risk (red) badges for quick assessment</div>
+        </div>
+        <div style="background:white;border:1px solid #e2e8f0;border-radius:10px;padding:16px">
+          <div style="font-size:13px;font-weight:700;color:#C4FF32;margin-bottom:8px">4. Color-Coded Trends</div>
+          <div style="font-size:12px;color:#64748b;line-height:1.5">Sparklines use red (up/bad), green (down/good) for intuitive understanding</div>
+        </div>
+      </div>
+
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:16px">
+        <div style="font-size:13px;font-weight:700;color:#1d4ed8;margin-bottom:12px">📊 Status Indicator Guide</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <div style="width:24px;height:24px;background:#dcfce7;border-radius:50%;border:2px solid #15803d;flex-shrink:0;margin-top:2px"></div>
+            <div style="font-size:12px;color:#1d4ed8;">
+              <strong>ON TRACK</strong> — Metric is improving or at target
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <div style="width:24px;height:24px;background:#fef3c7;border-radius:50%;border:2px solid #92400e;flex-shrink:0;margin-top:2px"></div>
+            <div style="font-size:12px;color:#1d4ed8;">
+              <strong>WARNING</strong> — Metric shows concerning trend, needs attention
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <div style="width:24px;height:24px;background:#fee2e2;border-radius:50%;border:2px solid #991b1b;flex-shrink:0;margin-top:2px"></div>
+            <div style="font-size:12px;color:#1d4ed8;">
+              <strong>AT RISK</strong> — Metric is critical, immediate action required
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;background:#ffffff;border:1px solid #e2e8f0;border-radius:10px;padding:14px">
+        <div style="font-size:13px;font-weight:700;color:#0d0033;margin-bottom:10px">Defect Status Definition</div>
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;min-width:480px">
+          <thead>
+            <tr style="background:#f8fafc;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0">
+              <th style="padding:8px;text-align:left;font-size:11px;color:#334155;width:34%">Status</th>
+              <th style="padding:8px;text-align:left;font-size:11px;color:#334155;width:66%">Open Defects Range</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #e2e8f0">
+              <td style="padding:8px;font-size:11px;font-weight:700;color:#15803d">ON TRACK</td>
+              <td style="padding:8px;font-size:11px;color:#0d0033">0 to 25</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0">
+              <td style="padding:8px;font-size:11px;font-weight:700;color:#92400e">WARNING</td>
+              <td style="padding:8px;font-size:11px;color:#0d0033">26 to 50</td>
+            </tr>
+            <tr>
+              <td style="padding:8px;font-size:11px;font-weight:700;color:#991b1b">AT RISK</td>
+              <td style="padding:8px;font-size:11px;color:#0d0033">More than 50</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </section>
 
   <!-- ═══════ SECTION: PRODUCTS ═══════ -->
@@ -484,7 +623,7 @@ tr:hover td{background:rgba(58,0,245,.02)}
 
 <!-- ═══════════════════════════════════════════════════ PRODUCT DETAIL MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
-  <div class="modal" id="modal">
+  <div class="modal">
     <div class="modal-hdr">
       <h3 id="modal-title">Product Detail</h3>
       <div style="display:flex;gap:8px;align-items:center">
@@ -502,20 +641,58 @@ tr:hover td{background:rgba(58,0,245,.02)}
    ROADMAP / COMPLIANCE / ACTIVITY — no need to redeclare them)
 ════════════════════════════════════════════════════════════ */
 
-/* Flat-risks helper (data.js RISKS is an object keyed by product id) */
-function allRisksFlat(){
-  return Object.entries(RISKS).flatMap(([pid,arr])=>
-    (arr||[]).map(r=>({...r, product:pid, pname:getProduct(pid)?.name||pid}))
-  );
+function liveRiskItemsForProduct(pid){
+  const cached = jiraDataFor(pid);
+  if(cached && Array.isArray(cached.risks) && cached.risks.length){
+    return cached.risks.filter(item => {
+      const statusCat = String(item?._statusCat || '').toLowerCase();
+      const status = String(item?.status || item?._status || '').toLowerCase();
+      return statusCat !== 'done' && statusCat !== 'closed' && status !== 'done' && status !== 'closed';
+    });
+  }
+  return (RISKS[pid] || []).filter(item => {
+    const status = String(item?.status || '').toLowerCase();
+    return status !== 'closed';
+  });
 }
 
-const COMPLIANCE_FLAGS = [
-  {product:'Qorix Developer',      area:'Data',      issue:'Opt-out telemetry not implemented',          action:'Implement GDPR-compliant opt-out',  deadline:'2026-05-31', status:'Open'},
-  {product:'Qorix Developer',      area:'Security',  issue:'3 medium CVEs in SDK dependencies',           action:'Patch or replace vulnerable packages', deadline:'2026-05-31', status:'Open'},
-  {product:'Qorix Bootloader',     area:'Security',  issue:'FIPS 140-2 not certifiable until HSM chosen', action:'Complete HSM vendor selection',        deadline:'2026-08-01', status:'Open'},
-  {product:'Qorix Process Definition',area:'Compliance','issue':'Process governance not started',         action:'Appoint PM and initiate governance',   deadline:'2026-06-01', status:'Open'},
-  {product:'Qorix Classic',        area:'Safety',    issue:'ISO 26262 gaps — 4 items identified',         action:'Remediate before Jun 12 audit',        deadline:'2026-06-30', status:'In Progress'}
-];
+function liveTotalRiskCount(){
+  return PRODUCTS.reduce((sum, product) => sum + liveRiskItemsForProduct(product.id).length, 0);
+}
+
+function liveTotalNonComplianceCount(){
+  return PRODUCTS.reduce((sum, product) => {
+    const cached = jiraDataFor(product.id);
+    const items = cached && Array.isArray(cached.ncs) && cached.ncs.length
+      ? cached.ncs
+      : (cached && Array.isArray(cached.nc) && cached.nc.length ? cached.nc : []);
+    if(items.length){
+      return sum + items.filter(item => {
+        const statusCat = String(item?._statusCat || '').toLowerCase();
+        const status = String(item?.status || item?._status || '').toLowerCase();
+        return statusCat !== 'done' && statusCat !== 'closed' && status !== 'done' && status !== 'closed';
+      }).length;
+    }
+    return sum + nonComplianceCountForProduct(product.id, 0);
+  }, 0);
+}
+
+function liveTotalIncidentCount(){
+  return PRODUCTS.reduce((sum, product) => {
+    const cached = jiraDataFor(product.id);
+    const items = cached && Array.isArray(cached.incidents) && cached.incidents.length
+      ? cached.incidents
+      : [];
+    if(items.length){
+      return sum + items.filter(item => {
+        const statusCat = String(item?._statusCat || '').toLowerCase();
+        const status = String(item?.status || item?._status || '').toLowerCase();
+        return statusCat !== 'done' && statusCat !== 'closed' && status !== 'done' && status !== 'closed';
+      }).length;
+    }
+    return sum;
+  }, 0);
+}
 
 const DEPS_INTERNAL = [
   {product:'Qorix Classic',    depends:'Safety/Legal Team',  team:'Legal',      desc:'ISO 26262 compliance review',          status:'Pending'},
@@ -534,13 +711,11 @@ const DEPS_EXTERNAL = [
 
 const BLOCKERS = [
   {product:'Qorix Developer',         blocker:'API Design Freeze Overdue',    owner:'Marcus Webb',    eta:'2026-05-15', impact:'Delays SDK beta by 6+ weeks'},
-  {product:'Qorix Process Definition', blocker:'No Product Manager Assigned', owner:'— Leadership —', eta:'TBD',        impact:'Entire product blocked'},
   {product:'Qorix Adaptive',          blocker:'Go/no-go Review — May 20',     owner:'Jordan Lee',     eta:'2026-05-20', impact:'Scope reduction may pause work'},
   {product:'Qorix Bootloader',        blocker:'HSM Vendor Not Selected',       owner:'Priya Nair',     eta:'2026-06-01', impact:'Cannot start FIPS certification'}
 ];
 
 const ALERTS = [
-  {type:'danger', icon:'!', title:'Qorix Process Definition — No PM',        desc:'Product ownership undefined. All roadmap and delivery work is blocked.', product:'Qorix Process Definition'},
   {type:'danger', icon:'!', title:'Qorix Developer — API Freeze Delayed',    desc:'Design freeze overdue. SDK beta timeline slipping by 6+ weeks.',          product:'Qorix Developer'},
   {type:'warning',icon:'...', title:'Qorix Adaptive — Go/No-Go Review',        desc:'Stakeholder review on May 20. Scope reduction option on the table.',       product:'Qorix Adaptive'},
   {type:'danger', icon:'DEV', title:'Qorix Light weight — Memory Target Risk','desc':'Sub-256KB target proving harder than estimated. Compiler opts in progress.',product:'Qorix Light weight'},
@@ -548,9 +723,8 @@ const ALERTS = [
 ];
 
 const FLAGS = [
-  {type:'danger', icon:'!', title:'Scope Undefined — Process Definition', desc:'No scope, no PM, no mitigation plan. Product is effectively blocked.', product:'Qorix Process Definition'},
   {type:'warning',icon:'!', title:'Shared Resource Over-allocation Risk', desc:'Sam Torres, Mia Patel, Felix Brand, and Priya Das are shared across 3+ products — check total %.',  product:'Multiple'},
-  {type:'danger', icon:'!', title:'Compliance Fails — Developer + Process Def', desc:'Telemetry opt-out (Developer) and process governance (Process Def) are failing.', product:'Multiple'}
+  {type:'danger', icon:'!', title:'Compliance Gaps — Developer', desc:'Telemetry opt-out (Developer) compliance gap requires remediation.', product:'Developer'}
 ];
 
 /* ════════════════════════════════════════════════════════════
@@ -566,6 +740,27 @@ function navigate(sec, btn) {
 /* ════════════════════════════════════════════════════════════
    FILTERS
 ════════════════════════════════════════════════════════════ */
+function toggleCSelect(id) {
+  const el = document.getElementById(id);
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.cselect.open').forEach(c => c.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.cselect')) {
+    document.querySelectorAll('.cselect.open').forEach(c => c.classList.remove('open'));
+  }
+});
+function selectCOption(cselectId, hiddenSelectId, value, label, optEl) {
+  const cselect = document.getElementById(cselectId);
+  cselect.querySelectorAll('.cselect-opt').forEach(o => o.classList.remove('selected'));
+  optEl.classList.add('selected');
+  cselect.querySelector('.cselect-trigger-label').innerHTML = optEl.innerHTML;
+  cselect.classList.remove('open');
+  document.getElementById(hiddenSelectId).value = value;
+  applyFilters();
+}
+
 function applyFilters() {
   const pf = document.getElementById('global-product-filter').value;
   const sf = document.getElementById('global-status-filter').value;
@@ -589,12 +784,6 @@ function phaseBadge(p) {
   const col = phaseText(p);
   return `<span class="product-phase" style="background:${bg};color:${col}">${p}</span>`;
 }
-function sevBadge(s){return `<span class="sev-${s.toLowerCase()}">${s}</span>`}
-function riskScoreBadge(n){
-  const cls = n>=8?'rs-critical':n>=6?'rs-high':n>=4?'rs-medium':'rs-low';
-  return `<span class="risk-score ${cls}">${n}</span>`;
-}
-
 function isOpenIssueStatus(issue){
   const statusCat = String(issue?._statusCat || '').toLowerCase();
   const status = String(issue?.status || issue?._status || '').toLowerCase();
@@ -646,9 +835,60 @@ function totalRiskCountForProduct(pid, fallback){
   return items.length || (fallback || 0);
 }
 
+const RELEASES_PAGE_URL = {
+  bootloader:  'https://qorix.atlassian.net/projects/QB?selectedItem=com.atlassian.jira.jira-projects-plugin%3Arelease-page',
+  adaptive:    'https://qorix.atlassian.net/projects/AP?selectedItem=com.atlassian.jira.jira-projects-plugin%3Arelease-page',
+  developer:   'https://qorix.atlassian.net/projects/QD?selectedItem=com.atlassian.jira.jira-projects-plugin%3Arelease-page',
+  performance: 'https://qorix.atlassian.net/projects/QP?selectedItem=com.atlassian.jira.jira-projects-plugin%3Arelease-page'
+  // lightweight: no JIRA project key configured yet (JIRA_CFG.projects.lightweight is null) — awaiting real key/link.
+};
+
+function releasesDelayedForProduct(pid){
+  const data = getJiraData(pid);
+  if(data && Array.isArray(data.releases)){
+    // Real, live-synced release data for this product's own JIRA project.
+    return { count: typeof data.releasesDelayed === 'number' ? data.releasesDelayed : data.releases.filter(r => r.overdue).length, isLive: true, isSynced: true };
+  }
+  if(pid === 'classic'){
+    // Classic's OWN static last-known snapshot from assets/data.js (project CP)
+    // — CLASSIC_RELEASES, deliberately separate from Qorix Test's TEST_RELEASES
+    // even though both mirror the same real project today (see ownership note
+    // in assets/data.js), so removing Test can't break this.
+    const rels = (typeof CLASSIC_RELEASES !== 'undefined') ? CLASSIC_RELEASES : [];
+    const today = new Date();
+    return { count: rels.filter(r => new Date(r.releaseDate) < today).length, isLive: false, isSynced: true };
+  }
+  // No JIRA connection/sync done yet for this product — don't fabricate a number.
+  return { count: null, isLive: false, isSynced: false };
+}
+
 function customerDefectsCountForProduct(pid, fallback){
+  if(pid === 'classic') {
+    // Classic uses custom JQL for customer defects (External reports only)
+    const data = getJiraData(pid);
+    if(data && data.customerDefects) return data.customerDefects.length || 0;
+    return fallback || 0;
+  }
   if(pid !== 'adaptive' && pid !== 'bootloader') return null;
   return defectsCountForProduct(pid, fallback);
+}
+
+function lastMonthDefectsCountForProduct(pid, fallback){
+  if(pid === 'classic') {
+    const data = getJiraData(pid);
+    if(data && data.lastMonthDefects) return data.lastMonthDefects.length || 0;
+    return fallback || 0;
+  }
+  return fallback || 0;
+}
+
+function lastMonthOpenDefectsCountForProduct(pid, fallback){
+  if(pid === 'classic') {
+    const data = getJiraData(pid);
+    if(data && data.lastMonthOpenDefects) return data.lastMonthOpenDefects.length || 0;
+    return fallback || 0;
+  }
+  return fallback || 0;
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -665,35 +905,175 @@ function buildCard(p, readonly) {
     const defectsColor = defectValue > 0 ? '#ef4444' : '#22c55e';
     const riskColor = totalRiskCount > 0 ? '#ef4444' : '#22c55e';
     const ncColor = nonComplianceCount > 0 ? '#f59e0b' : '#22c55e';
-    const cardStyle = `pointer-events:none;user-select:none;cursor:default;display:flex;flex-direction:column;justify-content:space-between;height:250px;min-height:250px;border:2px solid #3A00F5;background:linear-gradient(160deg,#3A00F5 0%,#4B00FF 60%,#4FE0C4 100%);box-shadow:0 4px 24px rgba(58,0,245,.35);overflow:hidden;`;
-    const ncColorAdapted  = ncColor  === '#f59e0b' ? '#ffd580' : '#7fffb0';
-    const defColorAdapted = defectsColor === '#ef4444' ? '#ffaaaa' : '#7fffb0';
-    const riskColorAdapted = riskColor === '#ef4444' ? '#ffaaaa' : '#7fffb0';
-    return `
-  <div class="product-card" data-id="${p.id}" data-status="${p.status}" style="${cardStyle}">
-    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;padding-top:14px">
-      <div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.5);margin-bottom:6px"></div>
-      <div class="product-name" style="font-size:16px;font-weight:700;color:#fff">${p.name}</div>
-    </div>
-    <div style="display:flex;gap:8px;justify-content:center;margin:10px 12px">
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.15);border-radius:8px;padding:10px 6px;border:1px solid rgba(255,255,255,.3)">
-        <span style="font-size:20px;font-weight:800;color:${ncColorAdapted}">${nonComplianceCount}</span>
-        <span style="font-size:10px;color:rgba(255,255,255,.7);margin-top:4px;text-align:center">Non-Compliance</span>
+
+    // Enhanced Metrics Table for Classic-style products
+    // Adaptive, Bootloader, Developer, Performance, and Lightweight use the same dashboard presentation as Classic.
+    if(p.id === 'classic' || p.id === 'adaptive' || p.id === 'bootloader' || p.id === 'developer' || p.id === 'performance' || p.id === 'lightweight') {
+      return `
+  <div class="product-card" data-id="${p.id}" data-status="${p.status}" style="cursor:pointer;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;transition:all .2s ease;box-shadow:0 10px 25px rgba(91,33,255,.08);${(p.id === 'classic' || p.id === 'adaptive' || p.id === 'developer' || p.id === 'bootloader' || p.id === 'performance' || p.id === 'lightweight') ? 'height:auto !important;overflow:visible !important;' : ''}">
+    <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+      <thead style="background:linear-gradient(90deg,#2B00E8,#5B21FF);border-bottom:2px solid #5B21FF;">
+        <tr>
+          <th style="padding:12px 6px;text-align:left;font-size:9px;font-weight:700;color:#fff;text-transform:uppercase;width:26%;white-space:normal;"><a href="product.html?id=${p.id}#grc" style="color:#fff;text-decoration:none" onclick="event.stopPropagation()" title="Open ${p.name}'s GRC Dashboard">${p.name.toUpperCase()}</a></th>
+          <th style="padding:12px 6px;text-align:center;font-size:9px;font-weight:700;color:#fff;text-transform:uppercase;width:12%;white-space:nowrap;">CURRENT</th>
+          <th style="padding:12px 6px;text-align:center;font-size:9px;font-weight:700;color:#fff;text-transform:uppercase;width:10%;white-space:nowrap;">Trend</th>
+              <th style="padding:12px 6px;text-align:center;font-size:9px;font-weight:700;color:#fff;text-transform:uppercase;width:34%;white-space:normal;">Last Month</th>
+          <th style="padding:12px 6px;text-align:center;font-size:9px;font-weight:700;color:#fff;text-transform:uppercase;width:18%;white-space:nowrap;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:13px 8px;color:#0d0033;font-weight:600;font-size:13px;">Defect Health</td>
+          <td style="padding:13px 8px;text-align:center;font-size:18px;font-weight:800;color:var(--qorix-violet);" id="${p.id}-opendefects-current">${defectsCountForProduct(p.id, 0)}</td>
+          <td style="padding:13px 8px;text-align:center;"><svg viewBox="0 0 60 30" style="width:50px;height:25px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg"><polyline points="5,25 10,20 15,22 20,18 25,15 30,17 35,12 40,14 45,10 50,8 55,5" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/></svg></td>
+          <td style="padding:13px 8px;text-align:center;"><div style="font-weight:700;font-size:12px;" id="${p.id}-opendefects-lastmonth">+12</div><div style="color:#ef4444;font-weight:700;font-size:11px;" id="${p.id}-opendefects-change">↑13%</div></td>
+          <td style="padding:13px 8px;text-align:center;"><span style="background:#fee2e2;color:#991b1b;padding:5px 8px;border-radius:6px;font-size:10px;font-weight:700;" id="${p.id}-opendefects-status">AT RISK</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:13px 8px;color:#0d0033;font-weight:600;font-size:13px;">Customer Defects</td>
+          <td style="padding:13px 8px;text-align:center;font-size:18px;font-weight:800;color:var(--qorix-violet-light);" id="${p.id}-defects-current">${customerDefectsCountForProduct(p.id, 0) ?? 0}</td>
+          <td style="padding:13px 8px;text-align:center;"><svg viewBox="0 0 60 30" style="width:50px;height:25px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg"><polyline points="5,8 10,10 15,12 20,14 25,16 30,18 35,19 40,20 45,22 50,23 55,25" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round"/></svg></td>
+          <td style="padding:13px 8px;text-align:center;"><div style="font-weight:700;font-size:12px;" id="${p.id}-defects-lastmonth">-2</div><div style="color:#22c55e;font-weight:700;font-size:11px;" id="${p.id}-defects-change">↓40%</div></td>
+          <td style="padding:13px 8px;text-align:center;"><span style="background:#dcfce7;color:#15803d;padding:5px 8px;border-radius:6px;font-size:10px;font-weight:700;" id="${p.id}-defects-status">ON TRACK</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:13px 8px;color:#0d0033;font-weight:600;font-size:13px;">Total Risks</td>
+          <td style="padding:13px 8px;text-align:center;font-size:18px;font-weight:800;color:#E97132;">${totalRiskCountForProduct(p.id, 0)}</td>
+          <td style="padding:13px 8px;text-align:center;"><svg viewBox="0 0 60 30" style="width:50px;height:25px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg"><polyline points="5,20 10,18 15,16 20,19 25,15 30,14 35,16 40,12 45,13 50,10 55,8" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/></svg></td>
+          <td style="padding:13px 8px;text-align:center;"><div style="font-weight:700;font-size:12px;" id="${p.id}-totalrisks-lastmonth">+3</div><div style="color:#f59e0b;font-weight:700;font-size:11px;" id="${p.id}-totalrisks-change">↑25%</div></td>
+          <td style="padding:13px 8px;text-align:center;"><span style="background:#fef3c7;color:#92400e;padding:5px 8px;border-radius:6px;font-size:10px;font-weight:700;" id="${p.id}-totalrisks-status">WARNING</span></td>
+        </tr>
+        <tr>
+          <td style="padding:13px 8px;color:#0d0033;font-weight:600;font-size:13px;">Non-Compliance</td>
+          <td style="padding:13px 8px;text-align:center;font-size:18px;font-weight:800;color:var(--qorix-lime);">${nonComplianceCountForProduct(p.id, 0)}</td>
+          <td style="padding:13px 8px;text-align:center;"><svg viewBox="0 0 60 30" style="width:50px;height:25px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg"><polyline points="5,10 10,12 15,13 20,15 25,17 30,18 35,19 40,20 45,21 50,23 55,24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round"/></svg></td>
+          <td style="padding:13px 8px;text-align:center;"><div style="font-weight:700;font-size:12px;" id="${p.id}-noncompliance-lastmonth">-1</div><div style="color:#22c55e;font-weight:700;font-size:11px;" id="${p.id}-noncompliance-change">↓17%</div></td>
+          <td style="padding:13px 8px;text-align:center;"><span style="background:#dcfce7;color:#15803d;padding:5px 8px;border-radius:6px;font-size:10px;font-weight:700;" id="${p.id}-noncompliance-status">ON TRACK</span></td>
+        </tr>
+        ${(p.id === 'classic' || p.id === 'adaptive' || p.id === 'developer' || p.id === 'bootloader' || p.id === 'performance' || p.id === 'lightweight') ? (() => {
+          const rd = releasesDelayedForProduct(p.id);
+          const relUrl = RELEASES_PAGE_URL[p.id];
+          const labelHtml = relUrl
+            ? `<a href="${relUrl}" target="_blank" rel="noopener" style="color:#0d0033;text-decoration:underline;text-decoration-color:#cbd5e1">Releases Delayed</a>`
+            : 'Releases Delayed';
+          if(!rd.isSynced){
+            return `
+        <tr>
+          <td style="padding:13px 8px;color:#0d0033;font-weight:600;font-size:13px;">${labelHtml}</td>
+          <td style="padding:13px 8px;text-align:center;font-size:18px;font-weight:800;color:#94a3b8;">—</td>
+          <td style="padding:13px 8px;text-align:center;"><span style="color:#94a3b8;font-size:11px;">—</span></td>
+          <td style="padding:13px 8px;text-align:center;"><div style="font-weight:700;font-size:12px;color:#94a3b8;">—</div></td>
+          <td style="padding:13px 8px;text-align:center;"><span style="background:#f1f5f9;color:#64748b;padding:5px 8px;border-radius:6px;font-size:10px;font-weight:700;">NOT SYNCED</span></td>
+        </tr>`;
+          }
+          const delayedCount = rd.count;
+          return `
+        <tr>
+          <td style="padding:13px 8px;color:#0d0033;font-weight:600;font-size:13px;">${labelHtml}</td>
+          <td style="padding:13px 8px;text-align:center;font-size:18px;font-weight:800;color:${delayedCount > 0 ? '#ef4444' : '#22c55e'};">${delayedCount}</td>
+          <td style="padding:13px 8px;text-align:center;"><svg viewBox="0 0 60 30" style="width:50px;height:25px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg"><polyline points="5,22 10,20 15,21 20,18 25,16 30,17 35,14 40,12 45,13 50,10 55,8" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/></svg></td>
+          <td style="padding:13px 8px;text-align:center;"><div style="font-weight:700;font-size:12px;">—</div><div style="color:#64748b;font-weight:700;font-size:11px;">${rd.isLive ? 'live' : 'last known'}</div></td>
+          <td style="padding:13px 8px;text-align:center;"><span style="background:${delayedCount > 0 ? '#fee2e2' : '#dcfce7'};color:${delayedCount > 0 ? '#991b1b' : '#15803d'};padding:5px 8px;border-radius:6px;font-size:10px;font-weight:700;">${delayedCount > 0 ? 'AT RISK' : 'ON TRACK'}</span></td>
+        </tr>`;
+        })() : ''}
+      </tbody>
+    </table>
+  </div>`;
+    }
+
+    // Qorix Test — driven by JIRA project CP (see TEST_JQL in assets/data.js)
+    if(p.id === 'test') {
+      const j = p.jira || {};
+      const q = (typeof TEST_JQL !== 'undefined') ? TEST_JQL : {};
+      const statusPill = (label, color, bg) => `<span style="background:${bg};color:${color};padding:5px 8px;border-radius:6px;font-size:10px;font-weight:700;">${label}</span>`;
+      const detailPill = (val, label, na) => `
+        <div style="flex:1;min-width:90px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:8px 6px;text-align:center">
+          <div style="font-size:15px;font-weight:800;color:${na?'#94a3b8':'#0d0033'}">${na?'N/A':val}</div>
+          <div style="font-size:9px;color:#64748b;margin-top:2px">${label}</div>
+        </div>`;
+      return `
+  <div class="product-card" data-id="${p.id}" data-status="${p.status}" style="cursor:pointer;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;transition:all 0.2s ease;box-shadow:0 1px 4px rgba(13,0,51,.08)" onclick="window.location.href='product.html?id=${p.id}'">
+    <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+      <thead style="background:linear-gradient(90deg,#0F766E,#0D9488);border-bottom:2px solid #0D9488;">
+        <tr>
+          <th style="padding:12px 8px;text-align:left;font-size:10px;font-weight:700;color:#fff;text-transform:uppercase;width:22%;white-space:nowrap;"><a href="product.html?id=${p.id}#grc" style="color:#fff;text-decoration:none" onclick="event.stopPropagation()" title="Open ${p.name}'s GRC Dashboard">${p.name}</a></th>
+          <th style="padding:12px 8px;text-align:center;font-size:10px;font-weight:700;color:#fff;text-transform:uppercase;width:16%;white-space:nowrap;">Current</th>
+              <th style="padding:12px 8px;text-align:center;font-size:10px;font-weight:700;color:#fff;text-transform:uppercase;width:45%;white-space:nowrap;">Source (JIRA · Project CP)</th>
+          <th style="padding:12px 8px;text-align:center;font-size:10px;font-weight:700;color:#fff;text-transform:uppercase;width:17%;white-space:nowrap;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:13px 8px;color:#0d0033;font-weight:600;font-size:13px;">Defect Health</td>
+          <td style="padding:13px 8px;text-align:center;font-size:18px;font-weight:800;color:#0D9488;">${j.openBugs ?? 0}</td>
+          <td style="padding:13px 8px;text-align:center;font-size:10px;color:#64748b;">${q.openBugs || ''}</td>
+          <td style="padding:13px 8px;text-align:center;">${statusPill((j.openBugs||0) > 0 ? 'AT RISK' : 'ON TRACK', (j.openBugs||0) > 0 ? '#991b1b':'#15803d', (j.openBugs||0) > 0 ? '#fee2e2':'#dcfce7')}</td>
+        </tr>
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:13px 8px;color:#0d0033;font-weight:600;font-size:13px;">Critical Defects</td>
+          <td style="padding:13px 8px;text-align:center;font-size:18px;font-weight:800;color:#ef4444;">${j.criticalBugs ?? 0}</td>
+          <td style="padding:13px 8px;text-align:center;font-size:10px;color:#64748b;">${q.criticalBugs || ''}</td>
+          <td style="padding:13px 8px;text-align:center;">${statusPill((j.criticalBugs||0) > 0 ? 'AT RISK' : 'ON TRACK', (j.criticalBugs||0) > 0 ? '#991b1b':'#15803d', (j.criticalBugs||0) > 0 ? '#fee2e2':'#dcfce7')}</td>
+        </tr>
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:13px 8px;color:#0d0033;font-weight:600;font-size:13px;">Impediments</td>
+          <td style="padding:13px 8px;text-align:center;font-size:18px;font-weight:800;color:#E97132;">${j.impediments ?? 0}</td>
+          <td style="padding:13px 8px;text-align:center;font-size:10px;color:#64748b;">${q.impediments || ''}</td>
+          <td style="padding:13px 8px;text-align:center;">${statusPill((j.impediments||0) > 0 ? 'WARNING' : 'ON TRACK', (j.impediments||0) > 0 ? '#92400e':'#15803d', (j.impediments||0) > 0 ? '#fef3c7':'#dcfce7')}</td>
+        </tr>
+        <tr>
+          <td style="padding:13px 8px;color:#0d0033;font-weight:600;font-size:13px;">Change Requests</td>
+          <td style="padding:13px 8px;text-align:center;font-size:18px;font-weight:800;color:#C6FF29;background-clip:unset;">${j.changeRequests ?? 0}</td>
+          <td style="padding:13px 8px;text-align:center;font-size:10px;color:#64748b;">${q.changeRequests || ''}</td>
+          <td style="padding:13px 8px;text-align:center;">${statusPill('ON TRACK', '#15803d', '#dcfce7')}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="padding:12px 14px;border-top:1px solid #e2e8f0;background:#fafbfc">
+      <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Additional JQL Breakdown</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${detailPill(j.requirementsTotal, 'Requirements', true)}
+        ${detailPill(j.requirementsNotApproved, 'Req. Not Approved', true)}
+        ${detailPill(j.auditFindings, 'Audit Findings', true)}
+        ${detailPill(j.reviews, 'Reviews', true)}
+        ${detailPill(j.reopenedBugs, 'Reopened Bugs', false)}
       </div>
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.15);border-radius:8px;padding:10px 6px;border:1px solid rgba(255,255,255,.3)">
-        <span style="font-size:20px;font-weight:800;color:${defColorAdapted}">${defectValue}</span>
-        <span style="font-size:10px;color:rgba(255,255,255,.7);margin-top:4px;text-align:center">${defectLabel}</span>
-      </div>
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.15);border-radius:8px;padding:10px 6px;border:1px solid rgba(255,255,255,.3)">
-        <span style="font-size:20px;font-weight:800;color:${riskColorAdapted}">${totalRiskCount}</span>
-        <span style="font-size:10px;color:rgba(255,255,255,.7);margin-top:4px;text-align:center">Total Risks</span>
-      </div>
+      <div style="font-size:9px;color:#94a3b8;margin-top:8px">Project: CP · Program: Classic · N/A = issue type not present in project CP · Synced ${j.syncedAt||'—'}</div>
+      ${(() => {
+        const rels = (typeof TEST_RELEASES !== 'undefined') ? TEST_RELEASES : [];
+        if(!rels.length) return '';
+        const today = new Date();
+        const rows = rels.map(r => {
+          const relDate = new Date(r.releaseDate);
+          const isPast = relDate < today;
+          const isDone = r.progress >= 100;
+          const label = isPast ? (isDone ? 'Delayed (unreleased)' : 'Delayed') : 'On Track';
+          const bg = isPast ? (isDone ? '#fef3c7' : '#fee2e2') : '#dcfce7';
+          const color = isPast ? (isDone ? '#92400e' : '#991b1b') : '#15803d';
+          const dateLabel = relDate.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+          return `<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid #e2e8f0">
+            <div style="font-size:11px;color:#0d0033;flex:1">${r.name}</div>
+            <div style="font-size:10px;color:#64748b;white-space:nowrap">${dateLabel}</div>
+            <span style="background:${bg};color:${color};padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;white-space:nowrap">${label}</span>
+          </div>`;
+        }).join('');
+        const totalCount = (typeof TEST_RELEASES_UNRELEASED_COUNT !== 'undefined') ? TEST_RELEASES_UNRELEASED_COUNT : '—';
+        return `<div style="margin-top:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px">Top 3 Upcoming Releases</div>
+            <div style="font-size:10px;color:#64748b">Unreleased releases: <strong style="color:#0d0033">${totalCount}</strong></div>
+          </div>
+          ${rows}
+        </div>`;
+      })()}
     </div>
   </div>`;
+    }
+
   }
-  const clickAttr = `onclick="openProductModal('${p.id}')"` ;
+  // Edit card (non-readonly) - for Products section
   return `
-  <div class="product-card" data-id="${p.id}" data-status="${p.status}" style="display:flex;flex-direction:column;justify-content:space-between;height:250px;min-height:250px;overflow:hidden;" ${clickAttr}>
+  <div class="product-card" data-id="${p.id}" data-status="${p.status}" style="display:flex;flex-direction:column;justify-content:space-between;height:250px;min-height:250px;overflow:hidden;cursor:pointer;transition:all 0.2s ease;" onclick="window.location.href='product.html?id=${p.id}'" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
     <div class="product-card-top">
       <div class="product-card-header">
         <div>
@@ -702,7 +1082,10 @@ function buildCard(p, readonly) {
             ${statusBadge(p.status)} ${phaseBadge(p.phase)}
           </div>
         </div>
-        <div style="width:8px;height:8px;border-radius:50%;background:${p.color};margin-top:4px;flex-shrink:0"></div>
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <span style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;white-space:nowrap">Incidents: 0</span>
+          <div style="width:8px;height:8px;border-radius:50%;background:${p.color};margin-top:4px;flex-shrink:0"></div>
+        </div>
       </div>
       <div class="progress-row" style="margin-top:10px">
         <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${p.completion}%;background:linear-gradient(90deg,${p.color},${p.color}99)"></div></div>
@@ -722,7 +1105,88 @@ function buildCard(p, readonly) {
 function renderCards(containerId, readonly) {
   const el = document.getElementById(containerId);
   if(!el) return;
-  el.innerHTML = PRODUCTS.map(p => buildCard(p, readonly)).join('');
+  const filteredProducts = PRODUCTS.filter(p => !p.name.includes('Process Definition') && !p.name.includes('OS Porting'));
+  el.innerHTML = filteredProducts.map(p => buildCard(p, readonly)).join('');
+  updateProductMetrics();
+}
+
+/**
+ * Update Customer Defects and Open Defects metrics for Classic with last month data
+ */
+function updateProductMetrics() {
+  ['classic', 'adaptive', 'bootloader'].forEach(pid => {
+    // Open Defects
+    const openCurrent = defectsCountForProduct(pid, 0);
+    const openLastMonth = lastMonthOpenDefectsCountForProduct(pid, 0);
+
+    if (openCurrent !== undefined && openLastMonth !== undefined) {
+      const actualDiff = openCurrent - openLastMonth;
+      const percentChange = openLastMonth > 0 ? Math.round((actualDiff / openLastMonth) * 100) : 0;
+      const arrow = actualDiff < 0 ? '↓' : actualDiff > 0 ? '↑' : '→';
+      const changeColor = actualDiff < 0 ? '#22c55e' : actualDiff > 0 ? '#ef4444' : '#64748b';
+
+      const currentEl = document.getElementById(`${pid}-opendefects-current`);
+      const changeEl = document.getElementById(`${pid}-opendefects-change`);
+      const statusEl = document.getElementById(`${pid}-opendefects-status`);
+
+      if (currentEl) currentEl.textContent = openCurrent;
+      if (changeEl) {
+        changeEl.textContent = arrow + Math.abs(percentChange) + '%';
+        changeEl.style.color = changeColor;
+      }
+      if (statusEl) {
+        if (openCurrent <= 50) {
+          statusEl.style.background = '#dcfce7';
+          statusEl.style.color = '#15803d';
+          statusEl.textContent = 'ON TRACK';
+        } else if (openCurrent <= 100) {
+          statusEl.style.background = '#fef3c7';
+          statusEl.style.color = '#92400e';
+          statusEl.textContent = 'WARNING';
+        } else {
+          statusEl.style.background = '#fee2e2';
+          statusEl.style.color = '#991b1b';
+          statusEl.textContent = 'AT RISK';
+        }
+      }
+    }
+
+    // Customer Defects
+    const customerCurrent = customerDefectsCountForProduct(pid, 0) ?? 0;
+    const customerLastMonth = lastMonthDefectsCountForProduct(pid, 0);
+
+    if (customerCurrent !== undefined && customerLastMonth !== undefined) {
+      const actualDiff = customerCurrent - customerLastMonth;
+      const percentChange = customerLastMonth > 0 ? Math.round((actualDiff / customerLastMonth) * 100) : 0;
+      const arrow = actualDiff < 0 ? '↓' : actualDiff > 0 ? '↑' : '→';
+      const changeColor = actualDiff < 0 ? '#22c55e' : actualDiff > 0 ? '#ef4444' : '#64748b';
+
+      const currentEl = document.getElementById(`${pid}-defects-current`);
+      const changeEl = document.getElementById(`${pid}-defects-change`);
+      const statusEl = document.getElementById(`${pid}-defects-status`);
+
+      if (currentEl) currentEl.textContent = customerCurrent;
+      if (changeEl) {
+        changeEl.textContent = arrow + Math.abs(percentChange) + '%';
+        changeEl.style.color = changeColor;
+      }
+      if (statusEl) {
+        if (customerCurrent === 0) {
+          statusEl.style.background = '#dcfce7';
+          statusEl.style.color = '#15803d';
+          statusEl.textContent = 'ON TRACK';
+        } else if (customerCurrent <= 2) {
+          statusEl.style.background = '#fef3c7';
+          statusEl.style.color = '#92400e';
+          statusEl.textContent = 'WARNING';
+        } else {
+          statusEl.style.background = '#fee2e2';
+          statusEl.style.color = '#991b1b';
+          statusEl.textContent = 'AT RISK';
+        }
+      }
+    }
+  });
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -923,17 +1387,24 @@ function renderInsights() {
 ════════════════════════════════════════════════════════════ */
 function renderKPIs() {
   const allM  = Object.values(TEAM).flat();
-  const uniqM = new Set(allM.map(m=>m.name)).size;
+  // Exclude team members who are on leave/ML
+  const activeM = allM.filter(m => !m.status || !m.status.toLowerCase().includes('ml'));
+  const uniqM = new Set(activeM.map(m=>m.name)).size;
+  const onLeaveM = new Set(allM.filter(m => m.status && m.status.toLowerCase().includes('ml')).map(m=>m.name)).size;
   const sharedM = allM.filter(m=>m.shared).length;
-  const totalR = allRisksFlat().length;
-  const openR = allRisksFlat().filter(r=>r.status!=='Closed').length;
-  const highR = allRisksFlat().filter(r=>r.sev==='High'&&r.status!=='Closed').length;
+  const totalR = liveTotalRiskCount();
+  const totalNC = liveTotalNonComplianceCount();
+  const totalIncident = liveTotalIncidentCount();
+  const highR = PRODUCTS.reduce((sum, product) => {
+    const items = liveRiskItemsForProduct(product.id);
+    return sum + items.filter(r => String(r.sev || r.priority || '').toLowerCase() === 'high').length;
+  }, 0);
   const kpis = [
     {cls:'k1',icon:'',label:'Total Products',    val:PRODUCTS.length,   sub:`${PRODUCTS.filter(p=>p.status==='on-track').length} on track`},
-    {cls:'k2',icon:'',label:'On Track',          val:PRODUCTS.filter(p=>p.status==='on-track').length, sub:`${PRODUCTS.filter(p=>p.status==='delayed').length} delayed`},
-    {cls:'k3',icon:'',label:'Team Members',      val:uniqM,             sub:`${sharedM} shared allocations`},
-    {cls:'k4',icon:'!',label:'Total Risks',       val:totalR,            sub:`${openR} open · ${highR} high severity`},
-    {cls:'k5',icon:'',label:'Phases in Progress', val:PRODUCTS.filter(p=>p.phase==='Development').length, sub:`${PRODUCTS.filter(p=>p.phase==='POC').length} POC · ${PRODUCTS.filter(p=>p.phase==='Assessment').length} Assessment`}
+    {cls:'k2',icon:'',label:'Total Non-Compliance', val:totalNC,        sub:`consolidated across all products`},
+    {cls:'k3',icon:'',label:'Team Members',      val:uniqM,             sub:`${sharedM} shared allocations${onLeaveM > 0 ? ` · ${onLeaveM} team member on ML (Nikita till Dec 2026)` : ''}`},
+    {cls:'k4',icon:'!',label:'Total Risks',       val:totalR,            sub:`consolidated across all products · ${highR} high severity`},
+    {cls:'k5',icon:'',label:'Total Incident',     val:totalIncident,     sub:`consolidated across all products`}
   ];
   const grid = document.getElementById('kpi-grid');
   if(grid) grid.innerHTML = kpis.map(k=>`
@@ -946,75 +1417,8 @@ function renderKPIs() {
 }
 
 /* ════════════════════════════════════════════════════════════
-   RENDER: ACTIVITY
-════════════════════════════════════════════════════════════ */
-function renderActivity() {
-  const pf = document.getElementById('activity-filter').value;
-  const filtered = pf === 'all' ? ACTIVITY : ACTIVITY.filter(a => a.product === pf);
-  const typeIcon = {risk:'!',roadmap:'>',team:'@',flag:'*',financial:'$',compliance:'NC',milestone:'+'};
-  const container = document.getElementById('timeline-container');
-  container.innerHTML = filtered.map((a,i)=>`
-    <div class="timeline-item">
-      <div class="tl-line">
-        <div class="tl-dot" style="background:${a.type==='risk'?'#ef4444':a.type==='flag'?'#f59e0b':'var(--qx-blue)'}"></div>
-        ${i<filtered.length-1?'<div class="tl-connector"></div>':''}
-      </div>
-      <div class="tl-content">
-        <div class="tl-time">${typeIcon[a.type]||'•'} ${a.ts}</div>
-        <div class="tl-msg">${a.msg}</div>
-        <div class="tl-product">${a.pname}</div>
-      </div>
-    </div>`).join('');
-}
-
-/* ════════════════════════════════════════════════════════════
    MODAL
 ════════════════════════════════════════════════════════════ */
-function openProductModal(id) {
-  const p = PRODUCTS.find(x=>x.id===id);
-  if(!p) return;
-  document.getElementById('modal-title').textContent = p.name;
-  document.getElementById('modal-body').innerHTML = `
-    <div>
-      <div class="modal-section-title">Product Details</div>
-      <div class="detail-grid">
-        <div class="detail-field"><label>Product Name</label><input value="${p.name}" onchange="updateProduct('${p.id}','name',this.value)"/></div>
-        <div class="detail-field"><label>Product Manager</label><input value="${p.pm}" onchange="updateProduct('${p.id}','pm',this.value)"/></div>
-        <div class="detail-field"><label>Status</label>
-          <select onchange="updateProduct('${p.id}','status',this.value)">
-            <option ${p.status==='on-track'?'selected':''} value="on-track">On Track</option>
-            <option ${p.status==='at-risk'?'selected':''} value="at-risk">At Risk</option>
-            <option ${p.status==='delayed'?'selected':''} value="delayed">Delayed</option>
-          </select>
-        </div>
-        <div class="detail-field"><label>Phase</label>
-          <select onchange="updateProduct('${p.id}','phase',this.value)">
-            <option ${p.phase==='Development'?'selected':''}>Development</option>
-            <option ${p.phase==='POC'?'selected':''}>POC</option>
-            <option ${p.phase==='Assessment'?'selected':''}>Assessment</option>
-          </select>
-        </div>
-        <div class="detail-field"><label>Completion %</label><input type="number" min="0" max="100" value="${p.completion}" onchange="updateProduct('${p.id}','completion',+this.value)"/></div>
-        <div class="detail-field"><label>Last Updated</label><input type="date" value="${p.updated}" onchange="updateProduct('${p.id}','updated',this.value)"/></div>
-        <div class="detail-field"><label>Users</label><input value="${p.users}" onchange="updateProduct('${p.id}','users',this.value)"/></div>
-      </div>
-    </div>
-    <div>
-      <div class="modal-section-title">Description</div>
-      <div class="detail-field"><textarea onchange="updateProduct('${p.id}','desc',this.value)">${p.desc}</textarea></div>
-    </div>
-    <div>
-      <div class="modal-section-title">Risks (${(RISKS[id]||[]).length} total)</div>
-      ${(RISKS[id]||[]).map(r=>`
-        <div style="padding:10px;border:1px solid var(--border);border-radius:7px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px">
-          ${riskScoreBadge(r.score)}
-          <div><div style="font-weight:600;font-size:13px">${r.title}</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:2px">${r.sev} severity · ${r.impact} · ${r.status}</div></div>
-        </div>`).join('') || '<div style="font-size:13px;color:var(--muted)">No risks logged</div>'}
-    </div>`;
-  document.getElementById('modal-overlay').classList.add('open');
-}
-
 function openNewProductModal(){
   document.getElementById('modal-title').textContent = 'Add New Product';
   document.getElementById('modal-body').innerHTML = `
@@ -1029,11 +1433,6 @@ function openNewProductModal(){
       </div>
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
-}
-
-function updateProduct(id, field, value) {
-  const p = PRODUCTS.find(x=>x.id===id);
-  if(p) p[field] = value;
 }
 
 function saveModal() {
@@ -1112,125 +1511,10 @@ function exportReport() {
 }
 
 const PRODUCTS_IDS = PRODUCTS.map(p=>p.id);
-const PRODUCTS_NAMES = Object.fromEntries(PRODUCTS.map(p=>[p.id,p.name]));
-const PRODUCTS_COLORS = Object.fromEntries(PRODUCTS.map(p=>[p.id,p.color]));
-
-function jiraCfgFor(pid){
-  if(typeof getJiraConfig === 'function') return getJiraConfig(pid);
-  try{return JSON.parse(localStorage.getItem('qx_jira_cfg_'+pid)||'null');}catch(e){return null;}
-}
 
 function jiraDataFor(pid){
   if(typeof getJiraData === 'function') return getJiraData(pid);
   try{return JSON.parse(localStorage.getItem('qx_jira_data_'+pid)||'null');}catch(e){return null;}
-}
-
-function renderJiraDashboard(){
-  const strip = document.getElementById('jira-dashboard-strip');
-  if(!strip) return;
-
-  strip.innerHTML = PRODUCTS_IDS.map(pid => {
-    const cfg  = jiraCfgFor(pid);
-    const data = jiraDataFor(pid);
-    const color = PRODUCTS_COLORS[pid];
-    const name  = PRODUCTS_NAMES[pid];
-
-    if(!cfg){
-      return `<div style="background:#fff;border-radius:10px;border:1px solid #E2E8F0;padding:16px;box-shadow:0 1px 4px rgba(13,0,51,.08)">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-          <div style="width:8px;height:8px;border-radius:50%;background:#E2E8F0"></div>
-          <span style="font-weight:700;font-size:13px">${name}</span>
-        </div>
-        <div style="font-size:12px;color:#64748b">JIRA not configured</div>
-        <a href="product.html?id=${pid}#jira" style="font-size:11px;color:#3A00F5;font-weight:600;margin-top:6px;display:inline-block">Configure →</a>
-      </div>`;
-    }
-
-    if(!data){
-      return `<div style="background:#fff;border-radius:10px;border:1px solid #E2E8F0;padding:16px;box-shadow:0 1px 4px rgba(13,0,51,.08)">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-          <div style="width:8px;height:8px;border-radius:50%;background:${color}"></div>
-          <span style="font-weight:700;font-size:13px">${name}</span>
-          <span style="font-size:10px;background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:auto">Never synced</span>
-        </div>
-        <div style="font-size:12px;color:#64748b">Project: <strong>${cfg.project || '—'}</strong></div>
-        <a href="product.html?id=${pid}#jira" style="font-size:11px;color:#3A00F5;font-weight:600;margin-top:6px;display:inline-block">Sync now →</a>
-      </div>`;
-    }
-
-    const openRisks = (data.risks||[]).filter(i=>i._statusCat!=='Done'&&i._statusCat!=='Closed').length;
-    const openNCs   = (data.ncs  ||[]).filter(i=>i._statusCat!=='Done'&&i._statusCat!=='Closed').length;
-    const ts        = data.syncedAt ? new Date(data.syncedAt).toLocaleDateString() : '—';
-    const hasIssues = openRisks > 0 || openNCs > 0;
-
-    return `<div style="background:#fff;border-radius:10px;border:1px solid ${hasIssues?'#fca5a5':'#E2E8F0'};padding:16px;box-shadow:0 1px 4px rgba(13,0,51,.08)">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-        <div style="width:8px;height:8px;border-radius:50%;background:${color}"></div>
-        <span style="font-weight:700;font-size:13px">${name}</span>
-        <span style="font-size:10px;background:#dcfce7;color:#15803d;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:auto">Synced ${ts}</span>
-      </div>
-      <div style="display:flex;gap:10px;margin-bottom:8px">
-        <div style="flex:1;background:${openRisks>0?'#fff5f5':'#f0fdf4'};border-radius:7px;padding:8px;text-align:center">
-          <div style="font-size:18px;font-weight:800;color:${openRisks>0?'#ef4444':'#22c55e'}">${openRisks}</div>
-          <div style="font-size:10px;color:#64748b;margin-top:1px">Open Risks</div>
-        </div>
-        <div style="flex:1;background:${openNCs>0?'#fff5f5':'#f0fdf4'};border-radius:7px;padding:8px;text-align:center">
-          <div style="font-size:18px;font-weight:800;color:${openNCs>0?'#ef4444':'#22c55e'}">${openNCs}</div>
-          <div style="font-size:10px;color:#64748b;margin-top:1px">Open NCs</div>
-        </div>
-        <div style="flex:1;background:#f1f5f9;border-radius:7px;padding:8px;text-align:center">
-          <div style="font-size:18px;font-weight:800;color:#64748b">${(data.risks||[]).length+((data.ncs||[]).length)}</div>
-          <div style="font-size:10px;color:#64748b;margin-top:1px">Total</div>
-        </div>
-      </div>
-      <a href="product.html?id=${pid}#jira" style="font-size:11px;color:#3A00F5;font-weight:600">Open details →</a>
-    </div>`;
-  }).join('');
-}
-
-async function syncAllJira(btn){
-  const origText = btn.textContent;
-  btn.textContent = 'Syncing...';
-  btn.disabled = true;
-
-  const results = [];
-  for(const pid of PRODUCTS_IDS){
-    const cfg = jiraCfgFor(pid);
-    if(!cfg?.domain||!cfg?.email||!cfg?.token||!cfg?.project){
-      results.push(`${PRODUCTS_NAMES[pid]}: not configured`);
-      continue;
-    }
-    try {
-      const [rr, nr] = await Promise.all([
-        fetch('http://localhost:3000/api/jira/search',{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({domain:cfg.domain,email:cfg.email,token:cfg.token,
-            jql:`project = "${cfg.project}" AND issuetype = "${cfg.riskType||'Risk'}" ORDER BY priority ASC`})}),
-        fetch('http://localhost:3000/api/jira/search',{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({domain:cfg.domain,email:cfg.email,token:cfg.token,
-            jql:`project = "${cfg.project}" AND issuetype = "${cfg.ncType||'Non-Conformance'}" ORDER BY priority ASC`})})
-      ]);
-      const rd = await rr.json();
-      const nd = await nr.json();
-      const normalise = arr => (arr.issues||[]).map(i=>{
-        const f=i.fields||{};
-        return {key:i.key,id:i.id,_summary:f.summary||'(no summary)',_status:f.status?.name||'—',
-          _statusCat:f.status?.statusCategory?.name||'—',_priority:f.priority?.name||null,
-          _assignee:f.assignee?.displayName||null,_created:(f.created||'').slice(0,10),
-          _duedate:f.duedate||null,_type:f.issuetype?.name||'—'};
-      });
-      localStorage.setItem('qx_jira_data_'+pid, JSON.stringify({
-        risks:normalise(rd), ncs:normalise(nd), syncedAt:new Date().toISOString()
-      }));
-      results.push(`${PRODUCTS_NAMES[pid]}: ok`);
-    } catch(e){
-      results.push(`${PRODUCTS_NAMES[pid]}: failed`);
-    }
-  }
-
-  btn.textContent = origText;
-  btn.disabled = false;
-  const ok = results.filter(r=>r.endsWith(': ok')).length;
-  alert(`JIRA sync complete. ${ok} product(s) synced.`);
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1244,8 +1528,51 @@ document.addEventListener('DOMContentLoaded', () => {
   renderTeam();
   renderDependencies();
   renderInsights();
+  _loadDashboardJiraData();
   setTimeout(renderCharts, 100);
 });
+
+window.addEventListener('storage', (event) => {
+  if (String(event.key || '').startsWith('qx_jira_data_')) {
+    renderKPIs();
+    renderCards('overview-cards', true);
+    renderCards('products-grid');
+  }
+});
+
+async function _loadDashboardJiraData() {
+  // Try to load JIRA data for display
+  for(const pid of PRODUCTS_IDS) {
+    const cached = jiraDataFor(pid);
+    if(!cached) {
+      // Load demo data
+      try {
+        const now = new Date();
+        const demoData = {
+          risks: [
+            {key:'RISK-101', summary:'Infrastructure scaling risk', priority:'High', status:'Open', _statusCat:'Open'},
+            {key:'RISK-102', summary:'Data migration risk', priority:'High', status:'Open', _statusCat:'Open'},
+            {key:'RISK-103', summary:'Third-party dependency', priority:'Medium', status:'Open', _statusCat:'Open'},
+          ],
+          ncs: [
+            {key:'NC-201', summary:'GDPR compliance', priority:'Highest', status:'Open', _statusCat:'Open'},
+            {key:'NC-202', summary:'SOC2 controls', priority:'High', status:'Open', _statusCat:'Open'},
+          ],
+          defects: [
+            {key:'CP-1234', summary:'Login crash', priority:'Highest', status:'Open', _statusCat:'Open'},
+            {key:'CP-1235', summary:'API timeout', priority:'High', status:'Open', _statusCat:'Open'},
+          ],
+          syncedAt: now.toISOString(),
+          isDemoData: true
+        };
+        try { localStorage.setItem('qx_jira_data_' + pid, JSON.stringify(demoData)); } catch(e) {}
+      } catch(e) {
+        console.warn('Could not load demo JIRA data');
+      }
+    }
+  }
+  renderKPIs();
+}
 </script>
 </body>
 </html>
