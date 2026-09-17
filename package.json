@@ -1,4 +1,3 @@
-
 {
   "name": "qorix-project",
   "version": "1.0.0",
@@ -11,3 +10,4 @@
     "lodash": "4.18.1"
   }
 }
+
